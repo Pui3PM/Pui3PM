@@ -2,6 +2,17 @@ from pathlib import Path
 import json,subprocess,sys,shutil,tempfile
 here=Path(__file__).resolve().parent
 package_root=here.parents[2]
+def qa_output_dir(package_root):
+    """Q-01: run-time QA output never goes into the SHA256SUMS-attested package.
+    Committed snapshots under docs/ are refreshed only by the packaging step."""
+    import os, tempfile, time
+    base = os.environ.get('THREEPM_QA_OUT')
+    out = Path(base).resolve() if base else Path(tempfile.gettempdir()).resolve() / '3pm_qa_runs' / (time.strftime('%Y%m%dT%H%M%SZ', time.gmtime()) + f'-{os.getpid()}')
+    pkg = Path(package_root).resolve()
+    if out == pkg or pkg in out.parents:
+        raise SystemExit(f'QA output directory must be outside the attested package: {out}')
+    out.mkdir(parents=True, exist_ok=True)
+    return out
 results=[]
 def run_node(name,file):
     p=subprocess.run(['node',str(here/file)],cwd=package_root,capture_output=True,text=True,timeout=20)
@@ -42,8 +53,9 @@ if chromium:
         smoke.unlink(missing_ok=True)
 else:
     results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'No Chromium executable available.'})
-out=package_root/'docs/phase01/phase0_repro_results.json'
+out=qa_output_dir(package_root)/'phase0_repro_results.json'
 out.write_text(json.dumps(results,indent=2)+'\n')
+print('Phase0 results written to', out)
 print('Phase0 repro statuses:', ', '.join(f"{r['name']}={r['status']}" for r in results))
 # blocked is honest/non-fatal for Phase0 local runner; failed is fatal.
 raise SystemExit(0 if ok and not any(r['status']=='failed' for r in results) else 1)
