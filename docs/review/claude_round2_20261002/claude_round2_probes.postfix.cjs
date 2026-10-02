@@ -1,7 +1,8 @@
 'use strict';
 // ADAPTED COPY (Claude Code, 2026-10-02): identical to the reviewer probe except N05 wraps the two
 // sink constructors in tryv, because S-04 makes the constructor reject a non-shadow prefix (allowed by
-// FINAL_REVIEW §S-04). A constructor rejection counts as 'not reproduced'. Original: claude_round2_probes.original.cjs
+// FINAL_REVIEW §S-04), and N11 wraps reduceCycle in tryv because S-12 rejects an evidence-free confirmed by
+// throwing. A rejection counts as 'not reproduced'. Original: claude_round2_probes.original.cjs
 // Claude round-2 independent probes — 3PM R8 P1-06 ClaudeRepair DEV 20261002.
 // Review-only: imports the tree read-only. Usage: node claude_round2_probes.cjs <tree>/app
 // Each probe prints defectReproduced=true when the defect EXISTS in the tree under test.
@@ -76,7 +77,7 @@ const BIND=[F.binding({startMasterTime:0,endMasterTime:1000000,capturePeriodUs:1
 {const bad={...F.candidate(3,175000),extensions:undefined};const r=tryv(()=>project25({runId:'r',cycleId:'c',masterClockId:'m',role:'side',timeline:TL,candidates:[F.candidate(4,250000),bad],roleBindings:BIND,projectionId:'u',configDigest:'cfg'}));
  rec('N10_projection_aborts_on_undefined_field',!r.ok,{result:r.ok?'projected':r.err});}
 // N11 — shadow event can be confirmed with zero supporting observations; reducer has no Side generation reset / reorder watermark.
-{let cy=initialCycle({runId:'r',cycleId:'z',masterClockId:'m',namespace:'shadow/x',policyVersion:'p',configDigest:'cfg'});const r=reduceCycle(cy,{runId:'r',cycleId:'z',eventType:'confirmed',eventId:'e',decidedAtMasterTime:1,recordedAtMasterTime:1});
+{let cy=initialCycle({runId:'r',cycleId:'z',masterClockId:'m',namespace:'shadow/x',policyVersion:'p',configDigest:'cfg'});const rr=tryv(()=>reduceCycle(cy,{runId:'r',cycleId:'z',eventType:'confirmed',eventId:'e',decidedAtMasterTime:1,recordedAtMasterTime:1}));const r=rr.ok?rr.v:{status:'rejected: '+rr.err};
  const src=require('fs').readFileSync(path.join(APP,'shadow/decision/shot_cycle_reducer.js'),'utf8');rec('N11_reducer_no_reset_watermark_or_evidence_gate',r.status==='applied'&&!/authority_stream_reset/.test(src),{confirmedWithoutObservations:r.status,hasAuthorityStreamReset:/authority_stream_reset/.test(src),hasWatermark:/watermark/.test(src)});}
 // N12 — archive carries non-shadow event namespaces into a shadow import.
 {const body={eventId:'e1',runId:'r',cycleId:'c1',masterClockId:'m',seq:'1',eventType:'confirmed',eventNamespace:'legacy-production',idempotencyKey:'k',policyVersion:'p',configDigest:'cfg',previousEventDigest:null,sourceEventTime:null,sourceInterval:null,uncertaintyUs:null,decidedAtMasterTime:1,recordedAtMasterTime:1,supportingObservationIds:[],contradictingObservationIds:[],reasonCodes:[]};

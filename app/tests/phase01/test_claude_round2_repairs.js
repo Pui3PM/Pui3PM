@@ -375,6 +375,64 @@ block('S-11', () => {
   assert.strictEqual(inactive.inactiveCount, 25);
 });
 
+// S-12: shadow reducer stream reset, 200 ms reorder watermark, evidence gate (probe N11). Shadow only.
+block('S-12', () => {
+  const R = req('shadow/decision/shot_cycle_reducer');
+  const { InMemoryShotEventLog } = req('shadow/event_log/in_memory_event_log');
+  const base = () => R.initialCycle({ runId: 'r', cycleId: 'z', masterClockId: 'm', namespace: 'shadow/x', policyVersion: 'p', configDigest: 'cfg' });
+  const prop = (type, extra) => Object.assign({ runId: 'r', cycleId: 'z', eventType: type, eventId: 'e-' + type, decidedAtMasterTime: 10, recordedAtMasterTime: 11 }, extra || {});
+  // Evidence gate.
+  assert.throws(() => R.reduceCycle(base(), prop('confirmed')), /CONFIRMED_REQUIRES_EVIDENCE/);
+  assert.throws(() => R.reduceCycle(base(), prop('confirmed', { supportingObservationIds: [] })), /CONFIRMED_REQUIRES_EVIDENCE/);
+  assert.throws(() => R.reduceCycle(base(), prop('confirmed', { supportingObservationIds: ['o1'], trigger: 'timeout' })), /CONFIRMED_REQUIRES_EVIDENCE/, 'timeout never confirms');
+  assert.strictEqual(R.reduceCycle(base(), prop('uncertain', { trigger: 'timeout' })).cycle.state, 'uncertain');
+  const ok = R.reduceCycle(base(), prop('confirmed', { supportingObservationIds: ['o1'] }));
+  assert.strictEqual(ok.cycle.state, 'confirmed');
+  const log = new InMemoryShotEventLog(); assert.strictEqual(log.append(ok.event).status, 'appended');
+  const raw = eventBody('shadow/x', { cycleId: 'raw', supportingObservationIds: [] });
+  assert.throws(() => log.append(raw), /CONFIRMED_REQUIRES_EVIDENCE/, 'direct append cannot bypass the gate');
+  // Stream reset.
+  for (const kind of ['side_generation_changed', 'clock_discontinuity']) {
+    const c1 = R.reduceCycle(base(), prop('candidate', { supportingObservationIds: ['o1'] }));
+    const r = R.applyStreamEvent(c1.cycle, { kind, eventId: 'reset', decidedAtMasterTime: 20, recordedAtMasterTime: 21 });
+    assert.strictEqual(r.status, 'stream_reset'); assert.strictEqual(r.cycle.state, 'uncertain');
+    assert.deepStrictEqual([...r.event.reasonCodes], ['authority_stream_reset', kind]);
+    const l2 = new InMemoryShotEventLog();
+    assert.strictEqual(l2.append(c1.event).status, 'appended');
+    assert.strictEqual(l2.append(r.event).status, 'appended', 'reset event chains onto the candidate');
+    assert.strictEqual(R.reduceCycle(r.cycle, prop('confirmed', { supportingObservationIds: ['o2'] })).status, 'terminal_immutable', 'late result cannot change the reset cycle');
+  }
+  const term = R.applyStreamEvent(ok.cycle, { kind: 'side_generation_changed', eventId: 'reset', decidedAtMasterTime: 20, recordedAtMasterTime: 21 });
+  assert.deepStrictEqual([term.status, term.event, term.cycle], ['terminal_immutable', null, ok.cycle], 'terminal cycle unchanged by reset');
+  assert.throws(() => R.applyStreamEvent(base(), { kind: 'aux_generation_changed' }), /stream event kind/);
+  // Reorder buffer: in order within 200 ms; gap after the wait; late results never applied.
+  let st = R.initialReorderState({ generation: 'g1', startSeq: '10' });
+  const push = (seq, at) => { const r = R.reorderPush(st, { generation: 'g1', frameSeq: String(seq), arrivalUs: at, result: 'r' + seq }); st = r.state; return r.outputs.map((o) => o.kind === 'result' ? 'R' + o.frameSeq : o.kind === 'gap' ? `G${o.fromSeq}-${o.toSeq}` : o.kind[0].toUpperCase() + o.frameSeq); };
+  assert.deepStrictEqual(push(11, 0), []);
+  assert.deepStrictEqual(push(12, 50000), []);
+  assert.deepStrictEqual(push(10, 120000), ['R10', 'R11', 'R12'], 'out-of-order inside 200 ms released in Side order');
+  assert.deepStrictEqual(push(14, 130000), []);
+  let adv = R.reorderAdvance(st, 329999); st = adv.state; assert.deepStrictEqual(adv.outputs, [], 'still inside the 200 ms window');
+  adv = R.reorderAdvance(st, 330000); st = adv.state;
+  assert.deepStrictEqual(adv.outputs.map((o) => o.kind === 'gap' ? `G${o.fromSeq}-${o.toSeq}` : 'R' + o.frameSeq), ['G13-13', 'R14']);
+  assert.strictEqual(adv.outputs[0].policyVersion, R.REORDER_POLICY_VERSION);
+  assert.deepStrictEqual(push(13, 340000), ['L13'], 'late result after the gap is not applied');
+  assert.deepStrictEqual(push(14, 340001), ['L14'], 'duplicate is late');
+  const stale = R.reorderPush(st, { generation: 'g0', frameSeq: '15', arrivalUs: 1, result: 'x' });
+  assert.strictEqual(stale.outputs[0].kind, 'stale_generation'); assert.strictEqual(stale.state, st);
+  assert.ok(Object.isFrozen(st) && Object.isFrozen(st.waiting));
+  // Determinism: same inputs -> same outputs.
+  const run = () => { let s0 = R.initialReorderState({ generation: 'g', startSeq: '0' }); const out = []; for (const [q, t] of [[2, 0], [0, 5], [5, 7], [1, 9], [3, 300000]]) { const r = R.reorderPush(s0, { generation: 'g', frameSeq: String(q), arrivalUs: t, result: q }); s0 = r.state; out.push(...r.outputs); } return sha256Canonical(out.map((o) => Object.assign({}, o))); };
+  assert.strictEqual(run(), run());
+  // Shadow must stay out of the production path: no app/static file references app/shadow.
+  const fs = require('fs');
+  for (const f of fs.readdirSync(path.join(APP, 'static'))) {
+    if (!/\.(js|mjs|html)$/.test(f)) continue;
+    const src = fs.readFileSync(path.join(APP, 'static', f), 'utf8');
+    assert.ok(!/shadow\/(contracts|decision|evidence_writer|event_log|archive|projector|scheduler|browser|review|ring|replay|adapters|telemetry)|ThreePMShadow|shadow_runtime_bundle/.test(src), `app/static/${f} must not import app/shadow`);
+  }
+});
+
 (async () => {
   let failed = 0;
   for (const [id, fn] of blocks) {
