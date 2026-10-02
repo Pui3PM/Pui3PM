@@ -28,31 +28,50 @@ results.append({'name':'F02_upstream_temporal','status':'open_confirmed' if p.re
 if p.returncode!=0: ok=False
 ok &= run_node('F03_null_clock','repro_f03_null_clock.js')
 ok &= run_node('F04_stale_writer','repro_f04_stale_writer.js')
-# Dynamic F01 must be a real browser test. Probe whether this environment can run Chromium at all.
-chromium=shutil.which('chromium') or shutil.which('chromium-browser') or shutil.which('google-chrome')
-if chromium:
-    smoke=here/'_chromium_smoke.html'; smoke.write_text('<!doctype html><p>ok</p>')
-    try:
-        p=subprocess.run([chromium,'--headless','--no-sandbox','--disable-gpu','--dump-dom',smoke.as_uri()],capture_output=True,text=True,timeout=5)
-        if p.returncode==0 and '<p>ok</p>' in p.stdout:
+# Dynamic F01 must be a real browser test.
+# Q-02: discover Chromium as CHROMIUM_PATH -> Playwright chromium.executablePath() -> PATH names,
+# and report `blocked` only when no candidate actually launches.
+def chromium_candidates():
+    import os
+    found=[]
+    env=os.environ.get('CHROMIUM_PATH')
+    if env: found.append(('CHROMIUM_PATH',env))
+    for mod in ('playwright','playwright-core'):
+        try:
+            q=subprocess.run(['node','-e',f"process.stdout.write(require('{mod}').chromium.executablePath())"],capture_output=True,text=True,timeout=20)
+            if q.returncode==0 and q.stdout.strip(): found.append((mod,q.stdout.strip()))
+        except (OSError,subprocess.TimeoutExpired): pass
+    for name in ('chromium','chromium-browser','google-chrome','google-chrome-stable'):
+        w=shutil.which(name)
+        if w: found.append(('PATH:'+name,w))
+    return found
+def launch_chromium():
+    attempts=[]
+    with tempfile.TemporaryDirectory(prefix='3pm-chromium-smoke-') as td:
+        smoke=Path(td)/'smoke.html'; smoke.write_text('<!doctype html><p>ok</p>')
+        for source,exe in chromium_candidates():
             try:
-                q=subprocess.run([chromium,'--headless','--no-sandbox','--disable-gpu','--disable-background-networking','--virtual-time-budget=800','--dump-dom',(here/'f01_dom_harness.html').as_uri()],capture_output=True,text=True,timeout=10)
-                import re
-                m=re.search(r'data-f01-callbacks="(\d+)"',q.stdout)
-                count=int(m.group(1)) if m else None
-                status='passed' if q.returncode==0 and count is not None and count>=100 else 'failed'
-                results.append({'name':'F01_dynamic_chromium','status':status,'callbackCount':count,'returncode':q.returncode,'stdoutTail':q.stdout[-1000:],'stderrTail':q.stderr[-1000:]})
-                ok &= status=='passed'
-            except subprocess.TimeoutExpired as e:
-                results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'Chromium F01 harness timed out in this execution environment; Astra audit has an external isolated-browser reproduction.'})
-        else:
-            results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'Chromium headless smoke did not execute successfully in this environment.','returncode':p.returncode,'stderrTail':p.stderr[-1000:]})
+                p=subprocess.run([exe,'--headless','--no-sandbox','--disable-gpu','--dump-dom',smoke.as_uri()],capture_output=True,text=True,timeout=30)
+                if p.returncode==0 and '<p>ok</p>' in p.stdout: return exe,source,attempts
+                attempts.append({'source':source,'path':exe,'returncode':p.returncode,'stderrTail':p.stderr[-300:]})
+            except (OSError,subprocess.TimeoutExpired) as e:
+                attempts.append({'source':source,'path':exe,'error':type(e).__name__})
+    return None,None,attempts
+chromium,chromium_source,chromium_attempts=launch_chromium()
+if chromium:
+    try:
+        q=subprocess.run([chromium,'--headless','--no-sandbox','--disable-gpu','--disable-background-networking','--virtual-time-budget=800','--dump-dom',(here/'f01_dom_harness.html').as_uri()],capture_output=True,text=True,timeout=30)
+        import re
+        m=re.search(r'data-f01-callbacks="(\d+)"',q.stdout)
+        count=int(m.group(1)) if m else None
+        status='passed' if q.returncode==0 and count is not None and count>=100 else 'failed'
+        results.append({'name':'F01_dynamic_chromium','status':status,'browser':chromium,'browserSource':chromium_source,'callbackCount':count,'returncode':q.returncode,'stdoutTail':q.stdout[-1000:],'stderrTail':q.stderr[-1000:]})
+        ok &= status=='passed'
     except subprocess.TimeoutExpired:
-        results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'Chromium headless smoke timed out even on trivial HTML in this environment.'})
-    finally:
-        smoke.unlink(missing_ok=True)
+        results.append({'name':'F01_dynamic_chromium','status':'failed','browser':chromium,'browserSource':chromium_source,'reason':'Chromium launched but the F01 harness did not finish within 30 s.'})
+        ok=False
 else:
-    results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'No Chromium executable available.'})
+    results.append({'name':'F01_dynamic_chromium','status':'blocked','reason':'No Chromium candidate launched (CHROMIUM_PATH, Playwright, PATH).','attempts':chromium_attempts})
 out=qa_output_dir(package_root)/'phase0_repro_results.json'
 out.write_text(json.dumps(results,indent=2)+'\n')
 print('Phase0 results written to', out)
