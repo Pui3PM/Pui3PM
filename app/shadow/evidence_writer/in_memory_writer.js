@@ -1,15 +1,15 @@
 'use strict';
 const {sha256Canonical}=require('../contracts/canonical_json');
-const {immutablePlainCopy}=require('../contracts/strict_types');
+const {immutablePlainCopy,isShadowNamespace,shadowNamespacePolicy}=require('../contracts/strict_types');
 const {validateEvidenceCandidate,validateProjection,validatePhaseClaim}=require('../contracts/record_validators');
 function keyTuple(parts){return JSON.stringify(parts);}
 function commandFingerprint(c){return sha256Canonical({namespace:c.namespace,runId:c.runId,cycleId:c.cycleId,role:c.role,operation:c.operation,expectedRecordVersion:c.expectedRecordVersion,payloadDigest:c.payloadDigest});}
 function validateCandidate(item,c){return validateEvidenceCandidate(item,{runId:c.runId,cycleId:c.cycleId,role:c.role});}
 class InMemoryEvidenceWriter{
-  constructor({allowedNamespacePrefix='shadow/',maxCommandMemos=10000}={}){this.allowedNamespacePrefix=allowedNamespacePrefix;this.maxCommandMemos=maxCommandMemos;this.records=new Map();this.commands=new Map();this.commandScopes=new Map();this.quarantine=[];}
+  constructor({allowedNamespacePrefix,maxCommandMemos=10000}={}){this.allowedNamespacePrefix=shadowNamespacePolicy(allowedNamespacePrefix,'InMemoryEvidenceWriter');this.maxCommandMemos=maxCommandMemos;this.records=new Map();this.commands=new Map();this.commandScopes=new Map();this.quarantine=[];}
   _key(c){return keyTuple([c.namespace,c.runId,c.cycleId,c.role]);}
   execute(c){
-    for(const k of ['commandId','namespace','runId','cycleId','role','operation','payloadDigest'])if(typeof c?.[k]!=='string'||!c[k])throw new TypeError(`command ${k} required`);if(!c.namespace.startsWith(this.allowedNamespacePrefix))throw new Error('WRITER_NAMESPACE_DENIED');if(!['side','overhead','rear'].includes(c.role))throw new TypeError('invalid command role');if(!['addCandidates','addPhaseEvidence','saveProjection','finalizeCycle'].includes(c.operation))throw new TypeError('invalid operation');
+    for(const k of ['commandId','namespace','runId','cycleId','role','operation','payloadDigest'])if(typeof c?.[k]!=='string'||!c[k])throw new TypeError(`command ${k} required`);if(!isShadowNamespace(c.namespace)||!c.namespace.startsWith(this.allowedNamespacePrefix))throw new Error('WRITER_NAMESPACE_DENIED');if(!['side','overhead','rear'].includes(c.role))throw new TypeError('invalid command role');if(!['addCandidates','addPhaseEvidence','saveProjection','finalizeCycle'].includes(c.operation))throw new TypeError('invalid operation');
     const payloadCopy=immutablePlainCopy(c.payload??null),digest=sha256Canonical(payloadCopy);if(digest!==c.payloadDigest)throw new Error('PAYLOAD_DIGEST_MISMATCH');const fingerprint=commandFingerprint(c),memoKey=keyTuple([c.namespace,c.runId,c.cycleId,c.role,c.commandId]),scopeKey=this.commandScopes.get(c.commandId);if(scopeKey&&scopeKey!==memoKey)throw new Error('COMMAND_SCOPE_CONFLICT');const prevCmd=this.commands.get(memoKey);if(prevCmd){if(prevCmd.fingerprint!==fingerprint)throw new Error('COMMAND_ID_CONFLICT');return prevCmd.result;}if(this.commands.size>=this.maxCommandMemos)throw new Error('COMMAND_MEMO_CAPACITY');
     const key=this._key(c),old=this.records.get(key)||{version:0,candidates:new Map(),phaseClaims:new Map(),projections:new Map(),finalized:false};if(!Number.isInteger(c.expectedRecordVersion)||c.expectedRecordVersion!==old.version)throw new Error('RECORD_VERSION_CONFLICT');if(old.finalized&&c.operation!=='finalizeCycle')throw new Error('EVIDENCE_RECORD_FINALIZED');
     if(c.operation==='finalizeCycle'&&old.finalized)return Object.freeze({status:'existing',recordVersion:old.version,commandId:c.commandId});

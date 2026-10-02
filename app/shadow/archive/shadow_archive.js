@@ -2,7 +2,7 @@
 const {sha256Canonical}=require('../contracts/canonical_json');
 const Sha=require('../contracts/sha256_pure');
 const Bin=require('../contracts/binary_pure');
-const {immutablePlainCopy,isId}=require('../contracts/strict_types');
+const {immutablePlainCopy,isId,isShadowNamespace}=require('../contracts/strict_types');
 const {validateFrameEnvelope}=require('../contracts/contract_v1');
 const {validateEvidenceCandidate,validateShotEvent,validateProjection}=require('../contracts/record_validators');
 const FORMAT='3pm-shadow-archive-v1',MAX_FILES=10000,MAX_TOTAL_BYTES=512*1024*1024;
@@ -15,6 +15,8 @@ function strictBase64(s){return Bin.base64Decode(s);}
 function validateRecords(records,fileSet){
   if(!records||typeof records!=='object'||Array.isArray(records))throw new TypeError('archive records object required');for(const k of Object.keys(records))if(!['frames','candidates','events','projections'].includes(k))throw new TypeError(`unknown archive record collection: ${k}`);
   const frames=(records.frames||[]).map(validateFrameEnvelope),candidates=(records.candidates||[]).map(x=>validateEvidenceCandidate(x)),events=(records.events||[]).map(validateShotEvent),projections=(records.projections||[]).map(validateProjection);const frameByUid=new Map(frames.map(f=>[f.frameUID,f])),candById=new Map(candidates.map(c=>[c.candidateId,c]));
+  // S-05: a shadow archive carries shadow events only; legacy archives go through a separate legacy reader (contract §2.7), never relabelled.
+  for(const e of events)if(!isShadowNamespace(e.eventNamespace))throw new Error('ARCHIVE_EVENT_NAMESPACE_DENIED');
   for(const f of frames)if(f.payloadRef!==null&&!fileSet.has(f.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');for(const c of candidates){if(!fileSet.has(c.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');const f=frameByUid.get(c.frameUID);if(!f||f.sourceId!==c.sourceId||f.streamGeneration!==c.streamGeneration||f.frameSeq!==c.frameSeq||f.contentDigest!==c.contentDigest)throw new Error('DANGLING_FRAME_REF');}
   for(const p of projections)for(const s of p.slots)if(s.status==='real'){const c=candById.get(s.candidateId);if(!c||c.frameUID!==s.actualFrameUID||c.derivationId!==s.derivationId)throw new Error('DANGLING_CANDIDATE_REF');if(!frameByUid.has(s.actualFrameUID))throw new Error('DANGLING_FRAME_REF');}
   return immutablePlainCopy({frames,candidates,events,projections});
@@ -30,5 +32,5 @@ function buildArchive({archiveId,baselineDigest,records,files={}}){
 }
 function validateArchive(archive){if(archive?.manifest?.format!==FORMAT)throw new TypeError('unsupported archive format');const {manifestDigest,...body}=archive.manifest;if(sha256Canonical(body)!==manifestDigest)throw new Error('MANIFEST_DIGEST_MISMATCH');validateManifestBody(body,archive.payloads);return true;}
 function roundTrip(archive){validateArchive(archive);const parsed=JSON.parse(JSON.stringify(archive));validateArchive(parsed);return immutablePlainCopy(parsed);}
-class InMemoryArchiveImporter{constructor(){this.byArchive=new Map();}stage(archive,{namespace}){if(typeof namespace!=='string'||!namespace.startsWith('shadow/'))throw new TypeError('shadow namespace required');validateArchive(archive);const k=JSON.stringify([namespace,archive.manifest.archiveId]),digest=archive.manifest.manifestDigest,prev=this.byArchive.get(k);if(prev){if(prev.manifest.manifestDigest!==digest)throw new Error('ARCHIVE_ID_CONFLICT');return {status:'existing',archive:prev};}const copy=roundTrip(archive);this.byArchive.set(k,copy);return {status:'staged',archive:copy};}}
+class InMemoryArchiveImporter{constructor(){this.byArchive=new Map();}stage(archive,{namespace}){if(!isShadowNamespace(namespace))throw new TypeError('shadow namespace required');validateArchive(archive);const k=JSON.stringify([namespace,archive.manifest.archiveId]),digest=archive.manifest.manifestDigest,prev=this.byArchive.get(k);if(prev){if(prev.manifest.manifestDigest!==digest)throw new Error('ARCHIVE_ID_CONFLICT');return {status:'existing',archive:prev};}const copy=roundTrip(archive);this.byArchive.set(k,copy);return {status:'staged',archive:copy};}}
 module.exports={FORMAT,buildArchive,validateArchive,roundTrip,InMemoryArchiveImporter,safePath,normalizedPath,validateRecords};

@@ -1,10 +1,10 @@
 'use strict';
-const {immutablePlainCopy}=require('../contracts/strict_types');
+const {immutablePlainCopy,isShadowNamespace}=require('../contracts/strict_types');
 const {sha256Canonical}=require('../contracts/canonical_json');
 const {derivedIdempotencyKey}=require('../event_log/in_memory_event_log');
 const TERMINAL=new Set(['confirmed','rejected','uncertain']);
 function initialCycle({runId,cycleId,authorityRole='side',namespace,activeRoleSnapshot=[],policyVersion,configDigest,masterClockId=null}){
-  if(!runId||!cycleId||!namespace||!namespace.startsWith('shadow/')||!policyVersion||!configDigest||!masterClockId)throw new TypeError('cycle identity/policy required');
+  if(!runId||!cycleId||!isShadowNamespace(namespace)||!policyVersion||!configDigest||!masterClockId)throw new TypeError('cycle identity/policy required');
   return immutablePlainCopy({runId,cycleId,masterClockId,authorityRole,namespace,state:'candidate',eventSeq:'0',terminalEventId:null,lastEventDigest:null,activeRoleSnapshot:[...activeRoleSnapshot],policyVersion,configDigest,supportingObservationIds:[],contradictingObservationIds:[],reasonCodes:[]});
 }
 function reduceCycle(cycle,proposal){

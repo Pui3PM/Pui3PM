@@ -41,6 +41,18 @@ function isWellFormedString(v){
 function isId(v){ return typeof v === 'string' && v.length > 0 && v.length <= 512 && isWellFormedString(v); }
 // S-02: FrameUID is canonical lower-case hex only; an upper-case spelling is a different string, never an alias.
 function isFrameUID(v){ return typeof v==='string' && /^f1\/[0-9a-f]{64}$/.test(v); }
+// S-04/S-05 (INV-009/INV-030): the shadow write capability is an invariant, not a parameter.
+// One predicate shared by event log, evidence writer, reducer, archive records and importer.
+const SHADOW_NS_PREFIX='shadow/';
+function isShadowNamespace(ns){
+  return isId(ns)&&ns.startsWith(SHADOW_NS_PREFIX)&&ns.length>SHADOW_NS_PREFIX.length&&!/production|legacy/i.test(ns);
+}
+function shadowNamespacePolicy(prefix,label){
+  // Optional constructor prefix may only narrow the invariant (e.g. 'shadow/replay/'), never widen it.
+  if(prefix===undefined||prefix===null)return SHADOW_NS_PREFIX;
+  if(typeof prefix!=='string'||!prefix.startsWith(SHADOW_NS_PREFIX)||/production|legacy/i.test(prefix))throw new TypeError(`${label}: namespace policy is fixed to shadow/ (got ${JSON.stringify(prefix)})`);
+  return prefix;
+}
 function isSha256(v){ return typeof v==='string' && /^[0-9a-f]{64}$/i.test(v); }
 function requireField(obj,key){
   if(!Object.prototype.hasOwnProperty.call(obj,key)) throw new TypeError(`Missing required field: ${key}`);
@@ -94,6 +106,6 @@ function assertNoUnknownFields(obj,allowed,label='record'){
 
 module.exports={
   U64_MAX,I64_MIN,I64_MAX,isExplicitNull,isUnknown,isFiniteNumber,finiteNumberOrNull,positiveFiniteOrNull,
-  parseBoundedIntegerString,isU64String,isI64String,isWellFormedString,isId,isFrameUID,isSha256,requireField,assertKnownOrNull,timeUsOrNull,durationUsOrNull,
+  parseBoundedIntegerString,isU64String,isI64String,isWellFormedString,isId,isFrameUID,isSha256,SHADOW_NS_PREFIX,isShadowNamespace,shadowNamespacePolicy,requireField,assertKnownOrNull,timeUsOrNull,durationUsOrNull,
   clonePlain,deepFreeze,immutablePlainCopy,assertNoUnknownFields
 };

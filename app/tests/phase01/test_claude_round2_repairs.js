@@ -88,6 +88,54 @@ block('S-03', () => {
   assert.doesNotThrow(() => CM.validateClockMapping(Object.assign(clone(trusted), { status: 'provisional' })));
 });
 
+function eventBody(ns, extra) {
+  const body = Object.assign({ eventId: 'e1', runId: 'r', cycleId: 'c1', masterClockId: 'm', seq: '1', eventType: 'confirmed', eventNamespace: ns, idempotencyKey: '', policyVersion: 'p', configDigest: 'cfg', previousEventDigest: null, sourceEventTime: null, sourceInterval: null, uncertaintyUs: null, decidedAtMasterTime: 1, recordedAtMasterTime: 1, supportingObservationIds: ['o1'], contradictingObservationIds: [], reasonCodes: [] }, extra || {});
+  body.idempotencyKey = sha256Canonical({ namespace: ns, runId: body.runId, cycleId: body.cycleId, seq: body.seq, eventType: body.eventType, policyVersion: body.policyVersion });
+  return Object.assign({}, body, { eventDigest: sha256Canonical(body) });
+}
+const writeCmd = (w, ns, id) => { const pay = { candidates: [F.candidate(1, 0)] }; return w.execute({ commandId: id, namespace: ns, runId: 'r', cycleId: 'c', role: 'side', operation: 'addCandidates', expectedRecordVersion: 0, payload: pay, payloadDigest: sha256Canonical(pay) }); };
+
+// S-04: shadow sinks write only shadow/ namespaces; the policy is not constructor-configurable (probe N05).
+block('S-04', () => {
+  const T = req('shadow/contracts/strict_types');
+  const { InMemoryShotEventLog } = req('shadow/event_log/in_memory_event_log');
+  const { InMemoryEvidenceWriter } = req('shadow/evidence_writer/in_memory_writer');
+  const { initialCycle } = req('shadow/decision/shot_cycle_reducer');
+  for (const bad of ['legacy-', '', 'shadow', 'production/', 'shadow/production', 'shadow/Legacy/']) {
+    assert.throws(() => new InMemoryShotEventLog({ allowedNamespacePrefix: bad }), /namespace policy is fixed/, `event log rejects prefix ${JSON.stringify(bad)}`);
+    assert.throws(() => new InMemoryEvidenceWriter({ allowedNamespacePrefix: bad }), /namespace policy is fixed/, `writer rejects prefix ${JSON.stringify(bad)}`);
+  }
+  const log = new InMemoryShotEventLog(), w = new InMemoryEvidenceWriter();
+  for (const ns of ['legacy-production', 'production', 'shadow/', 'shadow/PRODUCTION', 'shadow/x/legacy', 'Shadow/x']) {
+    assert.throws(() => log.append(eventBody(ns)), /EVENT_NAMESPACE_DENIED/, `event log denies ${ns}`);
+    assert.throws(() => writeCmd(w, ns, 'x-' + ns), /WRITER_NAMESPACE_DENIED/, `writer denies ${ns}`);
+    assert.throws(() => initialCycle({ runId: 'r', cycleId: 'c', namespace: ns, policyVersion: 'p', configDigest: 'cfg', masterClockId: 'm' }), /cycle identity/, `reducer denies ${ns}`);
+    assert.strictEqual(T.isShadowNamespace(ns), false);
+  }
+  assert.strictEqual(log.append(eventBody('shadow/n')).status, 'appended');
+  assert.strictEqual(writeCmd(w, 'shadow/n', 'ok').status, 'committed');
+  // A narrowing prefix under shadow/ is honoured.
+  const narrow = new InMemoryEvidenceWriter({ allowedNamespacePrefix: 'shadow/replay/' });
+  assert.throws(() => writeCmd(narrow, 'shadow/live', 'n1'), /WRITER_NAMESPACE_DENIED/);
+  assert.strictEqual(writeCmd(narrow, 'shadow/replay/a', 'n2').status, 'committed');
+});
+
+// S-05: archives never carry non-shadow events into a shadow import (probe N12).
+block('S-05', () => {
+  const AR = req('shadow/archive/shadow_archive');
+  const base = crypto.createHash('sha256').update('b').digest('hex');
+  const build = (ns) => AR.buildArchive({ archiveId: 'ev', baselineDigest: base, records: { frames: [], candidates: [], events: [eventBody(ns)], projections: [] }, files: {} });
+  assert.throws(() => build('legacy-production'), /ARCHIVE_EVENT_NAMESPACE_DENIED/);
+  // Also when the manifest is hand-built (bypassing buildArchive) and then validated/staged.
+  const good = build('shadow/n');
+  const forged = clone(good); forged.manifest.records.events[0] = eventBody('legacy-production');
+  const { manifestDigest, ...bodyOnly } = forged.manifest; forged.manifest.manifestDigest = sha256Canonical(bodyOnly);
+  assert.throws(() => AR.validateArchive(forged), /ARCHIVE_EVENT_NAMESPACE_DENIED/);
+  assert.throws(() => new AR.InMemoryArchiveImporter().stage(forged, { namespace: 'shadow/import' }), /ARCHIVE_EVENT_NAMESPACE_DENIED/);
+  assert.strictEqual(new AR.InMemoryArchiveImporter().stage(good, { namespace: 'shadow/import' }).status, 'staged');
+  assert.throws(() => new AR.InMemoryArchiveImporter().stage(good, { namespace: 'shadow/production' }), /shadow namespace required/);
+});
+
 let failed = 0;
 for (const [id, fn] of blocks) {
   try { fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
