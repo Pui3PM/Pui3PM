@@ -1,0 +1,42 @@
+'use strict';
+const {sha256Canonical}=require('../contracts/canonical_json');
+const {immutablePlainCopy,isShadowNamespace,shadowNamespacePolicy}=require('../contracts/strict_types');
+const {validateEvidenceCandidate,validateProjection,validatePhaseClaim}=require('../contracts/record_validators');
+const {verifyProjectionBinding}=require('../projector/projection_binding');
+function keyTuple(parts){return JSON.stringify(parts);}
+function commandFingerprint(c){return sha256Canonical({namespace:c.namespace,runId:c.runId,cycleId:c.cycleId,role:c.role,operation:c.operation,expectedRecordVersion:c.expectedRecordVersion,payloadDigest:c.payloadDigest});}
+function validateCandidate(item,c){return validateEvidenceCandidate(item,{runId:c.runId,cycleId:c.cycleId,role:c.role});}
+class InMemoryEvidenceWriter{
+  // S-10: idempotency memos are scoped per aggregate (namespace, runId, cycleId, role). The cap is per aggregate
+  // (fail-closed for that aggregate only). Memos of an aggregate are pruned only after finalizeCycle and only once
+  // more than finalizedRetention aggregates have been finalized after it; a command for a pruned aggregate gets
+  // COMMAND_EXPIRED and is never re-executed.
+  constructor({allowedNamespacePrefix,maxCommandMemos=1000,finalizedRetention=64}={}){if(!Number.isSafeInteger(maxCommandMemos)||maxCommandMemos<1||!Number.isSafeInteger(finalizedRetention)||finalizedRetention<0)throw new TypeError('maxCommandMemos/finalizedRetention must be integers');this.allowedNamespacePrefix=shadowNamespacePolicy(allowedNamespacePrefix,'InMemoryEvidenceWriter');this.maxCommandMemos=maxCommandMemos;this.finalizedRetention=finalizedRetention;this.records=new Map();this.commands=new Map();this.commandScopes=new Map();this.finalizedOrder=[];this.expiredAggregates=new Set();this.quarantine=[];}
+  _memoCount(){let n=0;for(const m of this.commands.values())n+=m.size;return n;}
+  _pruneFinalized(){while(this.finalizedOrder.length>this.finalizedRetention){const agg=this.finalizedOrder.shift(),memos=this.commands.get(agg);if(memos)for(const id of memos.keys())if(this.commandScopes.get(id)===agg)this.commandScopes.delete(id);this.commands.delete(agg);this.expiredAggregates.add(agg);}}
+  _key(c){return keyTuple([c.namespace,c.runId,c.cycleId,c.role]);}
+  execute(c){
+    for(const k of ['commandId','namespace','runId','cycleId','role','operation','payloadDigest'])if(typeof c?.[k]!=='string'||!c[k])throw new TypeError(`command ${k} required`);if(!isShadowNamespace(c.namespace)||!c.namespace.startsWith(this.allowedNamespacePrefix))throw new Error('WRITER_NAMESPACE_DENIED');if(!['side','overhead','rear'].includes(c.role))throw new TypeError('invalid command role');if(!['addCandidates','addPhaseEvidence','saveProjection','finalizeCycle'].includes(c.operation))throw new TypeError('invalid operation');
+    const payloadCopy=immutablePlainCopy(c.payload??null),digest=sha256Canonical(payloadCopy);if(digest!==c.payloadDigest)throw new Error('PAYLOAD_DIGEST_MISMATCH');const fingerprint=commandFingerprint(c),aggKey=this._key(c);if(this.expiredAggregates.has(aggKey)){const e=new Error('COMMAND_EXPIRED');e.code='COMMAND_EXPIRED';throw e;}const scopeKey=this.commandScopes.get(c.commandId);if(scopeKey&&scopeKey!==aggKey)throw new Error('COMMAND_SCOPE_CONFLICT');const memos=this.commands.get(aggKey),prevCmd=memos?.get(c.commandId);if(prevCmd){if(prevCmd.fingerprint!==fingerprint)throw new Error('COMMAND_ID_CONFLICT');return prevCmd.result;}if(memos&&memos.size>=this.maxCommandMemos)throw new Error('COMMAND_MEMO_CAPACITY');
+    const key=this._key(c),old=this.records.get(key)||{version:0,candidates:new Map(),phaseClaims:new Map(),projections:new Map(),finalized:false};if(!Number.isInteger(c.expectedRecordVersion)||c.expectedRecordVersion!==old.version)throw new Error('RECORD_VERSION_CONFLICT');if(old.finalized&&c.operation!=='finalizeCycle')throw new Error('EVIDENCE_RECORD_FINALIZED');
+    if(c.operation==='finalizeCycle'&&old.finalized)return Object.freeze({status:'existing',recordVersion:old.version,commandId:c.commandId});
+    const next={version:old.version,candidates:new Map(old.candidates),phaseClaims:new Map(old.phaseClaims),projections:new Map(old.projections),finalized:old.finalized};const pendingQuarantine=[];
+    if(c.operation==='addCandidates'){
+      if(!Array.isArray(payloadCopy?.candidates))throw new TypeError('candidates array required');for(const raw of payloadCopy.candidates){const item=validateCandidate(raw,c),d=sha256Canonical(item),prior=next.candidates.get(item.candidateId);if(prior&&prior.digest!==d){pendingQuarantine.push({kind:'candidate_conflict',candidateId:item.candidateId});throw new Error('CANDIDATE_ID_CONFLICT');}for(const entry of next.candidates.values())if(entry.value.frameUID===item.frameUID){const a=entry.value,b=item;if(a.sourceId!==b.sourceId||a.streamGeneration!==b.streamGeneration||a.frameSeq!==b.frameSeq||a.sourcePTS!==b.sourcePTS||a.contentDigest!==b.contentDigest||a.frameEnvelopeRef!==b.frameEnvelopeRef)throw new Error('FRAME_UID_CONFLICT');}if(!prior)next.candidates.set(item.candidateId,{digest:d,value:item});}
+    }else if(c.operation==='addPhaseEvidence'){
+      if(!Array.isArray(payloadCopy?.claims))throw new TypeError('claims array required');for(const raw of payloadCopy.claims){const item=validatePhaseClaim(raw,{runId:c.runId,cycleId:c.cycleId,role:c.role}),d=sha256Canonical(item),prior=next.phaseClaims.get(item.claimId);if(prior&&prior.digest!==d)throw new Error('PHASE_CLAIM_CONFLICT');if(!prior)next.phaseClaims.set(item.claimId,{digest:d,value:item});}
+    }else if(c.operation==='saveProjection'){
+      const p=validateProjection(payloadCopy?.projection);if(p.runId!==c.runId||p.cycleId!==c.cycleId||p.role!==c.role)throw new TypeError('projection scope/identity required');for(const s of p.slots){if(s.status!=='real')continue;const cand=next.candidates.get(s.candidateId)?.value;if(!cand||cand.frameUID!==s.actualFrameUID||cand.derivationId!==s.derivationId||cand.contentDigest!==s.contentDigest||cand.frameEnvelopeRef!==s.frameEnvelopeRef||cand.sourceId!==s.sourceId||cand.streamGeneration!==s.streamGeneration||cand.frameSeq!==s.frameSeq)throw new Error('PROJECTION_CANDIDATE_MISMATCH');}
+      // S-06: the projection must carry the timeline/releaseTime it was projected from; every real slot is re-derived from them.
+      for(const k of Object.keys(payloadCopy))if(!['projection','timeline','releaseTime'].includes(k))throw new TypeError(`saveProjection unknown payload field: ${k}`);
+      if(!Object.prototype.hasOwnProperty.call(payloadCopy,'timeline')||!Object.prototype.hasOwnProperty.call(payloadCopy,'releaseTime'))throw new Error('PROJECTION_PHASE_MISMATCH: saveProjection requires timeline and releaseTime (explicit null when unknown)');
+      const bound=verifyProjectionBinding({projection:p,timeline:payloadCopy.timeline,releaseTime:payloadCopy.releaseTime,candidateById:id=>next.candidates.get(id)?.value});
+      const d=sha256Canonical(p),prior=next.projections.get(p.projectionId);if(prior&&prior.digest!==d)throw new Error('PROJECTION_ID_CONFLICT');if(!prior)next.projections.set(p.projectionId,{digest:d,value:p,timeline:bound.timeline,releaseTime:bound.releaseTime});
+    }else if(c.operation==='finalizeCycle'){
+      if(next.projections.size===0)throw new Error('FINALIZE_REQUIRES_PROJECTION');next.finalized=true;
+    }
+    next.version=old.version+1;this.records.set(key,next);this.quarantine.push(...pendingQuarantine);const result=Object.freeze({status:'committed',recordVersion:next.version,commandId:c.commandId});if(!this.commands.has(aggKey))this.commands.set(aggKey,new Map());this.commands.get(aggKey).set(c.commandId,{fingerprint,result});this.commandScopes.set(c.commandId,aggKey);if(c.operation==='finalizeCycle'&&!old.finalized){this.finalizedOrder.push(aggKey);this._pruneFinalized();}return result;
+  }
+  snapshot({namespace,runId,cycleId,role}){const r=this.records.get(keyTuple([namespace,runId,cycleId,role]));if(!r)return null;return immutablePlainCopy({version:r.version,finalized:r.finalized,candidates:[...r.candidates.values()].map(x=>x.value),phaseClaims:[...r.phaseClaims.values()].map(x=>x.value),projections:[...r.projections.values()].map(x=>x.value),projectionTimelines:[...r.projections.values()].map(x=>({projectionId:x.value.projectionId,timeline:x.timeline,releaseTime:x.releaseTime}))});}
+}
+module.exports={InMemoryEvidenceWriter};

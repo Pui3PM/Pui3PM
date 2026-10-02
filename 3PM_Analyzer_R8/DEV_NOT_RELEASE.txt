@@ -1,0 +1,4 @@
+3PM Analyzer R8 P1 Harden development source.
+NOT A RELEASE. NOT APPROVED FOR LIVE SHOOTING.
+Do not replace the user's R7 production/field candidate with this tree.
+Read PROJECT_STATE.md and docs/phase01/CHECKPOINT_P1_06.md first.

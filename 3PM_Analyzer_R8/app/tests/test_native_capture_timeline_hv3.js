@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('assert');
+const layer=fs.readFileSync(__dirname+'/../static/native_capture_layer.js','utf8');
+const swift=fs.readFileSync(__dirname+'/../native_capture_bridge/3PMNativeCaptureBridge.swift','utf8');
+const win=fs.readFileSync(__dirname+'/../native_capture_bridge_windows/MediaFoundationCaptureAdapter.cpp','utf8');
+const temporal=fs.readFileSync(__dirname+'/../static/temporal_evidence_core.js','utf8');
+for(const x of ['frame_seq','master_time_ms','media_time_ms','capture_epoch_ms'])assert(layer.includes(x),`JS missing ${x}`);
+for(const x of ['captureProtocolVersion = "3pm-capture-v1"','nextFrameSeq','monotonicMs()','frame_seq','master_time_ms','media_time_ms','secondary_blocking'])assert(swift.includes(x),`Swift missing ${x}`);
+assert(win.includes('Media Foundation')||win.includes('MediaFoundation'));
+assert(win.includes('FrameRingBuffer'));
+assert(win.includes('#ifdef _WIN32'));
+assert(temporal.includes('/worker|native-/'),'chronology preference must be backend-agnostic');
+assert(layer.includes('const anyNative=ROLES.some'),'mixed browser/native roles must not suppress native secondary evidence');
+console.log('HV3 native capture timeline contract PASS');

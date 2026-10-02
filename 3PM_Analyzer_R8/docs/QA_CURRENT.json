@@ -1,0 +1,40 @@
+{
+  "build": "3PM_Analyzer_Mac_20261001_R6_HV3_ThreeCameraFoundation",
+  "status": "Field Candidate",
+  "js_test_files_passed": 99,
+  "js_test_files_failed": 0,
+  "launcher": "START_3PM.command",
+  "frozen_dev4_integrity": true,
+  "frozen_app_js_unchanged": true,
+  "frozen_pose_js_unchanged": true,
+  "native_mac_tested": false,
+  "real_camera_tested": false,
+  "windows_native_runtime_tested": false,
+  "capture_protocol": "3pm-capture-v1",
+  "camera_roles": [
+    "side",
+    "overhead",
+    "rear"
+  ],
+  "secondary_views_block_primary": false,
+  "side_preferred_authority": true,
+  "frame_identity": [
+    "frame_seq",
+    "capture_epoch_ms",
+    "master_time_ms",
+    "media_time_ms"
+  ],
+  "native_shared_cpp_compile_tested": true,
+  "windows_media_foundation_adapter_source_present": true,
+  "hybrid_vision_authority": false,
+  "fixed_evidence_slots_per_role": 25,
+  "fabricated_frames_allowed": false,
+  "equipment_catalog_version": "EL18-FORM-UX-2026-09-30-R1",
+  "equipment_catalog_records": 683,
+  "known_limitations": [
+    "Frozen pose path still emits processing-time epochMs; full frame-driven FSM not promoted",
+    "macOS native Apple framework build/live-camera acceptance pending",
+    "Windows native Media Foundation runtime build/camera acceptance pending",
+    "real 2/3-camera sync/disconnect/load testing pending"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "build": "3PM_Analyzer_Mac_20261001_R6_HV3_ThreeCameraFoundation",
+  "protocol": "3pm-capture-v1",
+  "roles": [
+    "side",
+    "overhead",
+    "rear"
+  ],
+  "side_preferred_authority": true,
+  "secondary_blocking": false,
+  "shared_frame_fields": [
+    "frame_seq",
+    "capture_epoch_ms",
+    "master_time_ms",
+    "media_time_ms"
+  ],
+  "mac_adapter": "AVFoundation",
+  "windows_adapter": "Media Foundation boundary/source; runtime acceptance pending",
+  "shared_cpp_core": [
+    "app/native_shared/capture_protocol.hpp",
+    "app/native_shared/frame_ring_buffer.hpp"
+  ],
+  "js_foundation": [
+    "app/static/camera_timeline_core.js",
+    "app/static/multicamera_timeline_layer.js"
+  ],
+  "frozen_hashes": {
+    "app/static/app.js": "ed23976568e7f25b5fb370c516ba766f272548e13d8398be5f506029d769f378",
+    "app/static/core_runtime.js": "89d637ce861466460a6c3889a08c45d70401d71ee904e6a4e6d6fd8dd9f9b3bf",
+    "app/static/pose.js": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+    "app/3PM_Form_Analyzer_arm64": "babd2ba02406a6a42a9f62f1df77dc84056fc890b3556a86d4d1a50b76a5913b",
+    "app/3PM_Form_Analyzer_x64": "5c41ebf790ef47ea59c2be76b4febb5ef3ee9c977166dc2065fc5f523e3eddf4"
+  },
+  "production_shot_logic_changed": false,
+  "known_limitations": [
+    "frozen pose epoch remains processing-time based",
+    "no Windows native executable in Mac package",
+    "real multi-camera acceptance pending"
+  ]
+}

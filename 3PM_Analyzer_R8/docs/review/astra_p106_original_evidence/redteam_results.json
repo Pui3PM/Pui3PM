@@ -1,0 +1,59 @@
+{
+  "ringPinned": {
+    "budget": 10,
+    "actual": 210,
+    "count": 21
+  },
+  "ringAfterReleaseBytes": 210,
+  "writerNestedMutation": 99,
+  "writerWrongScopeRetry": {
+    "status": "committed",
+    "recordVersion": 1,
+    "commandId": "id"
+  },
+  "writerOtherRecordExists": false,
+  "logNestedMutation": [
+    "o",
+    "changed"
+  ],
+  "logSameDigestDifferentPayload": "existing",
+  "projectNoPayloadReal": 1,
+  "projectWrongRunClock": 1,
+  "projectNegativeUncertainty": 1,
+  "invalidLargeDerivationMasksValid": 0,
+  "projectOrderDependence": [
+    [
+      [
+        "S15",
+        "A"
+      ]
+    ],
+    [
+      [
+        "S15",
+        "B"
+      ]
+    ]
+  ],
+  "anchorUnvalidatedDraw": {
+    "status": "real",
+    "slotId": "S03",
+    "frameUID": "draw-frame"
+  },
+  "archiveDanglingRefAccepted": true,
+  "archiveTraversalAccepted": true,
+  "replayDefaults": {
+    "mirror": false,
+    "width": 1920,
+    "height": 1080,
+    "arrivalTicks": "1",
+    "decodeValid": true
+  },
+  "nodeInvalidAccepted": false,
+  "webInvalidAccepted": true,
+  "syncAuxSideOrder": [
+    "aux-start",
+    "aux-end",
+    "side"
+  ]
+}

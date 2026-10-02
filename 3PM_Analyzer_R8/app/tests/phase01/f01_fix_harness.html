@@ -1,0 +1,46 @@
+<!doctype html><meta charset="utf-8"><title>R8C F01 loop + function harness</title>
+<!-- Run in a real browser (see run_f01_chromium_r8c.cjs). Uses the REAL MutationObserver and real timers. -->
+<div id="shotReplayPanel"><div id="shotReplayMeta">Frame 1/3</div><button id="jumpAnchorBtn">Anchor</button></div>
+<pre id="result">running</pre>
+<script>
+let callbacks=0,renders=0,stops=0;
+const RealMO=window.MutationObserver;
+window.MutationObserver=class{constructor(cb){this.inner=new RealMO((m,o)=>{callbacks++;cb(m,o);});}observe(...a){return this.inner.observe(...a)}disconnect(){return this.inner.disconnect()}takeRecords(){return this.inner.takeRecords()}};
+const mk=(o,zone)=>({offsetMs:o,blob:{},evidenceZone:zone});
+window.shotReplayState={record:{frames:[mk(-900,'draw'),mk(-400,'anchor-focus'),mk(0,'release-focus')]},index:0};
+window.selectedShot=()=>({id:1});window.replayAnchorOffsetForShot=()=>-450;
+window.renderShotReplayFrame=()=>{renders++;const m=document.getElementById('shotReplayMeta');if(m)m.textContent=`Frame ${shotReplayState.index+1}/${shotReplayState.record.frames.length}`;};
+window.stopShotReplay=()=>{stops++;};window.toast=()=>{};
+</script>
+<script src="../../static/evidence_integrity_repair_layer.js"></script>
+<script>
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const rail=()=>document.getElementById('fixedEvidence25Rail');
+const slots=()=>[...(rail()?.querySelectorAll('button')||[])];
+async function idle(ms){const c0=callbacks;await wait(ms);return callbacks-c0;}
+(async()=>{
+  const out={};
+  await wait(50);
+  out.initialSlots=slots().length;out.initialReal=slots().filter(b=>b.classList.contains('real')).length;
+  out.idleCallbacks1500ms=await idle(1500);                       // contains one 700 ms interval tick at most twice
+  // App steps the replay (as renderShotReplayFrame does): active slot must follow, loop must not start.
+  shotReplayState.index=2;renderShotReplayFrame();await wait(100);
+  out.activeAfterStep=slots().findIndex(b=>b.classList.contains('active'));
+  out.idleAfterStep=await idle(800);
+  // New record with 5 frames.
+  shotReplayState.record={frames:[mk(-1200,'draw'),mk(-700,'anchor-pin'),mk(-300,'aim-hold'),mk(0,'release-focus'),mk(800,'follow-summary')]};shotReplayState.index=0;renderShotReplayFrame();await wait(100);
+  out.realAfterNewRecord=slots().filter(b=>b.classList.contains('real')).length;
+  // Click slot 2.
+  slots()[1].click();await wait(50);out.indexAfterSlotClick=shotReplayState.index;
+  // Anchor button (rebound by the layer) must pick a tagged frame at/after target -450 ms -> offset -300 (index 2).
+  document.getElementById('jumpAnchorBtn').click();await wait(50);out.indexAfterAnchor=shotReplayState.index;
+  // App rebuilds the whole panel (as legacy renderer may): rail and Anchor binding must come back.
+  document.getElementById('shotReplayPanel').innerHTML='<div id="shotReplayMeta">Frame 1/5</div><button id="jumpAnchorBtn">Anchor</button>';
+  await wait(1000);
+  out.slotsAfterRebuild=slots().length;out.anchorRebound=document.getElementById('jumpAnchorBtn').dataset.hv2Bound==='1';
+  out.idleAfterRebuild=await idle(1500);
+  out.metaText=document.getElementById('shotReplayMeta').textContent;
+  document.getElementById('result').textContent=JSON.stringify(out);
+  document.documentElement.dataset.done='1';
+})();
+</script>

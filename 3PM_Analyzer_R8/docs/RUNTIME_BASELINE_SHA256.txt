@@ -1,0 +1,3 @@
+Frozen Dev4 native runtimes; internal dependencies loaded by START_3PM.command:
+app/3PM_Form_Analyzer_arm64  babd2ba02406a6a42a9f62f1df77dc84056fc890b3556a86d4d1a50b76a5913b
+app/3PM_Form_Analyzer_x64    5c41ebf790ef47ea59c2be76b4febb5ef3ee9c977166dc2065fc5f523e3eddf4

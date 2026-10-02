@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('assert');
+const {frameUID}=require('../../shadow/contracts/identity');
+const {validateFrameEnvelope,SCHEMA}=require('../../shadow/contracts/contract_v1');
+const {ticksToMicroseconds,rational}=require('../../shadow/contracts/time');
+const {VirtualClock}=require('../../shadow/replay/virtual_clock');
+const base={schemaVersion:SCHEMA,recordKind:'frame',runId:'run-1',createdByVersion:'phase01-test-v1',role:'side',sourceId:'cam-1',streamGeneration:'gen-1',frameSeq:'1',identityKind:'source-sample',sourcePTS:null,sourceTimebase:null,clockId:'clock-1',timestampKind:'unknown',sourceTimeMissingReason:'source_api_unavailable',masterClockId:'master-1',mappedMasterTime:null,mappingUncertainty:null,mappingId:null,mappingVersion:null,mappingStatus:'unmapped',arrivalTime:{clockId:'arr-1',ticks:'0',timebase:{numerator:'1',denominator:'1000000'},masterTime:null,mappingId:null},width:1920,height:1080,rotation:0,mirror:null,pixelFormat:'BGRA',nominalFPS:null,measuredFPS:null,quality:{decodeValid:true,trackingConfidence:null,blurScore:null,exposureClipped:null,qualitySchema:'q1',flags:[]},dropCounters:{source:null,transport:null,encoder:null,counterScope:'gen-1'},backend:{id:'replay',version:'1',platform:'test',adapterInstanceId:'adapter-1'},payloadRef:null,payloadState:'unavailable',transformId:'identity',contentDigest:null};
+base.frameUID=frameUID(base);
+assert.equal(validateFrameEnvelope(base).mappedMasterTime,null);
+assert.throws(()=>validateFrameEnvelope({...base,mappedMasterTime:undefined}),/explicit null|safe integer|Missing/);
+assert.notEqual(frameUID({...base,frameSeq:'1'}),frameUID({...base,frameSeq:'2'}));
+assert.equal(ticksToMicroseconds('1',rational('1','3')),333333);
+const c=new VirtualClock(10);assert.equal(c.advance(5),15);assert.throws(()=>c.set(14));
+console.log('Phase01 contract foundation: PASS');

@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('assert');
+const core=require('../../static/evidence_budget_core');
+const mkBlob=()=>({size:1,type:'image/jpeg'});
+const nullRows=Array.from({length:25},(_,i)=>({epochMs:1000+i*34,mediaTime:null,frameSeq:null,blob:mkBlob(),source:'test'}));
+const nullOut=core.canonicalUnique(nullRows);
+assert.equal(nullOut.length,25,'R8 budget core must retain all 25 distinct null-identity samples');
+const high=Array.from({length:25},(_,i)=>({epochMs:2000+i*(1000/240),mediaTime:i/240,frameSeq:i+1,blob:mkBlob(),source:'test'}));
+const highOut=core.canonicalUnique(high);
+assert.equal(highOut.length,25,'R8 budget core must retain all 25 unique 240fps samples');
+console.log(JSON.stringify({finding:'F02-budget',status:'MITIGATED_AT_BUDGET_CORE',nullInput:25,nullRetained:nullOut.length,highFpsInput:25,highFpsRetained:highOut.length},null,2));

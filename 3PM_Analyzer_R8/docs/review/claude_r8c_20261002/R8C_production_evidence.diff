@@ -1,0 +1,559 @@
+diff -ruN a/app/static/camera_timeline_core.js b/app/static/camera_timeline_core.js
+--- a/app/static/camera_timeline_core.js	2026-10-01 03:07:10.000000000 +0000
++++ b/app/static/camera_timeline_core.js	2026-10-02 01:13:33.969435642 +0000
+@@ -7,14 +7,17 @@
+ const ROLE_SET=new Set(ROLES);
+ const finite=v=>Number.isFinite(Number(v));
+ const num=(v,d=null)=>finite(v)?Number(v):d;
++// R8C/F03: clock/sequence fields use a strict reader: null/undefined/boolean/'' are UNKNOWN, never 0.
++// (num() above is left unchanged for fps/jitter policy inputs; see R8C patch note open item.)
++const known=(v,d=null)=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v))?Number(v):d;
+ const role=r=>ROLE_SET.has(String(r||'').toLowerCase())?String(r).toLowerCase():null;
+ function frameTimeMs(f){
+-  for(const k of ['masterTimeMs','captureEpochMs','epochMs']){const v=num(f?.[k]);if(v!==null)return v;}
+-  const media=num(f?.mediaTimeMs);if(media!==null)return media;
+-  const legacyMedia=num(f?.mediaTime);if(legacyMedia!==null)return legacyMedia*1000;
++  for(const k of ['masterTimeMs','captureEpochMs','epochMs']){const v=known(f?.[k]);if(v!==null)return v;}
++  const media=known(f?.mediaTimeMs);if(media!==null)return media;
++  const legacyMedia=known(f?.mediaTime);if(legacyMedia!==null)return legacyMedia*1000;
+   return null;
+ }
+-function chronologyKey(f,index=0){return{timeMs:frameTimeMs(f),mediaTimeMs:num(f?.mediaTimeMs,num(f?.mediaTime)!==null?num(f.mediaTime)*1000:null),frameSeq:num(f?.frameSeq),index};}
++function chronologyKey(f,index=0){return{timeMs:frameTimeMs(f),mediaTimeMs:known(f?.mediaTimeMs,known(f?.mediaTime)!==null?known(f.mediaTime)*1000:null),frameSeq:known(f?.frameSeq),index};}
+ function canonicalFrames(frames=[]){
+   const rows=(frames||[]).map((f,i)=>({f:{...f},k:chronologyKey(f,i)})).filter(x=>x.k.timeMs!==null||x.k.frameSeq!==null);
+   rows.sort((a,b)=>{
+diff -ruN a/app/static/evidence_integrity_repair_layer.js b/app/static/evidence_integrity_repair_layer.js
+--- a/app/static/evidence_integrity_repair_layer.js	2026-10-01 02:35:46.000000000 +0000
++++ b/app/static/evidence_integrity_repair_layer.js	2026-10-02 05:32:29.315756164 +0000
+@@ -42,16 +42,22 @@
+   const meta=document.getElementById('shotReplayMeta');if(!meta)return null;
+   rail=document.createElement('div');rail.id='fixedEvidence25Rail';rail.className='fixed-evidence-25-rail';rail.setAttribute('aria-label','Fixed 25 evidence slots');meta.insertAdjacentElement('afterend',rail);return rail;
+ }
++// R8C/F01: the MutationObserver below watches this subtree. Rewriting identical DOM on every refresh
++// re-triggered the observer forever (measured in Chromium: 100 callbacks in <300 ms while idle).
++// Render only when what the rail shows actually changed.
++function railSignature(frames,index){return `${index}|${frames.length}|`+frames.slice(0,TARGET).map(f=>Math.round(Number(f?.offsetMs)||0)).join(',');}
+ function renderRail(){
+   const rail=ensureRail();if(!rail)return;
+   const r=typeof shotReplayState!=='undefined'?shotReplayState.record:null,frames=Array.isArray(r?.frames)?r.frames:[];
++  const sig=railSignature(frames,typeof shotReplayState!=='undefined'?Number(shotReplayState.index):null);
++  if(rail.dataset.sig===sig)return;
+   rail.innerHTML='';
+   for(let i=0;i<TARGET;i++){
+     const b=document.createElement('button'),f=frames[i];b.type='button';b.className=`fixed-slot ${f?'real':'missing'}${f&&Number(shotReplayState.index)===i?' active':''}`;b.textContent=f?String(i+1):'—';b.title=f?`Evidence slot ${i+1} · ${Math.round(Number(f.offsetMs)||0)} ms`:`Evidence slot ${i+1} · Missing real frame`;b.disabled=!f;
+     if(f)b.addEventListener('click',()=>{if(typeof stopShotReplay==='function')stopShotReplay();shotReplayState.index=i;if(typeof renderShotReplayFrame==='function')renderShotReplayFrame();});
+     rail.appendChild(b);
+   }
+-  rail.dataset.actual=String(frames.length);rail.dataset.target=String(TARGET);
++  rail.dataset.actual=String(frames.length);rail.dataset.target=String(TARGET);rail.dataset.sig=sig;
+ }
+ function annotateMeta(){
+   const meta=document.getElementById('shotReplayMeta'),r=typeof shotReplayState!=='undefined'?shotReplayState.record:null;if(!meta||!r)return;
+diff -ruN a/app/static/index.html b/app/static/index.html
+--- a/app/static/index.html	2026-10-01 11:27:24.000000000 +0000
++++ b/app/static/index.html	2026-10-02 05:32:29.504433950 +0000
+@@ -1028,8 +1028,8 @@
+   <script src="/static/activity_classifier_core.js?v=ble4384"></script>
+   <script src="/static/native_vision_shadow_core.js?v=hv1"></script>
+   <script src="/static/foundation_guard_core.js?v=ble43888"></script>
+-  <script src="/static/temporal_evidence_core.js?v=ble438952"></script>
+-  <script src="/static/camera_timeline_core.js?v=hv3"></script>
++  <script src="/static/temporal_evidence_core.js?v=ble438952-r8c1"></script>
++  <script src="/static/camera_timeline_core.js?v=hv3-r8c1"></script>
+   <script src="/static/evidence_budget_core.js?v=r8merge1"></script>
+   <script src="/static/evidence_budget_layer.js?v=r3fixed25"></script>
+   <script src="/static/capture_integrity_layer.js?v=mac20260930r7"></script>
+@@ -1043,10 +1043,10 @@
+ <script src="/static/equipment_lab_layer.js?v=el18-formux-r1"></script>
+   <script src="/static/shot_list_ux_layer.js?v=ble43892"></script>
+   <script src="/static/review_precision_layer.js?v=ble43888"></script>
+-  <script src="/static/evidence_integrity_repair_layer.js?v=hv2"></script>
++  <script src="/static/evidence_integrity_repair_layer.js?v=hv2-r8c1"></script>
+   <script src="/static/evidence_timeline_baseline_layer.js?v=mac20260930r7"></script>
+   <script src="/static/temporal_evidence_layer.js?v=mac20260930r7"></script>
+-  <script src="/static/native_capture_layer.js?v=hv3"></script>
++  <script src="/static/native_capture_layer.js?v=hv3-r8c1"></script>
+   <script src="/static/multicamera_timeline_layer.js?v=hv3"></script>
+   <script src="/static/native_vision_shadow_layer.js?v=hv1"></script>
+   <script src="/static/coach_keyframe25_backfill_layer.js?v=mac20260930r7"></script>
+diff -ruN a/app/static/native_capture_layer.js b/app/static/native_capture_layer.js
+--- a/app/static/native_capture_layer.js	2026-10-01 03:18:06.000000000 +0000
++++ b/app/static/native_capture_layer.js	2026-10-02 01:13:33.970460611 +0000
+@@ -12,6 +12,8 @@
+ let launcherState={state:'unknown',detail:null,updated_ms:0};
+ let diagTimer=null;
+ const now=()=>Date.now();
++// R8C: bridge JSON null must stay null (Number(null)===0 would invent time 0 / frame 0).
++const known=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v))?Number(v):null;
+ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ function normalizeNativeBackend(v){const x=String(v||'').trim().toLowerCase();if(x.startsWith('native-'))return x;if(x.includes('avfoundation'))return 'native-avfoundation';if(x.includes('media foundation')||x.includes('mediafoundation')||x==='msmf')return 'native-mediafoundation';return x?`native-${x.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}`:'native-unknown';}
+ async function fetchJSON(path,options={},timeout=1200){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),timeout);try{const r=await fetch(`${BASE}${path}`,{cache:'no-store',mode:'cors',targetAddressSpace:'loopback',...options,signal:ctl.signal});const data=await r.json().catch(()=>({}));return{ok:r.ok,status:r.status,data};}finally{clearTimeout(tm);}}
+@@ -36,10 +38,12 @@
+ function endCycle(reason){try{if(states.side.backend==='browser-fallback')browserLayer?.endCycle?.(reason);}catch{}}
+ function openDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open('3pm-form-analyzer-shot-evidence-v1',1);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+ async function recordsForSession(sessionId){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction('shotEvidence','readonly'),idx=tx.objectStore('shotEvidence').index('sessionId'),req=idx.getAll(Number(sessionId));req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);});}
+-async function putRecord(rec){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction('shotEvidence','readwrite');tx.objectStore('shotEvidence').put(rec);tx.oncomplete=()=>resolve(rec);tx.onerror=()=>reject(tx.error);});}
++// R8C/F04: never put a whole record read before the (slow) blob download. Join the app's serialized
++// per-record queue exactly like the R7 temporal writer, so a Recovery written meanwhile is merged, not erased.
++async function putRecord(rec){if(typeof evidenceDbMerge!=='function')throw new Error('Serialized evidence writer unavailable');return evidenceDbMerge(rec);}
+ function sessionId(){return Number(window.FormAnalyzer?.getCurrentSessionId?.())||null;}
+ async function findRecord(role,releaseEpoch,timeoutMs=11000){const sid=sessionId(),until=now()+timeoutMs;if(!sid)return null;while(now()<until){const rows=await recordsForSession(sid).catch(()=>[]),m=rows.filter(r=>r.role===role&&Math.abs(Number(r.releaseEpochMs)-Number(releaseEpoch))<=400).sort((a,b)=>Math.abs(Number(a.releaseEpochMs)-releaseEpoch)-Math.abs(Number(b.releaseEpochMs)-releaseEpoch));if(m[0])return m[0];await sleep(180);}return null;}
+-async function fetchFrameBlobs(manifest){const rows=manifest.frames||[],out=new Array(rows.length);let next=0;const workers=Array.from({length:Math.min(8,rows.length)},async()=>{while(true){const i=next++;if(i>=rows.length)return;const f=rows[i];try{const r=await fetch(f.url,{cache:'no-store',mode:'cors',targetAddressSpace:'loopback'});if(!r.ok)continue;out[i]={epochMs:Number(f.capture_epoch_ms??f.epoch_ms),captureEpochMs:Number(f.capture_epoch_ms??f.epoch_ms),masterTimeMs:Number(f.master_time_ms),mediaTimeMs:Number(f.media_time_ms),mediaTime:Number.isFinite(Number(f.media_time_ms))?Number(f.media_time_ms)/1000:null,frameSeq:Number(f.frame_seq),blob:await r.blob()};}catch{}}});await Promise.all(workers);return out.filter(Boolean);}
++async function fetchFrameBlobs(manifest){const rows=manifest.frames||[],out=new Array(rows.length);let next=0;const workers=Array.from({length:Math.min(8,rows.length)},async()=>{while(true){const i=next++;if(i>=rows.length)return;const f=rows[i];try{const r=await fetch(f.url,{cache:'no-store',mode:'cors',targetAddressSpace:'loopback'});if(!r.ok)continue;const ep=known(f.capture_epoch_ms??f.epoch_ms),media=known(f.media_time_ms);out[i]={epochMs:ep,captureEpochMs:ep,masterTimeMs:known(f.master_time_ms),mediaTimeMs:media,mediaTime:media===null?null:media/1000,frameSeq:known(f.frame_seq),blob:await r.blob()};}catch{}}});await Promise.all(workers);return out.filter(Boolean);}
+ async function collectBundle(role,id,releaseEpoch){const s=states[role];let manifest=null;const until=now()+6500;while(now()<until){try{const r=await fetchJSON(`/bundle?id=${encodeURIComponent(id)}`,{},1200);if(r.status===202){await sleep(120);continue;}if(!r.ok||!r.data?.ok)throw new Error(r.data?.error||`bundle HTTP ${r.status}`);manifest=r.data;break;}catch(err){s.error=String(err?.message||err);await sleep(160);}}
+   if(!manifest){s.error='Native evidence bundle timed out';return false;}
+   const rec=await findRecord(role,Number(manifest.release_epoch_ms)||releaseEpoch);if(!rec){s.error='Native bundle could not match persisted shot';return false;}
+@@ -50,7 +54,7 @@
+   const frames=T.mergeEvidence(rec.frames||[],nativeFrames,rel,{preMs:Number(manifest.pre_ms)||1250,postMs:Number(manifest.post_ms)||900,replaceDense:healthy});
+   const temporalEvidence={version:'HV3',mode:nativeBackend,backend:nativeBackend,platform:manifest.platform||bridge.platform||null,protocol:manifest.protocol||bridge.protocol||null,clock_domain:manifest.clock_domain||s.clockDomain||null,healthy,capture_fps:Number(manifest.capture_fps)||null,raw_fps:Number(manifest.raw_fps)||null,reported_fps:Number(manifest.reported_fps)||null,dense_frame_count:nativeFrames.length,target_width:s.targetWidth||null,processor_discarded_frames:s.discardedFrames||0,pre_ms:Number(manifest.pre_ms)||1250,post_ms:Number(manifest.post_ms)||900,updated_at:new Date().toISOString()};
+   const merged={...rec,frames,startEpochMs:frames[0]?.epochMs||rec.startEpochMs,endEpochMs:frames.at(-1)?.epochMs||rec.endEpochMs,captureKind:`${rec.captureKind||'phase-weighted'}+${nativeBackend}-temporal`,temporalEvidence};
+-  await putRecord(merged);s.lastBundle=temporalEvidence;window.dispatchEvent(new CustomEvent('3pm-temporal-evidence-updated',{detail:{shotId:Number(rec.shotId),role,releaseEpochMs:rel,temporalEvidence}}));return true;
++  try{await putRecord(merged);}catch(err){s.error=String(err?.message||err);return false;}s.lastBundle=temporalEvidence;window.dispatchEvent(new CustomEvent('3pm-temporal-evidence-updated',{detail:{shotId:Number(rec.shotId),role,releaseEpochMs:rel,temporalEvidence}}));return true;
+ }
+ async function releaseNative(metrics,cycleId){const epoch=Number(metrics?.releaseEpochMs||metrics?.releaseAlignedEpochMs)||now();try{const r=await post('/release',{release_epoch_ms:epoch,pre_ms:1250,post_ms:900,cycle_id:cycleId||null},1600);if(!r.ok||!r.data?.ok)throw new Error(r.data?.error||`release HTTP ${r.status}`);for(const [role,id] of Object.entries(r.data.tokens||{})){if(String(states[role]?.backend||'').startsWith('native-'))void collectBundle(role,id,epoch);}}catch(err){states.side.error=String(err?.message||err);}}
+ function release(metrics,cycleId){const anyNative=ROLES.some(r=>String(states[r]?.backend||'').startsWith('native-')&&(states[r].active||states[r].opening));if(anyNative)void releaseNative(metrics,cycleId);if(states.side.backend==='browser-fallback'){try{browserLayer?.release?.(metrics,cycleId);}catch{}}}
+diff -ruN a/app/static/temporal_evidence_core.js b/app/static/temporal_evidence_core.js
+--- a/app/static/temporal_evidence_core.js	2026-10-01 03:12:12.000000000 +0000
++++ b/app/static/temporal_evidence_core.js	2026-10-02 01:13:33.968473411 +0000
+@@ -4,7 +4,8 @@
+   if(root)root.TemporalEvidenceCore=api;
+ })(typeof window!=="undefined"?window:globalThis,function(){
+   'use strict';
+-  const finite=v=>Number.isFinite(Number(v));
++  // R8C/F02: null, undefined, booleans and empty strings are UNKNOWN, never 0 (INV-001; same rule as evidence_budget_core).
++  const finite=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v));
+   const num=v=>finite(v)?Number(v):null;
+   const median=a=>{const x=(a||[]).filter(finite).map(Number).sort((p,q)=>p-q);if(!x.length)return null;const i=Math.floor(x.length/2);return x.length%2?x[i]:(x[i-1]+x[i])/2;};
+   const percentile=(a,p=.95)=>{const x=(a||[]).filter(finite).map(Number).sort((u,v)=>u-v);if(!x.length)return null;return x[Math.max(0,Math.min(x.length-1,Math.round((x.length-1)*p)))];};
+@@ -45,24 +46,29 @@
+       return Number(a.epochMs)-Number(b.epochMs)||a.__i-b.__i;
+     });
+     const out=[],tagList=f=>[String(f?.evidenceZone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])].filter(Boolean);
+-    let lastMedia=null,lastSeq=null;
++    let lastMedia=null;const lastSeqBySource=new Map();
+     for(const raw of rows){
+       const f={...raw};delete f.__i;
+-      const mt=num(f.mediaTime),seq=num(f.frameSeq),last=out.at(-1),lmt=num(last?.mediaTime);
++      const mt=num(f.mediaTime),seq=num(f.frameSeq),last=out.at(-1),lmt=num(last?.mediaTime),src=String(f.source||''),lsrc=String(last?.source||'');
++      const lastSeq=lastSeqBySource.has(src)?lastSeqBySource.get(src):null;
+       // Reject an actual camera-time inversion. This is the failure that makes Frame
+       // playback visibly jump backwards even though epochMs happened to sort forward.
+       if(mt!==null&&lastMedia!==null&&mt<lastMedia-.0004)continue;
+       if(seq!==null&&lastSeq!==null&&seq<lastSeq&&mt===null)continue;
+       const sameMedia=last&&mt!==null&&lmt!==null&&Math.abs(mt-lmt)<.0008;
+-      const sameSeq=last&&seq!==null&&num(last?.frameSeq)!==null&&seq===num(last.frameSeq);
+-      const sameEpoch=last&&Math.abs(Number(f.epochMs)-Number(last.epochMs))<=toleranceMs;
++      // R8C/F02: frameSeq is a per-source counter; equal numbers from different sources are not one sample.
++      const sameSeq=last&&seq!==null&&num(last?.frameSeq)!==null&&seq===num(last.frameSeq)&&src===lsrc;
++      // R8C/F02: epoch nearness is NOT camera identity. It may only fold a cross-pipeline duplicate
++      // (different source) when the two rows cannot be compared by camera mediaTime. Two known mediaTimes
++      // are decided by sameMedia above; same-source rows are distinct captures (240 FPS = 4.2 ms apart).
++      const sameEpoch=last&&src!==lsrc&&!(mt!==null&&lmt!==null)&&Math.abs(Number(f.epochMs)-Number(last.epochMs))<=toleranceMs;
+       if(last&&(sameMedia||sameSeq||sameEpoch)){
+         const fw=/worker|native-/.test(String(f.source||'')),lw=/worker|native-/.test(String(last.source||''));
+         const tags=[...new Set([...tagList(last),...tagList(f)])];
+         if(fw&&!lw)out[out.length-1]={...f,evidenceTags:tags};else out[out.length-1]={...last,evidenceTags:tags};
+       }else out.push({...f,evidenceTags:[...new Set(tagList(f))]});
+       const kept=out.at(-1),kmt=num(kept?.mediaTime),ks=num(kept?.frameSeq);
+-      if(kmt!==null)lastMedia=kmt;if(ks!==null)lastSeq=ks;
++      if(kmt!==null)lastMedia=kmt;if(ks!==null)lastSeqBySource.set(String(kept?.source||''),ks);
+     }
+     return out.map((f,i)=>({...f,replaySeq:i}));
+   }
+diff -ruN a/app/tests/phase01/f01_fix_harness.html b/app/tests/phase01/f01_fix_harness.html
+--- a/app/tests/phase01/f01_fix_harness.html	1970-01-01 00:00:00.000000000 +0000
++++ b/app/tests/phase01/f01_fix_harness.html	2026-10-02 05:32:42.830964148 +0000
+@@ -0,0 +1,46 @@
++<!doctype html><meta charset="utf-8"><title>R8C F01 loop + function harness</title>
++<!-- Run in a real browser (see run_f01_chromium_r8c.cjs). Uses the REAL MutationObserver and real timers. -->
++<div id="shotReplayPanel"><div id="shotReplayMeta">Frame 1/3</div><button id="jumpAnchorBtn">Anchor</button></div>
++<pre id="result">running</pre>
++<script>
++let callbacks=0,renders=0,stops=0;
++const RealMO=window.MutationObserver;
++window.MutationObserver=class{constructor(cb){this.inner=new RealMO((m,o)=>{callbacks++;cb(m,o);});}observe(...a){return this.inner.observe(...a)}disconnect(){return this.inner.disconnect()}takeRecords(){return this.inner.takeRecords()}};
++const mk=(o,zone)=>({offsetMs:o,blob:{},evidenceZone:zone});
++window.shotReplayState={record:{frames:[mk(-900,'draw'),mk(-400,'anchor-focus'),mk(0,'release-focus')]},index:0};
++window.selectedShot=()=>({id:1});window.replayAnchorOffsetForShot=()=>-450;
++window.renderShotReplayFrame=()=>{renders++;const m=document.getElementById('shotReplayMeta');if(m)m.textContent=`Frame ${shotReplayState.index+1}/${shotReplayState.record.frames.length}`;};
++window.stopShotReplay=()=>{stops++;};window.toast=()=>{};
++</script>
++<script src="../../static/evidence_integrity_repair_layer.js"></script>
++<script>
++const wait=ms=>new Promise(r=>setTimeout(r,ms));
++const rail=()=>document.getElementById('fixedEvidence25Rail');
++const slots=()=>[...(rail()?.querySelectorAll('button')||[])];
++async function idle(ms){const c0=callbacks;await wait(ms);return callbacks-c0;}
++(async()=>{
++  const out={};
++  await wait(50);
++  out.initialSlots=slots().length;out.initialReal=slots().filter(b=>b.classList.contains('real')).length;
++  out.idleCallbacks1500ms=await idle(1500);                       // contains one 700 ms interval tick at most twice
++  // App steps the replay (as renderShotReplayFrame does): active slot must follow, loop must not start.
++  shotReplayState.index=2;renderShotReplayFrame();await wait(100);
++  out.activeAfterStep=slots().findIndex(b=>b.classList.contains('active'));
++  out.idleAfterStep=await idle(800);
++  // New record with 5 frames.
++  shotReplayState.record={frames:[mk(-1200,'draw'),mk(-700,'anchor-pin'),mk(-300,'aim-hold'),mk(0,'release-focus'),mk(800,'follow-summary')]};shotReplayState.index=0;renderShotReplayFrame();await wait(100);
++  out.realAfterNewRecord=slots().filter(b=>b.classList.contains('real')).length;
++  // Click slot 2.
++  slots()[1].click();await wait(50);out.indexAfterSlotClick=shotReplayState.index;
++  // Anchor button (rebound by the layer) must pick a tagged frame at/after target -450 ms -> offset -300 (index 2).
++  document.getElementById('jumpAnchorBtn').click();await wait(50);out.indexAfterAnchor=shotReplayState.index;
++  // App rebuilds the whole panel (as legacy renderer may): rail and Anchor binding must come back.
++  document.getElementById('shotReplayPanel').innerHTML='<div id="shotReplayMeta">Frame 1/5</div><button id="jumpAnchorBtn">Anchor</button>';
++  await wait(1000);
++  out.slotsAfterRebuild=slots().length;out.anchorRebound=document.getElementById('jumpAnchorBtn').dataset.hv2Bound==='1';
++  out.idleAfterRebuild=await idle(1500);
++  out.metaText=document.getElementById('shotReplayMeta').textContent;
++  document.getElementById('result').textContent=JSON.stringify(out);
++  document.documentElement.dataset.done='1';
++})();
++</script>
+diff -ruN a/app/tests/phase01/repro_astra_legacy_gaps.js b/app/tests/phase01/repro_astra_legacy_gaps.js
+--- a/app/tests/phase01/repro_astra_legacy_gaps.js	2026-10-01 12:04:51.000000000 +0000
++++ b/app/tests/phase01/repro_astra_legacy_gaps.js	2026-10-02 01:14:24.292242898 +0000
+@@ -7,11 +7,14 @@
+ function frame(i,high=false,extra={}){return {epochMs:1000+i*(high?1000/240:34),mediaTime:high?i/240:null,frameSeq:high?i+1:null,source:'native-avfoundation',streamGeneration:'g1',blob:{size:1},...extra};}
+ const rowsNull=Array.from({length:25},(_,i)=>frame(i,false));
+ const rows240=Array.from({length:25},(_,i)=>frame(i,true));
++// R8C (2026-10-02): the three gaps below were CLOSED by the R8C production evidence patch.
++// Their stronger red->green regression lives in app/tests/test_evidence_identity_writer_r8c.js
++// (red on the unpatched R8 P1-06 tree, green after). Kept here as closure checks, not as "gap exists".
+ const temporalNull=B.canonicalUnique(T.mergeEvidence([],rowsNull,1000)).length;
+ const temporal240=B.canonicalUnique(T.mergeEvidence([],rows240,1000)).length;
+-assert.equal(temporalNull,1,'characterization changed: upstream null dedup gap may have been fixed');
+-assert.equal(temporal240,13,'characterization changed: upstream high-FPS dedup gap may have been fixed');
+-assert.equal(C.frameTimeMs({masterTimeMs:null,epochMs:1000}),0,'characterization changed: null master clock gap may have been fixed');
++assert.equal(temporalNull,25,'regression: upstream null dedup gap reopened (was 25->1 before R8C)');
++assert.equal(temporal240,25,'regression: upstream high-FPS dedup gap reopened (was 25->13 before R8C)');
++assert.equal(C.frameTimeMs({masterTimeMs:null,epochMs:1000}),1000,'regression: null master clock collapses to 0 again');
+ const crossSource=B.canonicalUnique([frame(0,true,{mediaTime:1,frameSeq:1,source:'native-avfoundation'}),frame(1,true,{mediaTime:1,frameSeq:7,source:'worker'})]).length;
+ assert.equal(crossSource,1,'characterization changed: cross-source media identity gap may have been fixed');
+-console.log(JSON.stringify({status:'KNOWN_LEGACY_GAPS_CONFIRMED',temporalNull,temporal240,timelineNullMaster:0,crossSource},null,2));
++console.log(JSON.stringify({status:'R8C_CLOSED_3_STILL_OPEN_1',closed:{temporalNull,temporal240,timelineNullMaster:1000},stillOpen:{crossSourceSameMediaTime:crossSource,note:'needs clock-domain decision: are native and browser mediaTime the same clock?'}},null,2));
+diff -ruN a/app/tests/phase01/run_f01_chromium_r8c.cjs b/app/tests/phase01/run_f01_chromium_r8c.cjs
+--- a/app/tests/phase01/run_f01_chromium_r8c.cjs	1970-01-01 00:00:00.000000000 +0000
++++ b/app/tests/phase01/run_f01_chromium_r8c.cjs	2026-10-02 05:33:56.480244505 +0000
+@@ -0,0 +1,28 @@
++'use strict';
++// R8C F01 browser acceptance: real Chromium, real MutationObserver/timers. Not part of the Node-only runner.
++// Usage: node app/tests/phase01/run_f01_chromium_r8c.cjs [chromiumExecutable]
++// Requires the 'playwright' package. If no browser is available, report BLOCKED - never PASS.
++const path=require('path');
++let chromium;try{({chromium}=require('playwright'));}catch{try{({chromium}=require(path.join(process.env.HOME||'','.npm-global/lib/node_modules/playwright')));}catch{console.log(JSON.stringify({status:'BLOCKED',reason:'playwright not installed'}));process.exit(2);}}
++const exe=process.argv[2]||process.env.CHROMIUM_PATH||undefined;
++(async()=>{
++  let b;try{b=await chromium.launch({executablePath:exe,args:['--no-sandbox']});}catch(e){console.log(JSON.stringify({status:'BLOCKED',reason:String(e.message).split('\n')[0]}));process.exit(2);}
++  const p=await b.newPage();const errors=[];p.on('pageerror',e=>errors.push(String(e.message||e)));
++  let loaded=true;try{await p.goto('file://'+path.join(__dirname,'f01_fix_harness.html'),{timeout:10000});}catch{loaded=false;}
++  if(!loaded){await b.close().catch(()=>{});console.log(JSON.stringify({status:'FAIL',reason:'page never finished loading: event loop starved (observer/render microtask loop)'}));process.exit(1);}
++  let done=false;try{await p.waitForFunction(()=>document.documentElement.dataset.done==='1',null,{timeout:15000});done=true;}catch{}
++  const out=done?JSON.parse(await p.textContent('#result')):null;await b.close();
++  const checks=done?{
++    rail25:out.initialSlots===25&&out.slotsAfterRebuild===25,
++    realCountMatchesFrames:out.initialReal===3&&out.realAfterNewRecord===5,
++    noIdleLoop:out.idleCallbacks1500ms<=2&&out.idleAfterStep<=2&&out.idleAfterRebuild<=2,
++    activeFollowsReplay:out.activeAfterStep===2,
++    slotClickWorks:out.indexAfterSlotClick===1,
++    anchorPicksTaggedFrameAtOrAfterTarget:out.indexAfterAnchor===2,
++    anchorReboundAfterPanelRebuild:out.anchorRebound===true,
++    noPageErrors:errors.length===0
++  }:{harnessCompleted:false};
++  const pass=done&&Object.values(checks).every(Boolean);
++  console.log(JSON.stringify({status:pass?'PASS':'FAIL',harnessCompleted:done,checks,observed:out,errors},null,1));
++  process.exit(pass?0:1);
++})().catch(e=>{console.error(e);process.exit(1);});
+diff -ruN a/app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs b/app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs
+--- a/app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs	1970-01-01 00:00:00.000000000 +0000
++++ b/app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs	2026-10-02 05:37:50.960392966 +0000
+@@ -0,0 +1,23 @@
++'use strict';
++// Full-page load smoke in a real browser. Detects the F01-class failure where the app never reaches 'load'
++// (event loop starved), and records page errors. On Mac, point it at the real launcher URL.
++// Usage: node app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs <url> [chromiumExecutable]
++//   e.g. Linux without backend: (cd app && python3 -m http.server 8762) then url=http://127.0.0.1:8762/static/index.html
++// A static-only server has no backend API: /health, /vision/* failures and one HTML "Error response" page error are
++// environmental there. Compare against a baseline run under the same server before attributing an error to a change.
++const path=require('path');
++let chromium;try{({chromium}=require('playwright'));}catch{try{({chromium}=require(path.join(process.env.HOME||'','.npm-global/lib/node_modules/playwright')));}catch{console.log(JSON.stringify({status:'BLOCKED',reason:'playwright not installed'}));process.exit(2);}}
++const url=process.argv[2];if(!url){console.error('url required');process.exit(2);}
++(async()=>{
++  let b;try{b=await chromium.launch({executablePath:process.argv[3]||process.env.CHROMIUM_PATH,args:['--no-sandbox','--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream']});}catch(e){console.log(JSON.stringify({status:'BLOCKED',reason:String(e.message).split('\n')[0]}));process.exit(2);}
++  const p=await b.newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e.message).slice(0,160)));
++  let loaded=true;try{await p.goto(url,{waitUntil:'load',timeout:20000});}catch{loaded=false;}
++  if(!loaded){await b.close().catch(()=>{});console.log(JSON.stringify({status:'FAIL',reason:'page never reached load in 20 s (event loop starved or blocking script)'}));process.exit(1);}
++  await p.waitForTimeout(5000);
++  const t0=await p.evaluate(()=>performance.now());await p.waitForTimeout(1000);const t1=await p.evaluate(()=>performance.now());
++  const st=await p.evaluate(()=>({temporalCore:!!window.TemporalEvidenceCore,cameraTimeline:!!window.CameraTimelineCore,nativeCapture:!!window.NativeCaptureLayer,evidenceRepair:!!window.EvidenceIntegrityRepairLayer,formAnalyzer:!!window.FormAnalyzer,rail25:document.querySelectorAll('#fixedEvidence25Rail button').length}));
++  await b.close();
++  const responsive=(t1-t0)<3000;
++  console.log(JSON.stringify({status:responsive?'LOADED':'FAIL',responsive,state:st,pageErrors:[...new Set(errs)]},null,1));
++  process.exit(responsive?0:1);
++})().catch(e=>{console.error(e);process.exit(1);});
+diff -ruN a/app/tests/phase01/run_identity_parity_chromium_r8c.cjs b/app/tests/phase01/run_identity_parity_chromium_r8c.cjs
+--- a/app/tests/phase01/run_identity_parity_chromium_r8c.cjs	1970-01-01 00:00:00.000000000 +0000
++++ b/app/tests/phase01/run_identity_parity_chromium_r8c.cjs	2026-10-02 05:35:02.907905430 +0000
+@@ -0,0 +1,37 @@
++'use strict';
++// FrameUID Node vs real-Chromium WebCrypto parity, positive AND negative vectors (M06).
++// Usage: node app/tests/phase01/run_identity_parity_chromium_r8c.cjs [chromiumExecutable]
++const path=require('path'),fs=require('fs');
++let chromium;try{({chromium}=require('playwright'));}catch{try{({chromium}=require(path.join(process.env.HOME||'','.npm-global/lib/node_modules/playwright')));}catch{console.log(JSON.stringify({status:'BLOCKED',reason:'playwright not installed'}));process.exit(2);}}
++const {frameUID}=require('../../shadow/contracts/identity');
++const shadow=path.join(__dirname,'../../shadow/contracts');
++const vectors=[
++ {name:'golden',v:{runId:'run-1',sourceId:'cam-side',streamGeneration:'g1',frameSeq:'42'}},
++ {name:'u64max',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:'18446744073709551615'}},
++ {name:'utf8',v:{runId:'รอบ-1',sourceId:'กล้อง',streamGeneration:'g',frameSeq:'0'}},
++ {name:'overflow',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:'18446744073709551616'}},
++ {name:'negative',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:'-1'}},
++ {name:'leadingZero',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:'01'}},
++ {name:'numberSeq',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:1}},
++ {name:'boolSeq',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:true}},
++ {name:'nullSeq',v:{runId:'r',sourceId:'s',streamGeneration:'g',frameSeq:null}},
++ {name:'emptyRun',v:{runId:'',sourceId:'s',streamGeneration:'g',frameSeq:'1'}},
++ {name:'missingGen',v:{runId:'r',sourceId:'s',frameSeq:'1'}}
++];
++const node=vectors.map(x=>{try{return {name:x.name,uid:frameUID(x.v)};}catch(e){return {name:x.name,rejected:true};}});
++(async()=>{
++  let b;try{b=await chromium.launch({executablePath:process.argv[2]||process.env.CHROMIUM_PATH,args:['--no-sandbox']});}catch(e){console.log(JSON.stringify({status:'BLOCKED',reason:String(e.message).split('\n')[0]}));process.exit(2);}
++  // file:// is a secure context in Chromium, so WebCrypto subtle is available without a server.
++  const blank=path.join(require('os').tmpdir(),'r8c_identity_parity_blank.html');fs.writeFileSync(blank,'<!doctype html><meta charset=utf-8><p>parity</p>');
++  const p=await b.newPage();await p.goto('file://'+blank,{timeout:10000});
++  await p.addScriptTag({content:fs.readFileSync(path.join(shadow,'identity_material.js'),'utf8')});
++  await p.addScriptTag({content:fs.readFileSync(path.join(shadow,'identity_browser.js'),'utf8')});
++  const browser=await p.evaluate(async vs=>{const out=[];for(const x of vs){try{out.push({name:x.name,uid:await window.ShadowIdentityBrowser.frameUID(x.v)});}catch(e){out.push({name:x.name,rejected:true});}}return {out,secure:window.isSecureContext,ua:navigator.userAgent};},vectors);
++  await b.close();
++  const diffs=node.filter((n,i)=>JSON.stringify(n)!==JSON.stringify(browser.out[i])).map(n=>n.name);
++  const expectReject=['overflow','negative','leadingZero','numberSeq','boolSeq','nullSeq','emptyRun','missingGen'];
++  const rejectOk=expectReject.every(k=>node.find(x=>x.name===k).rejected&&browser.out.find(x=>x.name===k).rejected);
++  const pass=diffs.length===0&&rejectOk&&!node.find(x=>x.name==='golden').rejected;
++  console.log(JSON.stringify({status:pass?'PASS':'FAIL',vectors:vectors.length,diffs,rejectOk,browserUA:browser.ua,node,browser:browser.out},null,1));
++  process.exit(pass?0:1);
++})().catch(e=>{console.error(e);process.exit(1);});
+diff -ruN a/app/tests/test_evidence_identity_writer_r8c.js b/app/tests/test_evidence_identity_writer_r8c.js
+--- a/app/tests/test_evidence_identity_writer_r8c.js	1970-01-01 00:00:00.000000000 +0000
++++ b/app/tests/test_evidence_identity_writer_r8c.js	2026-10-02 01:12:32.993267507 +0000
+@@ -0,0 +1,134 @@
++'use strict';
++// R8C production evidence regression (Claude review 2026-10-02).
++// F02/M01: temporal_evidence_core must not turn null mediaTime/frameSeq into 0, and epoch nearness
++//          must not collapse distinct camera samples (null-time or 240 FPS).
++// F03:     camera_timeline_core must not turn null clocks/sequence into 0.
++// F04/M03: native_capture_layer must write through the frozen app.js per-record queue (evidenceDbMerge),
++//          so a late native bundle cannot erase Recovery written while its blobs were downloading.
++// Usage: node app/tests/test_evidence_identity_writer_r8c.js [path-to-app/static]
++const assert=require('assert'),fs=require('fs'),vm=require('vm'),path=require('path');
++const root=process.argv[2]||path.join(__dirname,'../static');
++const read=n=>fs.readFileSync(path.join(root,n),'utf8');
++const T=require(path.join(root,'temporal_evidence_core.js'));
++const B=require(path.join(root,'evidence_budget_core.js'));
++const C=require(path.join(root,'camera_timeline_core.js'));
++const failures=[];
++function check(name,fn){try{fn();}catch(e){failures.push(`${name}: ${e.message}`);}}
++const blob=i=>({size:1,i});
++
++// ---------- F02 / M01 : temporal identity ----------
++check('F02 null mediaTime/frameSeq keeps 25 distinct samples',()=>{
++  const rows=Array.from({length:25},(_,i)=>({epochMs:1000+i*34,mediaTime:null,frameSeq:null,blob:blob(i),source:'test'}));
++  assert.equal(T.mergeEvidence([],rows,1000).length,25);
++  assert.equal(B.canonicalUnique(T.mergeEvidence([],rows,1000)).length,25);
++});
++check('F02 240 FPS distinct mediaTime keeps 25 samples',()=>{
++  const rows=Array.from({length:25},(_,i)=>({epochMs:2000+i*(1000/240),mediaTime:i/240,frameSeq:i+1,blob:blob(i),source:'native-avfoundation-high'}));
++  assert.equal(T.mergeEvidence([],rows,2000).length,25);
++});
++check('F02 240 FPS frameSeq-only identity keeps 25 samples',()=>{
++  const rows=Array.from({length:25},(_,i)=>({epochMs:2000+i*(1000/240),mediaTime:null,frameSeq:i+1,blob:blob(i),source:'native-avfoundation-high'}));
++  assert.equal(T.canonicalFrames(rows).length,25);
++});
++check('F02 same-source captures without identity are not merged by epoch',()=>{
++  const rows=Array.from({length:10},(_,i)=>({epochMs:5000+i*4,blob:blob(i),source:'worker-track-processor-60'}));
++  assert.equal(T.canonicalFrames(rows).length,10);
++});
++check('F02 false/empty-string are unknown, not 0',()=>{
++  const rows=[{epochMs:1,mediaTime:false,frameSeq:'',blob:blob(1),source:'a'},{epochMs:200,mediaTime:'',frameSeq:false,blob:blob(2),source:'a'}];
++  const out=T.canonicalFrames(rows);assert.equal(out.length,2);
++  assert.equal(T.num(null),null);assert.equal(T.num(false),null);assert.equal(T.num(''),null);assert.equal(T.num(0),0);
++});
++// Behaviour that must be preserved.
++check('preserve: cross-pipeline duplicate (sparse w/o identity vs worker) still merges, worker kept, tags union',()=>{
++  const out=T.canonicalFrames([{epochMs:1000,blob:blob(1),source:'sparse-jpeg',evidenceZone:'anchor-pin'},{epochMs:1005,mediaTime:3.2,frameSeq:7,blob:blob(2),source:'worker-track-processor-60',evidenceZone:'release-focus'}]);
++  assert.equal(out.length,1);assert(/worker/.test(out[0].source));assert(out[0].evidenceTags.includes('anchor-pin')&&out[0].evidenceTags.includes('release-focus'));
++});
++check('preserve: same decoded frame (same mediaTime) from two paths merges',()=>{
++  const b=blob(9);const d=T.dedupeFrames([{epochMs:1000,mediaTime:1.25,blob:b,evidenceZone:'anchor-pin'},{epochMs:1032,mediaTime:1.25,blob:b,evidenceZone:'hold-pin'}]);
++  assert.equal(d.length,1);
++});
++
++// ---------- F03 : camera timeline null clocks ----------
++check('F03 null masterTimeMs falls through to the next known clock, never 0',()=>{
++  assert.equal(C.frameTimeMs({masterTimeMs:null,captureEpochMs:123456,epochMs:123456,mediaTimeMs:null,mediaTime:null,frameSeq:1}),123456);
++  assert.equal(C.frameTimeMs({masterTimeMs:null,captureEpochMs:null,epochMs:null,mediaTimeMs:null,mediaTime:null}),null);
++});
++check('F03 null frameSeq does not drop frames in canonicalFrames',()=>{
++  const rows=Array.from({length:5},(_,i)=>({masterTimeMs:1000+i*33,frameSeq:null,mediaTimeMs:null}));
++  assert.equal(C.canonicalFrames(rows).length,5);
++});
++
++// ---------- F04 / M03 + native null coercion : native writer path ----------
++async function nativeWriterScenario(){
++  const records=new Map(),key=(s,id,r)=>`${s}:${id}:${r}`,rel=100000,sid=1,shotId=2;
++  const clone=x=>JSON.parse(JSON.stringify(x));
++  const BASE='http://127.0.0.1:48735';
++  let recoveryInjected=false,nativeEvents=0;
++  // Minimal IndexedDB double backed by the same records map that the frozen queue uses.
++  const fakeIDB={open(){const req={};setTimeout(()=>{req.result={transaction(){const tx={objectStore(){return{
++      index(){return{getAll(s){const r={};setTimeout(()=>{r.result=[...records.values()].filter(x=>Number(x.sessionId)===Number(s)).map(clone);r.onsuccess&&r.onsuccess();},0);return r;}};},
++      put(v){records.set(v.key,clone(v));setTimeout(()=>tx.oncomplete&&tx.oncomplete(),0);}
++    };}};return tx;}};req.onsuccess&&req.onsuccess();},0);return req;}};
++  const frameRows=[0,1,2,3].map(i=>({index:i,frame_seq:i<2?null:i+10,epoch_ms:rel-60+i*33,capture_epoch_ms:rel-60+i*33,master_time_ms:null,media_time_ms:i<2?null:5000+i*33,url:`${BASE}/frame/${i}`}));
++  let ctx;
++  const json=(data,status=200)=>({ok:status<300,status,json:async()=>data});
++  const fetchMock=async(url,opt={})=>{
++    const p=String(url).replace(BASE,'');
++    if(p==='/health')return json({ok:true,version:'t',backend_id:'native-avfoundation',platform:'macOS'});
++    if(p==='/open')return json({ok:true,diagnostics:{backend:'native-avfoundation'}});
++    if(p==='/diag')return json({roles:{side:{active:true,generation:1,raw_fps:30,capture_fps:30}}});
++    if(p==='/close')return json({ok:true});
++    if(p==='/release')return json({ok:true,tokens:{side:'tok1'}});
++    if(p.startsWith('/bundle'))return json({ok:true,release_epoch_ms:rel,raw_fps:30,reported_fps:30,pre_ms:1250,post_ms:900,backend_id:'native-avfoundation',frames:frameRows});
++    if(p.startsWith('/frame/')){
++      if(!recoveryInjected){recoveryInjected=true;
++        // Recovery lands through the frozen queue while native blobs are still downloading.
++        await ctx.evidenceDbMerge({...records.get(key(sid,shotId,'side')),followThroughEndEpochMs:rel+2000,frames:[{epochMs:rel+2000,offsetMs:2000,mediaTime:null,blob:{size:1,i:'rec'},evidenceZone:'recovery-end',source:'sparse-jpeg'}]});
++      }
++      return {ok:true,status:200,blob:async()=>({size:2,url:p})};
++    }
++    if(p.startsWith('/static/'))return json({});
++    throw new Error('unexpected '+p);
++  };
++  ctx={console,Promise,Map,Set,Date,Math,Number,Array,Object,JSON,String,Error,queueMicrotask,AbortController,
++    document:{readyState:'loading',addEventListener(){}},navigator:{userAgent:'t'},
++    window:{EvidenceBudgetCore:B,TemporalEvidenceCore:T,dispatchEvent(e){if(e?.type==='3pm-temporal-evidence-updated')nativeEvents++;},FormAnalyzer:{getCurrentSessionId:()=>sid}},
++    CustomEvent:function(t,o){this.type=t;this.detail=o?.detail;},setTimeout,clearTimeout,setInterval:()=>0,fetch:fetchMock,indexedDB:fakeIDB,
++    evidenceRecordKey:key,evidenceDbGet:async(id,role,s)=>clone(records.get(key(s,id,role))||null),
++    evidenceDbPut:async r=>{records.set(r.key,clone(B.normalizeRecord(r)));return true;},
++    calibrationEvidenceVerifiedShots:new Set(),calibrationEvidenceComplete:()=>false,renderBaselineCalibration(){},
++    pendingFollowEvidence:new Map(),earlyRecoveryEvents:new Map(),compactTrajectoryMetric:x=>x,
++    registerPendingFollowEvidence(){},finalizeFollowEvidenceFromMetrics(){},extendFullShotEvidenceToRecovery:async()=>true};
++  ctx.window.window=ctx.window;vm.createContext(ctx);
++  const app=read('app.js'),start=app.indexOf('const evidenceWriteChains=new Map();'),end=app.indexOf('async function evidenceDbDeleteShot(',start);
++  assert(start>0&&end>start,'frozen evidence queue not found in app.js');
++  vm.runInContext(app.slice(start,end),ctx); // shipped frozen queue, not a reimplementation
++  vm.runInContext(read('temporal_evidence_layer.js'),ctx);
++  ctx.window.TemporalEvidenceLayer={...ctx.window.TemporalEvidenceLayer,openRole(){return true;},closeRole(){},diagnostics(){return{};},browserInfo(){return{};}};
++  vm.runInContext(read('native_capture_layer.js'),ctx);
++  const base={key:key(sid,shotId,'side'),sessionId:sid,shotId,role:'side',releaseEpochMs:rel,frames:[{epochMs:rel-900,offsetMs:-900,mediaTime:null,blob:{size:1,i:'live'},source:'sparse-jpeg',evidenceZone:'anchor-focus'}]};
++  records.set(base.key,clone(base));
++  const N=ctx.window.NativeCaptureLayer;assert(N,'NativeCaptureLayer not installed');
++  N.openRole('side',{label:'FaceTime HD Camera',getSettings:()=>({width:1280,height:720,frameRate:30})},1);
++  for(let i=0;i<50&&!N.states.side.active;i++)await new Promise(r=>setTimeout(r,10));
++  assert(N.states.side.active,'native side did not open');
++  N.release({releaseEpochMs:rel},'cycle-1');
++  for(let i=0;i<300&&nativeEvents===0;i++)await new Promise(r=>setTimeout(r,10));
++  assert(recoveryInjected,'scenario did not interleave Recovery');assert.equal(nativeEvents,1,'native bundle did not complete');
++  await new Promise(r=>setTimeout(r,30));
++  return records.get(base.key);
++}
++
++(async()=>{
++  let rec=null;
++  try{rec=await nativeWriterScenario();}catch(e){failures.push(`F04 harness: ${e.message}`);}
++  if(rec){
++    check('F04 late native bundle must not erase Recovery end time',()=>assert.equal(rec.followThroughEndEpochMs,100000+2000));
++    check('F04 late native bundle must not erase the Recovery frame',()=>assert(rec.frames.some(f=>f.evidenceZone==='recovery-end'||(f.evidenceTags||[]).includes('recovery-end'))));
++    check('native null master_time_ms stays null (never 0)',()=>{const nat=rec.frames.filter(f=>/native-avfoundation/.test(String(f.source||'')));assert(nat.length>0,'no native frames persisted');for(const f of nat)assert.strictEqual(f.masterTimeMs,null);});
++    check('native null frame_seq/media_time stay null and do not collapse samples',()=>{const nat=rec.frames.filter(f=>/native-avfoundation/.test(String(f.source||'')));assert.equal(nat.length,4,`native frames persisted=${nat.length}`);assert(nat.some(f=>f.frameSeq===null&&f.mediaTime===null));});
++  }
++  if(failures.length){console.error('R8C evidence identity/writer regression FAIL\n - '+failures.join('\n - '));process.exit(1);}
++  console.log('R8C evidence identity/writer regression PASS: null/240fps temporal identity, camera timeline null clocks, native writer via frozen queue (Recovery preserved), native null fields');
++})();
+diff -ruN a/docs/review/claude_r8c_20261002/PATCH_NOTE_R8C_TH.md b/docs/review/claude_r8c_20261002/PATCH_NOTE_R8C_TH.md
+--- a/docs/review/claude_r8c_20261002/PATCH_NOTE_R8C_TH.md	1970-01-01 00:00:00.000000000 +0000
++++ b/docs/review/claude_r8c_20261002/PATCH_NOTE_R8C_TH.md	2026-10-02 05:38:52.764426373 +0000
+@@ -0,0 +1,82 @@
++# R8C Production Evidence Patch — บันทึกการแก้ (Claude, 2 ตุลาคม 2026)
++
++สถานะ: **DEVELOPMENT PATCH — ยังไม่ apply เข้า tree หลัก** ส่งเป็น diff ให้ owner/Sol ตัดสินใจ
++ไม่ใช่ release · ไม่ใช่การอนุมัติยิงจริง · ไม่ได้แตะ `app.js`, `core_runtime.js`, `pose.js`, native binaries, Equipment/Athlete/Session
++
++ฐาน: `3PM_Analyzer_R8_P1_06_Repair_DEV_20261001.zip` SHA-256 `5b53886f529353575835f56b04f46e2d84c3a8154a56ef60c246e8fe791ee6dc`
++
++## 1. อาการและผลกระทบ
++| ID | อาการ | ผลกระทบในสนาม |
++|---|---|---|
++| M01/F02 | `temporal_evidence_core.mergeEvidence` ยุบ 25 เฟรมเหลือ 1 เมื่อ mediaTime/frameSeq เป็น null และเหลือ 13 ที่ 240 fps | หลักฐานภาพของ shot หายก่อนถึงตัวเลือก 25 ช่อง โดยไม่มีสัญญาณเตือน |
++| F02b | frameSeq-only ที่ 240 fps เหลือ 1; same-source ไม่มี identity ห่าง 4 ms ยุบ 10→4 | เหมือนข้างบน |
++| F03 | `camera_timeline_core.frameTimeMs({masterTimeMs:null})` คืน 0; `canonicalFrames` ทิ้งทุกเฟรมยกเว้นเฟรมแรกเมื่อ frameSeq=null (5→1) | การจัดเรียงภาพข้ามกล้องผิดเวลา หรือหาเฟรมไม่เจอ |
++| F04/M03 | `native_capture_layer.putRecord` เขียน IndexedDB ตรงด้วย record ที่อ่านไว้ก่อนดาวน์โหลด blob | Recovery (เวลา + เฟรม End Shot) ที่ถูกเขียนระหว่างนั้นถูกลบ บน path native AVFoundation ซึ่งเป็น path หลักของ Mac |
++| native null | `Number(f.master_time_ms)` ฯลฯ ทำให้ null จาก bridge กลายเป็น 0 | เวลา/ลำดับปลอม = 0 แล้วไปทำให้ F02 ยุบเฟรม |
++| F01/M04 | `evidence_integrity_repair_layer`: MutationObserver เฝ้า subtree ที่ `renderRail()` เขียนทับทุกครั้ง → render วนไม่จบ | **ใน Chromium 141 (Linux headless, ไม่มี backend, กล้อง fake) หน้า `index.html` ของ R8 ไม่ถึง `load` เลย** — ยืนยันสาเหตุด้วยการสลับไฟล์เดียว (base+แก้ F01 = โหลดได้; patched−แก้ F01 = ค้าง). Mac NOT RUN |
++
++## 2. หลักฐานและต้นเหตุ
++ต้นเหตุร่วมของ F02, F03 และ native null คือ idiom `Number.isFinite(Number(v))` ซึ่งถือว่า `null`, `false`, `''` เป็น 0 (ละเมิด INV-001) R7 แก้ปัญหานี้ใน `evidence_budget_core` แล้ว (strict `finite` + "epoch ไม่ใช่ identity") แต่**ไม่ได้แก้โมดูล upstream** `temporal_evidence_core` ซึ่งทำงานก่อน และไม่ได้แก้ `camera_timeline_core` กับ `native_capture_layer` ที่ HV3 นำเข้ามา
++
++F02 ส่วน 240 fps เกิดจากกฎ `sameEpoch` (|Δepoch| ≤ 8 ms) ที่ใช้รวมเฟรมแม้ทั้งสองเฟรมมี mediaTime ต่างกันชัดเจน
++
++F04: R7 บังคับให้ทุก writer เข้าคิว `evidenceDbMerge` และ `temporal_evidence_layer` ทำตามแล้ว แต่ `native_capture_layer` (มาจาก HV3) ยังใช้ `objectStore.put` ตรง
++
++F01: `boot()` สร้าง `MutationObserver(refresh)` บน `#shotReplayPanel` (childList+characterData+attributes) และ `renderRail()` ทำ `rail.innerHTML=''` + `appendChild` ใน subtree เดียวกันทุก refresh → mutation → refresh → render ซ้ำเป็น microtask chain ที่ไม่ปล่อย event loop
++
++## 3. วิธีแก้และเหตุผล (เล็กที่สุดที่ครอบต้นเหตุ)
++1. `temporal_evidence_core.js`: `finite` แบบเข้มงวดเหมือน `evidence_budget_core`; `sameSeq` นับเฉพาะ source เดียวกัน; `sameEpoch` ใช้รวมได้เฉพาะ duplicate ข้าม pipeline (source ต่างกัน) และเฉพาะเมื่อเทียบด้วย mediaTime ไม่ได้; การตรวจ seq ย้อนหลังแยกต่อ source
++   - **รักษาไว้:** sparse frame ที่ไม่มี identity กับ worker frame ในช่วง ±8 ms ยังรวมเป็นเฟรมเดียวโดยเก็บ worker และรวม tags; เฟรมที่ mediaTime เท่ากันยังรวม
++2. `camera_timeline_core.js`: เพิ่ม `known()` แบบเข้มงวด ใช้เฉพาะใน `frameTimeMs` และ `chronologyKey` ส่วน `num()` สำหรับ fps/jitter **ไม่แก้** (ดู open item #3)
++3. `native_capture_layer.js`: `putRecord` → `evidenceDbMerge` (fail-closed ถ้าไม่มี พร้อม `s.error` ที่มองเห็นได้); `fetchFrameBlobs` ใช้ `known()` ให้ null คงเป็น null
++4. `evidence_integrity_repair_layer.js` (F01): `renderRail()` คำนวณ signature (index ที่เลือก + จำนวนเฟรม + offset ของแต่ละช่อง) และไม่เขียน DOM ถ้าเท่าเดิม; ไม่ได้ใช้ debounce/timeout ซ่อนอาการ. observer/interval เดิมคงไว้ ทำให้ rail ยังตามการเปลี่ยน record/index และสร้างใหม่ได้เมื่อ panel ถูก rebuild
++5. `index.html`: เปลี่ยน `?v=` ของ 4 ไฟล์ที่แก้ (`-r8c1`) เพื่อไม่ให้ browser ใช้ไฟล์เก่าจาก cache (server เป็น binary frozen ตรวจ cache header ไม่ได้). หมายเหตุ: test 2 ตัวตรวจ marker `?v=hv3` / `?v=hv2` แบบ substring จึงยังผ่านโดยไม่ต้องแก้ test
++
++## 4. การตรวจที่ทำจริง (Linux container, Node v22.22.2)
++| ตรวจ | ก่อน patch | หลัง patch |
++|---|---|---|
++| `test_evidence_identity_writer_r8c.js` (ใหม่) | **FAIL 11/11 bug assertions** (preserve 2/2 ผ่าน) | **PASS** |
++| Legacy JS (`run_regressions.py`) | 100/103 | **101/104** (ตัวใหม่ผ่าน; 3 ตัวเดิมหยุดที่ pose hash เหมือนเดิม) |
++| Diagnostic continuation 3 ตัว (สำเนาชั่วคราว แทนเฉพาะ pose hash) | 3/3 | 3/3 |
++| Pure Phase0/P1 9 ไฟล์ + oracle | 10/10 | 10/10 |
++| `test_persistence_r7.js` | PASS | PASS |
++| `repro_astra_legacy_gaps.js` | gap ยืนยัน | ปรับเป็น closure check: 3 ปิด, cross-source ยังเปิด 1 |
++| **Chromium 141** `run_f01_chromium_r8c.cjs` (harness ใหม่ ใช้ MutationObserver/timer จริง) | **FAIL** — หน้า harness ค้าง | **PASS 8/8**: idle callbacks 0, rail 25, real count ตาม record, active ตาม replay, slot click, Anchor เลือกเฟรมที่ติด tag หลัง target, rebind หลัง panel rebuild, ไม่มี page error |
++| Chromium: harness F01 เดิมของ Astra (`f01_dom_harness.html`) | 100 callbacks (ชนเพดาน) | 1 callback |
++| Chromium: `run_fullpage_smoke_chromium_r8c.cjs` โหลด `index.html` ทั้งแอป (python static server) | **FAIL** ไม่ถึง load ใน 20 s | **LOADED**, ตอบสนอง, rail 25; page error 1 ตัว (HTML "Error response") ซึ่งเกิดเหมือนกันบน base+F01fix → มาจากไม่มี backend |
++| Chromium: `run_identity_parity_chromium_r8c.cjs` FrameUID Node vs WebCrypto 11 vectors (positive + negative) | PASS (shadow ไม่ได้แก้) | PASS — **รายการ "Chromium negative-parity BLOCKED" เดิมปิดได้สำหรับ FrameUID** |
++
++**NOT RUN:** Mac runtime (Safari/Chrome บน macOS), กล้องจริง, Windows, ข้อมูลสนามที่ติดป้าย. Chromium ที่ใช้คือ `/opt/pw-browsers/chromium-1194` (HeadlessChrome 141, Linux) — ผลบน Mac ต้องยืนยันซ้ำ
++
++## 5. เหตุที่การตรวจเดิมพลาด
++- F01: มีแค่ source characterization (regex) และ Phase0 runner ค้นหา browser ด้วย `which chromium` เท่านั้น จึงรายงาน BLOCKED ทั้งที่เครื่องมี Chromium ของ Playwright อยู่ (Claude รอบ review ก็พลาดจุดเดียวกัน) — runner ใหม่รับ path ของ browser ได้และแยก BLOCKED/FAIL/PASS ชัดเจน
++- R7 แก้ที่โมดูลที่เห็นอาการ (`evidence_budget_core`) แต่ไม่ได้ไล่ทั้ง data path ย้อนขึ้นไป (`native/temporal layer → temporal_evidence_core → evidence_budget_core`)
++- Test ของ native layer ใช้ mock `mergeEvidence:(a,b)=>[...a,...b]` และ `indexedDB:{}` จึงไม่เคยผ่าน path การเขียนจริง
++- Characterization script ยืนยันว่าบั๊กยังอยู่ แต่ไม่มีใครถูกกำหนดให้เปลี่ยนมันเป็น regression
++
++## 6. มาตรการที่เพิ่ม (รันได้)
++- `app/tests/test_evidence_identity_writer_r8c.js` อยู่ใน `run_regressions.py` อัตโนมัติ (glob `test*.js`) และรัน write queue จริงจาก `app.js`
++- กฎที่แนะนำให้เพิ่มใน AGENTS/handoff: **"ห้ามใช้ `Number(v)` / `Number.isFinite(Number(v))` กับ field เวลา, ลำดับ หรือ identity ใน production; ใช้ strict reader ที่ถือ null/boolean/'' เป็น unknown"** และควรมี lint/grep gate นับจุดที่เหลือ (ตอนนี้ยังมี 12 โมดูล ดูข้อ 7)
++
++## 7. ข้อจำกัด / open items (ยังไม่แก้)
++1. **Cross-source same mediaTime** ใน `evidence_budget_core.canonicalUnique` ยังรวม native กับ worker ที่ mediaTime เท่ากันเป็น 1 → ต้องรู้ก่อนว่า native AVFoundation PTS กับ browser mediaTime เป็น clock เดียวกันไหม (ต้องวัดบน Mac จริง)
++2. **mediaTime inversion ข้าม source** ใน `temporal_evidence_core.canonicalFrames` ยังเทียบ mediaTime ข้าม clock ได้ (เรื่องเดียวกับข้อ 1)
++3. `camera_timeline_core.num()` สำหรับ fps: fps=null เคยกลายเป็น 0 → tolerance ถูก cap ที่ 50 ms (กว้างสุด) โดยบังเอิญ การแก้จะทำให้ tolerance แคบลง = เปลี่ยนพฤติกรรม alignment → ต้องให้ owner ตัดสิน
++4. ผลข้างเคียงที่รู้แล้ว (เหมือน R7 temporal path): เมื่อผ่าน `evidenceDbMerge` เฟรม live ที่ native `replaceDense` ตั้งใจตัดออกจะกลับมาใน union ก่อนการเลือก 25 ช่อง ไม่ใช่การสูญหาย แต่เปลี่ยนชุดเฟรมให้เลือก
++5. Loose null coercion ยังอยู่ใน 12 โมดูล รวม decision logic (`side_lifecycle_core`, `shot_intent_core`, `activity_classifier_core`, `real_bow_anchor_bridge_core`, `pose_filter_core`) → **ห้ามแก้โดยไม่มีข้อมูลสนามติดป้าย** เพราะเปลี่ยน shot authority
++6. F01 แก้แล้วในระดับ harness + full-page Chromium; ยังต้องยืนยันบน Mac กับ backend จริงด้วย `run_fullpage_smoke_chromium_r8c.cjs <launcher URL>`
++7. Phase0 runner: `F02_null_highfps` (fail อยู่แล้วก่อน patch เพราะชี้โมดูลผิด) และ `F03_null_clock` (fail หลัง patch เพราะบั๊กหาย) เป็น script ที่ assert พฤติกรรม HV3 baseline ต้อง retarget ไปที่ baseline ที่เก็บถาวร ไม่ได้แก้เพื่อไม่แตะ Phase0 evidence record
++8. `PROJECT_STATE.md` / `HANDOFF_NEXT_CHAT.md` ไม่ได้แก้ เพื่อไม่ให้มี writer สองคนบนเอกสารสถานะ ผู้ apply patch ต้องอัปเดต
++
++## 8. วิธี apply / ตรวจ / ย้อนกลับ
++```
++cd <tree root>                                   # โฟลเดอร์ที่มี app/, docs/
++patch -p1 --dry-run < R8C_production_evidence.diff
++patch -p1 < R8C_production_evidence.diff
++python3 app/tests/run_regressions.py             # คาด 101/104 (3 ตัวที่แดงคือ pose hash เดิม)
++node app/tests/test_evidence_identity_writer_r8c.js
++node app/tests/phase01/run_f01_chromium_r8c.cjs [chromium]                 # PASS / FAIL / BLOCKED
++node app/tests/phase01/run_identity_parity_chromium_r8c.cjs [chromium]
++node app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs <url> [chromium]  # บน Mac ใช้ URL ของ launcher จริง
++```
++ย้อนกลับทั้งหมด: `patch -p1 -R < R8C_production_evidence.diff`

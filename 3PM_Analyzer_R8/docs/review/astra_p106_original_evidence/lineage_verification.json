@@ -1,0 +1,30 @@
+{
+  "zip_hashes": {
+    "EL18": "4ff83455870a0fc6072b926e432ae88d078b4b9984c30e1d7ae897cfe3302d59",
+    "R7": "c329e98a3d92640b6cfbca37fba47781c4653ce5b24c1dec716069219f10c34c",
+    "HV3": "1bc31b86216222c5691b3d7bd1e649d1294595b17e67260ec72e9ff15082ffcd",
+    "candidate": "a9c07505b1b37770d1fab82e4ad103d6ddef42231154aadd96afb63a0676f690"
+  },
+  "counts": {
+    "conflict": 15,
+    "all_same": 153,
+    "hv3_only": 30,
+    "r7_only": 23
+  },
+  "r7_static_mismatches": [],
+  "r7_static_preserved": [
+    "app/static/adaptive_release_core.js",
+    "app/static/capture_integrity_layer.js",
+    "app/static/coach_keyframe25_backfill_layer.js",
+    "app/static/evidence_timeline_baseline_layer.js",
+    "app/static/foundation_guard_layer.js",
+    "app/static/temporal_evidence_layer.js"
+  ],
+  "hv3_only_mismatches": [
+    "app/tests/static_integrity_x282.py",
+    "app/tests/test_mac_preflight_r5.js"
+  ],
+  "all_same_candidate_changed": [
+    "app/static/pose.js"
+  ]
+}

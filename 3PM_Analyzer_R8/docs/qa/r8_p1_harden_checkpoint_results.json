@@ -1,0 +1,55 @@
+{
+  "schema": "3pm-r8-p1-harden-checkpoint-v1",
+  "date": "2026-10-01",
+  "status": "development_not_release_no_live_shooting",
+  "pose": {
+    "frozenHv3Sha256": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+    "currentApprovedTraceSeamSha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
+    "baselineReconstructionTest": "PASS"
+  },
+  "phase01PureTests": {
+    "count": 8,
+    "status": "PASS"
+  },
+  "legacyJsRegressions": {
+    "passed": 100,
+    "total": 103,
+    "failures": [
+      "test_field_resilience_ble43894.js: old pose hash sentinel",
+      "test_multicamera_skeleton_ble4362.js: old pose hash sentinel",
+      "test_multiview_corroboration_integration_ble43895.js: old pose hash sentinel"
+    ],
+    "diagnosticContinuationWithOnlyApprovedPoseHashSubstitution": "PASS_3_OF_3"
+  },
+  "knownLegacyCharacterization": {
+    "temporalThenBudgetNull25": 1,
+    "temporalThenBudget240fps25": 13,
+    "cameraTimelineNullMaster": 0,
+    "crossSourceSameMediaBudget": 1,
+    "status": "OPEN_EXPECTED_RED"
+  },
+  "sanity": {
+    "staticIntegrity": "EXPECTED_FAIL_POSE_HASH_ONLY",
+    "macPreflightLinuxHost": "PASS_NATIVE_NOT_EXECUTED",
+    "cppSharedRingCompileRun": "PASS",
+    "windowsNonWindowsSentinelCompileRun": "PASS_RUNTIME_E_NOTIMPL",
+    "swiftCaptureBridgeParse": "PASS_NOT_RUNTIME",
+    "distributionContract": "EXPECTED_FAIL_POSE_HASH_DEV_TREE_NOT_RELEASE"
+  },
+  "lineage": {
+    "parentZipSha256": {
+      "el18": "4ff83455870a0fc6072b926e432ae88d078b4b9984c30e1d7ae897cfe3302d59",
+      "r7": "c329e98a3d92640b6cfbca37fba47781c4653ce5b24c1dec716069219f10c34c",
+      "hv3": "1bc31b86216222c5691b3d7bd1e649d1294595b17e67260ec72e9ff15082ffcd"
+    },
+    "r7OnlyChangedCount": 23,
+    "r7OnlyProductionStaticNotByteExact": []
+  },
+  "liveCoverage": {
+    "macCamera": "NOT_RUN",
+    "windowsCamera": "NOT_RUN",
+    "browserLiveShadow": "NOT_RUN",
+    "nativeLiveShadow": "NOT_RUN",
+    "realArcher": "NOT_RUN"
+  }
+}

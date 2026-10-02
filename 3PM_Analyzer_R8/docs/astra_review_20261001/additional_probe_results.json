@@ -1,0 +1,10 @@
+{
+  "temporalThenBudgetNull": 1,
+  "temporalThenBudget240": 13,
+  "timelineNullMaster": 0,
+  "dom": {
+    "selfTriggers": 100,
+    "r7HandlerCallsAfterClick": 0,
+    "hv2Bound": "1"
+  }
+}

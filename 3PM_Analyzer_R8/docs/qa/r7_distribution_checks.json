@@ -1,0 +1,17 @@
+{
+  "javascript_regression_files": 96,
+  "passed": 96,
+  "baseline_el18_passed": 93,
+  "static_integrity": "PASS",
+  "actual_launcher_preflight": "PASS",
+  "frozen_hashes": "PASS",
+  "equipment_el18_unchanged": true,
+  "public_launcher": "START_3PM.command",
+  "distribution_contract": "PASS",
+  "zip_contract": "PASS (checked on fresh extraction before delivery)",
+  "mac_camera_ble_gui_tested": false,
+  "current_user_false_positive_closed": false,
+  "reason": "Reported false-positive shot number not yet identified; no independently labeled video.",
+  "public_command_count": 1,
+  "js_metadata_note": "Only intentional version/cache assertions updated; behavioral assertions preserved."
+}

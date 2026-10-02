@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-10-01",
+  "baseline_zip_sha256": "1bc31b86216222c5691b3d7bd1e649d1294595b17e67260ec72e9ff15082ffcd",
+  "audit_sha256": "5e41ceb1fc9900ce84395b283a3a216e07c6c7337f48c6f594730897fcac8624",
+  "contract_sha256": "47393419d9174506cbf00bdf8af712b516c422150cc22cd157c87fea39d7feb1",
+  "production_authority": "HV3 legacy frozen path",
+  "phase_scope": "P0-00..P0-05 initial foundation only",
+  "baseline_release_qa_before_dev_additions": {
+    "js_regressions": "99/99 PASS",
+    "static_integrity": "PASS",
+    "distribution_contract": "PASS",
+    "mac_preflight_linux_host": "PASS (native runtime not executed)"
+  },
+  "development_checkout_qa": {
+    "js_regressions_after_dev_additions": "99/99 PASS",
+    "static_integrity_after_dev_additions": "PASS",
+    "mac_preflight_after_dev_additions": "PASS (native runtime not executed)",
+    "distribution_contract_after_dev_additions": "EXPECTED FAIL: new development-only shadow/tests/docs are intentionally absent from frozen HV3 release manifest; manifest was not weakened or refreshed."
+  },
+  "frozen_hashes": {
+    "app/static/app.js": "ed23976568e7f25b5fb370c516ba766f272548e13d8398be5f506029d769f378",
+    "app/static/pose.js": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+    "app/static/core_runtime.js": "89d637ce861466460a6c3889a08c45d70401d71ee904e6a4e6d6fd8dd9f9b3bf",
+    "app/3PM_Form_Analyzer_arm64": "babd2ba02406a6a42a9f62f1df77dc84056fc890b3556a86d4d1a50b76a5913b",
+    "app/3PM_Form_Analyzer_x64": "5c41ebf790ef47ea59c2be76b4febb5ef3ee9c977166dc2065fc5f523e3eddf4"
+  },
+  "phase0_repros": [
+    {
+      "name": "contract_foundation",
+      "status": "passed",
+      "returncode": 0,
+      "stdout": "Phase01 contract foundation: PASS\n",
+      "stderr": ""
+    },
+    {
+      "name": "F01_source_characterization",
+      "status": "passed",
+      "returncode": 0,
+      "stdout": "{\n  \"finding\": \"F01\",\n  \"sourceCharacterization\": {\n    \"observerCallsRefresh\": true,\n    \"refreshCallsRender\": true,\n    \"rendererClearsObservedSubtree\": true,\n    \"rendererAppendsChildren\": true,\n    \"observerWatchesChildList\": true\n  },\n  \"dynamicBrowserRepro\": \"required externally; local Chromium runtime blocked\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "F02_null_highfps",
+      "status": "passed",
+      "returncode": 0,
+      "stdout": "{\n  \"finding\": \"F02\",\n  \"baseline\": {\n    \"nullInput\": 25,\n    \"nullRetained\": 1,\n    \"highFpsInput\": 25,\n    \"highFpsRetained\": 13\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "F03_null_clock",
+      "status": "passed",
+      "returncode": 0,
+      "stdout": "{\n  \"finding\": \"F03\",\n  \"input\": {\n    \"masterTimeMs\": null,\n    \"captureEpochMs\": 123456,\n    \"epochMs\": 123456,\n    \"mediaTimeMs\": null,\n    \"mediaTime\": null,\n    \"frameSeq\": 1\n  },\n  \"baselineFrameTimeMs\": 0,\n  \"expectedNewPath\": \"mappedMasterTime=null; epoch remains display-only\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "F04_stale_writer",
+      "status": "passed",
+      "returncode": 0,
+      "stdout": "{\n  \"finding\": \"F04\",\n  \"baselineFinal\": {\n    \"key\": \"1:7:side\",\n    \"recordVersion\": 1,\n    \"frames\": [\n      {\n        \"uid\": \"A\"\n      },\n      {\n        \"uid\": \"N\"\n      }\n    ],\n    \"recovery\": null,\n    \"metadata\": {\n      \"base\": true\n    },\n    \"native\": true\n  },\n  \"lost\": [\n    \"R\",\n    \"recovery metadata\"\n  ],\n  \"note\": \"Controlled interleaving model derived from native/temporal whole-record put paths; source call graph recorded separately.\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "F01_dynamic_chromium",
+      "status": "blocked",
+      "reason": "Chromium headless smoke timed out even on trivial HTML in this environment."
+    }
+  ],
+  "blocked": [
+    "F01 dynamic Chromium execution in this container: Chromium headless smoke times out even on trivial HTML",
+    "No Go backend source/go.mod in HV3 package",
+    "Windows native Media Foundation runtime remains E_NOTIMPL/not-supported",
+    "macOS live camera/BLE/runtime acceptance not executed here"
+  ],
+  "changes_to_production_frozen_files": 0
+}

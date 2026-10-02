@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('assert');
+const K=require('../static/coach_keyframe_plan_core.js');
+const B=require('../static/coach_keyframe25_backfill_core.js');
+assert.equal(K.VERSION,'BLE4.3.8.9.4.1-keyframe25-t0-v5');
+assert.equal(B.VERSION,'BLE4.3.8.9.5.3-kf25-backfill-core-v2');
+const rel=100000,timeline=[{phase:'Draw',epochMs:96000},{phase:'Anchor',epochMs:98000},{phase:'Aim / Hold',epochMs:98500}];
+const p=K.build25(timeline,rel);assert.equal(p.requests.length,25);assert.equal(p.targetCount,25);assert.equal(p.releaseIndex,12);assert.equal(p.requests[12].offset,0);assert.equal(p.requests[12].label,'Release T0');assert(Math.max(...p.requests.map(x=>x.offset))<=850);assert.equal(p.requests.filter(x=>x.offset<0).length,12);assert.equal(p.requests.filter(x=>x.offset>0).length,12);
+const legacy=K.build15(timeline,rel);assert.equal(legacy.requests.length,15,'frozen app legacy entry point must remain 15');assert.equal(legacy.releaseIndex,8);
+assert.equal(B.targetCount(1),25);assert.equal(B.targetCount(2),25);assert.equal(B.targetCount(3),25);assert.equal(B.targetCount(8),25);
+const frames=[];for(let o=-4300;o<=850;o+=17)frames.push({offsetMs:o,epochMs:rel+o,blob:{type:'image/jpeg'}});const existing=[-4000,-2500,-1500,-900,-400,-300,-233,-167,-100,-67,-33,0,33,67,100];const add=B.selectAdditional(frames,existing,p.requests,25);assert.equal(add.length,10,'must enrich existing 15 to 25 when real frames are available');assert(add.every(x=>x.frame?.blob&&x.offset<=850),'only real persisted evidence within meaningful Follow window may be used');const offsets=[...existing,...add.map(x=>x.offset)].sort((a,b)=>a-b);for(let i=1;i<offsets.length;i++)assert(Math.abs(offsets[i]-offsets[i-1])>20,'must not create near-duplicate thumbnails');
+console.log('BLE4.3.8.9.5.3 KF25 QA PASS · fixed 25 per role · T0 13/25 · real-frame-only enrichment · no late tail');

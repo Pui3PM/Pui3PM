@@ -1,0 +1,210 @@
+{
+ "generatedAt": "2026-10-02",
+ "node": "v22.22.2",
+ "sourceZipSha256": "5b53886f529353575835f56b04f46e2d84c3a8154a56ef60c246e8fe791ee6dc",
+ "results": {
+  "C01_lone_surrogate_uid_collision": {
+   "defectReproduced": true,
+   "distinctRunIds": true,
+   "nodeEqual": true,
+   "webEqual": true,
+   "canonicalJsonDiffers": true
+  },
+  "C02_proto_key_silent_drop_and_mutable_prototype": {
+   "defectReproduced": true,
+   "archiveImportProbe": "{\"status\":\"staged\",\"ownKeysAfterStage\":[],\"inheritedLabel\":\"TAMPERED\",\"storedBodyDigestMatchesManifestDigest\":false,\"inheritedRecordMutableAfterDeepFreeze\":true}\nrestaged archive revalidate ERR MANIFEST_DIGEST_MISMATCH",
+   "ownKeys": [
+    "a"
+   ],
+   "inheritedPayloadRef": "ghost",
+   "prototypeMutableAfterFreeze": true,
+   "digestSourceVsCopyDiffer": true,
+   "archiveWithHiddenDanglingRefAccepted": false
+  },
+  "C03_clock_scale_timebase_unbound": {
+   "defectReproduced": true,
+   "validatedWithZeroUncertainty": true,
+   "onesecondOf90kHzMapsToUs": 90000,
+   "expectedUs": 1000000,
+   "fixtureMethodValidatedAccepted": true
+  },
+  "C04_null_ticks_nonnull_uncertainty": {
+   "defectReproduced": true,
+   "result": {
+    "mappedMasterTime": null,
+    "mappingUncertainty": 500,
+    "mappingStatus": "unmapped",
+    "mappingId": null,
+    "mappingVersion": null,
+    "reason": "source_time_unknown"
+   },
+   "note": "contract_v1 requires mappingUncertainty=null when sourcePTS=null"
+  },
+  "C05_scheduler_label_only_boundary": {
+   "defectReproduced": true,
+   "order": [
+    "aux-start",
+    "aux-end",
+    "side"
+   ],
+   "note": "default dispatch executes task() inline; dispatchKind is caller-asserted string"
+  },
+  "C06_scheduler_hang_and_stale_completion": {
+   "defectReproduced": true,
+   "sideWedged": true,
+   "nextStillPending": true,
+   "outcomes": [
+    [
+     "old",
+     "completed"
+    ]
+   ]
+  },
+  "C07_scheduler_observer_throw_unhandled_rejection": {
+   "defectReproduced": true,
+   "unhandled": "observer-throw",
+   "note": "Node >=15 default terminates the process on unhandled rejection"
+  },
+  "C08_ring_dedup_conflict_and_clock_mix": {
+   "defectReproduced": true,
+   "conflictingDuplicateReturnedOldSnapshot": true,
+   "duplicateMetric": 1,
+   "lateCallerClockFrameReturnedButEvictedImmediately": true,
+   "returnedSnapshotRetentionClock": "caller-bookkeeping",
+   "emptyFrameUIDAndUnvalidatedFrameAccepted": true
+  },
+  "C09_ring_leaked_lease_pins_forever": {
+   "defectReproduced": true,
+   "afterHugeAdvanceTotalBytes": 20,
+   "sideAddResult": "RING_CAPACITY_PINNED"
+  },
+  "C10_eventlog_scope_leak_and_unvalidated_append": {
+   "defectReproduced": true,
+   "namespaceFilteredQueryReturned": [
+    [
+     "shadow/A",
+     "confirmed"
+    ],
+    [
+     "prod/B",
+     "rejected"
+    ]
+   ],
+   "rawConfirmedIntoProductionNamespaceWithoutTimesOrClockAccepted": true
+  },
+  "C11_writer_and_view_accept_forged_duplicate_real_slots": {
+   "defectReproduced": true,
+   "writerAcceptedForgedProjection": true,
+   "reviewViewAcceptedDuplicateFrameUID": true,
+   "realCount": 2,
+   "schemaFreePhaseClaimAccepted": true
+  },
+  "C12_projector_generation_binding_opt_in": {
+   "defectReproduced": true,
+   "uniqueRealCountFromOldGenerationOnly": 2
+  },
+  "C13_projector_uid_conflict_silent": {
+   "defectReproduced": true,
+   "selectedDerivation": "d2",
+   "note": "two derivations with same frameUID but different digest+sourceId: no conflict raised; candidate frameUID never recomputed from tuple"
+  },
+  "C14_projector_cadence_from_candidate_gaps": {
+   "defectReproduced": true,
+   "tolerancesUs": [
+    50000
+   ],
+   "realSlots": [
+    [
+     "S03",
+     -40000
+    ],
+    [
+     "S05",
+     -40000
+    ]
+   ],
+   "declaredMeasuredFPS": 30,
+   "sourceHalfPeriodUs": 16667
+  },
+  "C15_anchor_proof_semantics": {
+   "defectReproduced": true,
+   "arbitraryRefAccepted": {
+    "status": "real",
+    "slotId": "S03",
+    "frameUID": "fa"
+   },
+   "anchorSlotsRealInProjection": [
+    "real",
+    "missing",
+    "missing"
+   ],
+   "anchorTargetWhenRefsEmpty": "missing",
+   "timelineRefsAvailable": [
+    "tl-anchor"
+   ]
+  },
+  "C16_missing_reason_coarse": {
+   "defectReproduced": true,
+   "noCandidatesAtAllReason": "no_frame_in_tolerance",
+   "exhaustedReasonExample": [
+    "no_frame_in_tolerance",
+    "no_frame_in_tolerance",
+    "no_frame_in_tolerance"
+   ]
+  },
+  "C17_archive_fs_collisions_and_smuggling": {
+   "defectReproduced": true,
+   "caseAndNfcNfdCollisionsAndWindowsReservedAccepted": true,
+   "extraPayloadKeyRetainedAfterRoundTrip": true,
+   "danglingFrameUIDRefAccepted": true
+  },
+  "C18_validator_gaps": {
+   "defectReproduced": true,
+   "observationWithGarbageTimesAndNoFramesValid": true,
+   "candidateWithNonUIDframeUIDValid": true
+  },
+  "C19_replay_uid_reuse_and_order": {
+   "defectReproduced": true,
+   "seqAndPtsBackwardAccepted": [
+    1000000,
+    500000
+   ],
+   "sameUIDDifferentSourceTimeAccepted": true,
+   "defaultRoleWhenOmitted": "side",
+   "decodeValidSelfAssertedWithNoPayload": true
+  },
+  "C20_projector_tiebreak_not_contract_lexicographic": {
+   "defectReproduced": true,
+   "checked": 6,
+   "counterexample": {
+    "frames": [
+     [
+      "fF",
+      25000
+     ],
+     [
+      "fC",
+      125000
+     ],
+     [
+      "fD",
+      250000
+     ],
+     [
+      "fG",
+      250000
+     ],
+     [
+      "fE",
+      150000
+     ]
+    ],
+    "T": 50000,
+    "expected": "S03|fC,S04|fD,S05|fG",
+    "expectedCost": 125000,
+    "got": "S03|fC,S04|fE,S05|fD",
+    "gotCost": 125000
+   }
+  }
+ }
+}

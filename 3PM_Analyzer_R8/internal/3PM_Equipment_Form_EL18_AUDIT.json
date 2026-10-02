@@ -1,0 +1,53 @@
+{
+  "schema_version": "3PM-equipment-form-audit-1.0",
+  "catalog_version": "EL18-FORM-UX-2026-09-30-R1",
+  "baseline_catalog": "EL17-MERGED-FORM-2026-09-30-R2",
+  "baseline_count": 681,
+  "record_count": 683,
+  "records_added": 2,
+  "records_removed": 0,
+  "catalog_sha256": "40eb1a466f9f0d5f5db08d22b44791676aaf40022ae18d8b90803ef9ca4f4344",
+  "root_causes_closed": [
+    "Equipment UI had independent fields for facts that should be derived or selected once, allowing contradictory duplicate entry.",
+    "Equipment layer clear() overrode/reset values owned by the main form after reset, creating competing state writers.",
+    "Stabilizer self-mass could be inferred from a model group without binding the chosen length to the matching variant.",
+    "Fixed V-Bar geometry was represented by variant plus separate type/out/down fields, asking for the same fact repeatedly.",
+    "Nock/vane/bushing pickers contained hard-coded options and a catalog optgroup at the same time, creating two sources of truth.",
+    "Sight mass physically belonged with the sight but was presented in the Stabilizer section, obscuring unit semantics.",
+    "Legacy tests asserted one incorrect reset behavior and therefore protected a bug instead of preventing it."
+  ],
+  "implemented_changes": [
+    "Riser Model remains separate from Riser Length.",
+    "Limb Model remains separate from Limb Size and Marked Draw Weight; manufacturer-specific options are used when known.",
+    "Added official Hoyt Carbon Velos Formula and Grand Prix catalog records with Short/Medium/Long and 22-50 lb in 2 lb increments.",
+    "Long rod, left/right side rod and extender lengths now use model-driven selectors with Custom escape hatches.",
+    "Catalog self-mass is matched to the selected model+length record; no borrowing from an arbitrary sibling variant.",
+    "Fixed V-Bar setting derives type/out/down once from its selected variant; adjustable/custom geometry uses progressive disclosure.",
+    "Sight mass moved beside Sight and continues to use real g/oz numeric conversion.",
+    "Damper identity and mass are co-located in Stabilizer Setup; duplicate Damper identity section removed.",
+    "Barebow added-weight fields are hidden unless discipline is Barebow.",
+    "Arrow ID/OD/GPI are catalog-locked when verified for the selected spine and editable for Custom/unknown cases.",
+    "Nock/vane/bushing menus are catalog-driven plus Unknown/Custom, with no parallel hard-coded product list.",
+    "Factory shaft length and catalog point reference remain reference-only; actual cut length/point weight are never overwritten.",
+    "Measured finished arrow weight is explicitly separated from calculated finished weight."
+  ],
+  "regression_gates": [
+    "Pandarus Champion 11-spine matrix preserved.",
+    "Shibuya 211 g converts to 7.443 oz through the actual conversion helper.",
+    "Selected stabilizer length resolves the matching catalog record and an unknown length resolves none.",
+    "40x15 V-Bar parses to Fixed / 40 out / 15 down.",
+    "Equipment layer is forbidden from clearing main-form riser state or disabling Auto AMO.",
+    "No duplicate IDs or relevant form names in Equipment Form."
+  ],
+  "qa": {
+    "javascript_regressions": "93/93 PASS",
+    "frozen_static_integrity": "PASS",
+    "mac_launcher_preflight": "PASS",
+    "native_macos_ui_acceptance": "NOT RUN on Linux host"
+  },
+  "known_limitations": [
+    "Native macOS live UI acceptance still requires the user's Mac.",
+    "Some catalog models do not yet have exact mass/size ranges; those remain clearly Custom/Measured rather than guessed.",
+    "RamRods historical research remains Priority 1 and will merge forward from this catalog lineage."
+  ]
+}

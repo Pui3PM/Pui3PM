@@ -1,0 +1,11 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const layer=fs.readFileSync(path.join(root,'static/capture_session_guard_layer.js'),'utf8');
+const html=fs.readFileSync(path.join(root,'static/index.html'),'utf8');
+const app=fs.readFileSync(path.join(root,'static/app.js'),'utf8');
+assert(layer.includes("stopImmediatePropagation"));
+assert(layer.includes("newSessionBtn"));
+assert(layer.includes("SESSION REQUIRED"));
+assert(html.includes('capture_session_guard_layer.js?v=ble438953'));
+assert(app.includes('if(!currentSessionId)reasons.push("no active session")'));
+console.log('PASS capture session guard 9.5.3');

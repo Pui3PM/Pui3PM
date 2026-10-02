@@ -1,0 +1,14 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('static/index.html','utf8'), layer=fs.readFileSync('static/equipment_lab_layer.js','utf8');
+for(const id of ['equipmentCatalogVersion','eqlabPointCatalog','eqlabStringMaterial','eqlabServingMaterial','eqlabArrowSpine']) assert(html.includes(`id="${id}"`),id);
+assert(html.includes('Arrow Spine / Size'),'arrow selector must support catalog size variants');
+assert(layer.includes('marked_weight_options_lb'),'EL15 limb weight options must be supported');
+assert(layer.includes("const pickerMap={nock:'nock',vane:'vane',pin:'bushing'}"),'component pickers must use catalog');
+assert(layer.includes("records('arrow').filter(r=>r.brand===arrowBrand.value&&r.model===arrowModel.value)"),'arrow choices must derive from catalog');
+assert(layer.includes('recordDisplay(r)'),'variant-aware catalog display labels required');
+assert(layer.includes("if(choice==='custom')return null"),'custom arrow choice must not auto-fill from first catalog record');
+assert(layer.includes('savedArrowChoice'),'saved arrow spine/size must survive profile restore');
+assert(layer.includes("simpleCatalog('#eqlabPointCatalog','point'"),'point catalog not wired');
+assert(layer.includes("simpleCatalog('#eqlabStringMaterial','string_material'"),'string material catalog not wired');
+assert(layer.includes("simpleCatalog('#eqlabServingMaterial','serving_material'"),'serving material catalog not wired');
+console.log('PASS Equipment form EL15 catalog wiring');

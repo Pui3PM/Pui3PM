@@ -1,0 +1,36 @@
+'use strict';
+const assert=require('assert');
+const {frameUID}=require('../../shadow/contracts/identity');
+const {validateFrameEnvelope,SCHEMA}=require('../../shadow/contracts/contract_v1');
+const {validateClockMapping,mapTicks,mapBoundSourceTime}=require('../../shadow/contracts/clock_mapper');
+const {canonicalize,sha256Canonical}=require('../../shadow/contracts/canonical_json');
+const T=require('../../shadow/contracts/strict_types');
+const F=require('./_shadow_fixture');
+
+const base=F.frame(1,{runId:'run-1',masterClockId:'master-1',sourceId:'cam-1',streamGeneration:'gen-1'});
+assert.equal(base.schemaVersion,SCHEMA);
+assert.equal(validateFrameEnvelope(base).mappedMasterTime,null);
+assert.throws(()=>validateFrameEnvelope({...base,mappedMasterTime:undefined}),/safe integer|mapped|invalid/);
+assert.throws(()=>validateFrameEnvelope({...base,sourceTimeMissingReason:null}),/requires reason/);
+assert.throws(()=>validateFrameEnvelope({...base,frameSeq:true}),/identity/);
+assert.notEqual(frameUID({...base,frameSeq:'1'}),frameUID({...base,frameSeq:'2'}));
+assert.equal(new Set(Array.from({length:25},(_,i)=>frameUID({...base,frameSeq:String(i+1)}))).size,25);
+assert.equal(T.isU64String('18446744073709551615'),true);
+assert.equal(T.isU64String('18446744073709551616'),false);
+assert.equal(T.isI64String('-0'),false);
+assert.throws(()=>T.immutablePlainCopy(JSON.parse('{"__proto__":{"x":1}}')),/Forbidden contract key/);
+assert.equal(T.isId('run\uD800'),false);
+const frozen=validateFrameEnvelope(F.frame(2));
+assert(Object.isFrozen(frozen)&&Object.isFrozen(frozen.quality));
+
+const mapping=validateClockMapping(F.mapping({runId:'run-1',masterClockId:'master-1',streamGeneration:'gen-1'}));
+assert.equal(mapTicks(mapping,'33333').mappedMasterTime,33333);
+assert.equal(mapTicks(mapping,null).mappingUncertainty,null);
+assert.equal(mapBoundSourceTime(mapping,{runId:'run-1',masterClockId:'master-1',clockId:'clk',streamGeneration:'gen-1',sourcePTS:'33333',sourceTimebase:{numerator:'1',denominator:'1000000'},timestampKind:'presentation'}).mappedMasterTime,33333);
+assert.throws(()=>validateClockMapping({...F.mapping(),sourceTimebase:{numerator:'1',denominator:'90000'},scale:{numerator:'1',denominator:'1'}}),/scale inconsistent/);
+assert.throws(()=>validateClockMapping({...F.mapping(),mappingNamespace:'shadow/test',calibrationMethod:'fixture'}),/fixture mapping cannot/);
+const trusted=validateClockMapping({...F.mapping(),calibrationMethod:'trusted-api',calibrationSampleIds:[],mappingNamespace:'shadow/runtime',trustedApiId:'api-1',transportBoundUs:20,residualBoundUs:null,uncertaintyBoundUs:20});
+assert.equal(trusted.status,'validated');
+assert.equal(canonicalize({b:2,a:null}),'{"a":null,"b":2}');
+assert.equal(sha256Canonical({a:1,b:[null,true]}),sha256Canonical({b:[null,true],a:1}));
+console.log('P1-01 contract + clock hardened: PASS');
