@@ -1,25 +1,26 @@
-3PM Analyzer R8 P1-06 Claude Repair — DEVELOPMENT SOURCE
-สถานะ: NOT RELEASE / NOT FIELD BUILD / NOT APPROVED FOR LIVE SHOOTING
+3PM Analyzer R8 — R8 P1-07 (Claude Code, 2026-10-02)
+สถานะ: Software Candidate Ready for Field Validation — NOT PRODUCTION
 
-แพ็กเกจนี้มีไว้สำหรับ source review, deterministic/offline QA และการตรวจซ้ำเท่านั้น
-อย่าใช้ START_3PM.command จากแพ็กเกจนี้แทนเวอร์ชันที่ใช้งานอยู่ และอย่าใช้ยิงจริง
+ดูไฟล์ marker ที่ root ก่อนเสมอ:
+- DEV_NOT_RELEASE.txt            = development source (มี pose.js trace seam) ห้ามใช้ยิงจริง
+- FIELD_TEST_NOT_PRODUCTION.txt  = FIELD TEST BUILD — NOT PRODUCTION ใช้ทดสอบภาคสนามตาม docs/FIELD_TEST_INSTRUCTIONS.md เท่านั้น
 
-Lineage: EL18 → R7 TransactionRepair parent → selective HV3 merge → R8 P1 shadow hardening
-Production shot decision ยังคงเป็น legacy authority และรอบ repair นี้ไม่ได้แก้ app/static production path
+อย่าใช้แพ็กเกจนี้แทนเวอร์ชันที่ใช้งานอยู่ อย่าลบ sessions/DB เดิม แตกเป็นโฟลเดอร์ใหม่แยกต่างหาก
+Launcher มีไฟล์เดียว: START_3PM.command
+Legacy Shot Decision ยังเป็นผู้ตัดสินช็อตเพียงตัวเดียว ระบบ shadow ไม่เขียนลงช็อตจริง และไม่แตะ Equipment/Athlete/Session
 
-ผลสำคัญของรอบ 2026-10-02:
-- Claude C01–C20 converted regressions: PASS
-- Projector brute-force optimality oracle 10,000 cases: PASS
-- Legacy suite: 100/103 PASS โดย 3 original tests ยัง pin pre-thaw pose hash เดิม; approved trace seam ตรวจผ่านด้วย static gate + baseline reconstruction guard แยกต่างหาก
-- F02 budget core: 25/25 PASS แต่ upstream legacy temporal path ยัง OPEN 25→1 / 25→13
-- Browser bundle VM (no require/Buffer/process): PASS; actual Chromium ยัง BLOCKED/NOT RUN
-- Mac/Windows real camera, native runtime acceptance, real archer และ labeled field data: NOT RUN
+Lineage: EL18 → R7 TransactionRepair parent → selective HV3 merge → R8
+
+ผลรอบนี้ (รันจริงบน Linux + Chromium 141 headless):
+- findings Q-01..Q-03, S-01..S-13, P-01..P-06 ทุกข้อ RED บน baseline แล้ว GREEN พร้อม regression ถาวร
+- แก้ production evidence path: เฟรมไม่ยุบเมื่อ mediaTime/frameSeq เป็น null หรือ 240 fps, นาฬิกา null ไม่กลายเป็น 0,
+  native writer เข้า queue เดียวกับ R7 (Recovery ไม่หาย), หน้าแอปโหลดได้ใน Chromium, ปุ่ม Anchor มีเจ้าของเดียว
+- Legacy suite: dev 101/104 (3 pose sentinels เดิม), field build 104/104
+- ยังไม่ได้รัน: Mac runtime, Mac browser, Windows, กล้องจริง, นักยิงจริง, dataset ที่มี label
 
 อ่านตามลำดับ:
 1. PROJECT_STATE.md
-2. docs/phase01/claude_repair_20261002/ARCHITECTURE_STATE.md
-3. docs/phase01/claude_repair_20261002/CLOSURE_MATRIX.md
-4. docs/phase01/claude_repair_20261002/KNOWN_LIMITATIONS.md
-5. docs/phase01/claude_repair_20261002/TEST_RESULTS.md
-
-R8C-18 production legacy repair เป็น work block แยกที่ต้องได้รับ owner authorization ก่อน
+2. docs/phase01/claude_code_r8_p1_07_20261002/CLOSURE_MATRIX.md
+3. docs/phase01/claude_code_r8_p1_07_20261002/KNOWN_LIMITATIONS.md
+4. docs/FIELD_TEST_INSTRUCTIONS.md
+5. docs/phase01/claude_code_r8_p1_07_20261002/ROLLBACK.md

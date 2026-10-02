@@ -1,3 +1,16 @@
+**CURRENT 2026-10-02: R8 P1-07 Claude Code — Software Candidate Ready for Field Validation (NOT Production Ready).**
+
+- Pure/offline phase01: 15/15 PASS (incl. round-2 regressions, QA runner isolation, browser discovery, artifact class policy).
+- Legacy JS suite: development class 101/104 (only the 3 untouched pre-thaw `pose.js` sentinels); field class (frozen `pose.js`) **104/104**.
+- Phase0 runner: F02 upstream and F03 `closed`, F01 dynamic Chromium `passed`.
+- Real Chromium 141 (Linux headless): F01 harness PASS 8/8, full app LOADED, Anchor SINGLE_OWNER, FrameUID parity PASS, shadow bundle gate PASS 10/10 (incl. 16 MiB archive).
+- Oracles: 10000/10000; independent full-25 oracle seeds 1/77/9001 × 10000 no counterexample. Reviewer probes: 0/12 reproduce.
+- Distribution contract and static integrity PASS for both classes on a fresh unzip of the final ZIP (see BUILD_REPORT next to each ZIP).
+- NOT RUN: macOS runtime, Mac browser, Windows, real camera, real archer, labeled dataset. Details: `phase01/claude_code_r8_p1_07_20261002/TEST_RESULTS.md`.
+- QA runners now write to `$THREEPM_QA_OUT` (or system temp); committed snapshots under `docs/` are refreshed only by `app/tests/phase01/build_r8_artifact.py`.
+
+---
+
 **CURRENT 2026-10-02: R8 P1-06 Claude Repair DEV — NOT RELEASE / NOT FIELD BUILD.**
 
 - Claude C01-C20 converted regressions PASS.
