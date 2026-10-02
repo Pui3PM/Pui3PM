@@ -41,6 +41,9 @@ try {
     const viaEnv = f01({ PATH: minimalPath, CHROMIUM_PATH: browser });
     assert.notStrictEqual(viaEnv.status, 'blocked', 'CHROMIUM_PATH browser is used');
     assert.strictEqual(viaEnv.browserSource, 'CHROMIUM_PATH');
+    // Without Playwright the runner uses the labelled dump-dom closure fallback; after P-04 it must pass.
+    assert.ok(/^dump-dom-fallback/.test(viaEnv.method), 'fallback method labelled: ' + viaEnv.method);
+    assert.strictEqual(viaEnv.status, 'passed', 'F01 closure in real Chromium (fallback)');
     // 3. Broken CHROMIUM_PATH falls through to Playwright.
     if (playwrightChromium()) {
       const viaPw = f01({ PATH: minimalPath, CHROMIUM_PATH: '/nonexistent/chrome', NODE_PATH: process.env.NODE_PATH || '' });
@@ -50,6 +53,8 @@ try {
         console.log('note: Playwright not resolvable from child (NODE_PATH unset); fallback case NOT RUN');
       } else {
         assert.ok(/^playwright/.test(viaPw.browserSource), 'fell through to Playwright: ' + viaPw.browserSource);
+        assert.strictEqual(viaPw.method, 'playwright-f01-harness');
+        assert.strictEqual(viaPw.status, 'passed', 'F01 Playwright acceptance harness passes');
       }
     }
     console.log('Q-02 browser discovery: PASS (CHROMIUM_PATH used, Playwright fallback, blocked only when none launches)');
