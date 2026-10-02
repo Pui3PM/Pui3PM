@@ -228,6 +228,31 @@ block('S-06', () => {
   assert.strictEqual(verified, 150); assert.ok(realSlots > 1000, 'randomized set exercised many real slots: ' + realSlots);
 });
 
+// S-07: archive binds payloadRef bytes to contentDigest (probe N02).
+block('S-07', () => {
+  const AR = req('shadow/archive/shadow_archive');
+  const imgA = Buffer.from('IMAGE-A-bytes'), imgB = Buffer.from('IMAGE-B-different');
+  const dA = crypto.createHash('sha256').update(imgA).digest('hex');
+  const base = crypto.createHash('sha256').update('b').digest('hex');
+  const fr = F.frame(7, { mappedMasterTime: 30000, payloadRef: 'blobs/7.jpg', contentDigest: dA, decodeValid: true });
+  const c = F.candidate(7, 30000, { payloadRef: 'blobs/7.jpg', contentDigest: dA });
+  const rec = (frames, cands) => ({ frames, candidates: cands, events: [], projections: [] });
+  assert.throws(() => AR.buildArchive({ archiveId: 'x', baselineDigest: base, records: rec([fr], [c]), files: { 'blobs/7.jpg': imgB } }), /PAYLOAD_DIGEST_MISMATCH/);
+  assert.throws(() => AR.buildArchive({ archiveId: 'x', baselineDigest: base, records: rec([fr], []), files: { 'blobs/7.jpg': imgB } }), /PAYLOAD_DIGEST_MISMATCH/, 'frame alone is bound too');
+  const good = AR.buildArchive({ archiveId: 'x', baselineDigest: base, records: rec([fr], [c]), files: { 'blobs/7.jpg': imgA } });
+  assert.strictEqual(AR.validateArchive(AR.roundTrip(good)), true, 'correct bytes still round-trip');
+  // Swap the bytes after build (file table re-hashed consistently, manifest resealed): still rejected.
+  const tam = clone(good);
+  tam.payloads['blobs/7.jpg'] = imgB.toString('base64');
+  const ft = tam.manifest.fileTable.find((f) => f.path === 'blobs/7.jpg'); ft.byteLength = imgB.length; ft.sha256 = crypto.createHash('sha256').update(imgB).digest('hex');
+  const { manifestDigest, ...body } = tam.manifest; tam.manifest.manifestDigest = sha256Canonical(body);
+  assert.throws(() => AR.validateArchive(tam), /PAYLOAD_DIGEST_MISMATCH/);
+  // Upper-case digest spelling of the right bytes is the same digest.
+  const cU = F.candidate(7, 30000, { payloadRef: 'blobs/7.jpg', contentDigest: dA.toUpperCase() });
+  const frU = F.frame(7, { mappedMasterTime: 30000, payloadRef: 'blobs/7.jpg', contentDigest: dA.toUpperCase(), decodeValid: true });
+  assert.doesNotThrow(() => AR.buildArchive({ archiveId: 'y', baselineDigest: base, records: rec([frU], [cU]), files: { 'blobs/7.jpg': imgA } }));
+});
+
 let failed = 0;
 for (const [id, fn] of blocks) {
   try { fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
