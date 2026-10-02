@@ -14,7 +14,9 @@ function validateTimeline(timeline,masterClockId){
   if(!tl||typeof tl!=='object'||Array.isArray(tl))fail('PROJECTION_TIMELINE_INVALID','timeline object required');
   for(const k of Object.keys(tl))if(k!=='masterClockId'&&!PHASES.includes(k))fail('PROJECTION_TIMELINE_INVALID',`unknown timeline key ${k}`);
   const phases=Object.keys(tl).filter(k=>k!=='masterClockId');
-  for(const k of phases)if(!tl[k]||typeof tl[k]!=='object'||Array.isArray(tl[k]))fail('PROJECTION_TIMELINE_INVALID',`timeline.${k} must be an object`);
+  for(const k of phases){if(!tl[k]||typeof tl[k]!=='object'||Array.isArray(tl[k]))fail('PROJECTION_TIMELINE_INVALID',`timeline.${k} must be an object`);
+    // S-13: only contract fields; e.g. an ad-hoc `settled:false` would otherwise be silently ignored.
+    for(const f of Object.keys(tl[k]))if(!['status','start','end','refs'].includes(f))fail('PROJECTION_TIMELINE_INVALID',`timeline.${k}.${f} is not a contract field`);}
   if(phases.length&&tl.masterClockId!==masterClockId)fail('PROJECTION_TIMELINE_INVALID','timeline masterClockId must equal projection masterClockId');
   return tl;
 }

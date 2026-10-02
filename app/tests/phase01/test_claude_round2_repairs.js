@@ -142,7 +142,7 @@ function forgeDrawIntoAnchor(p) {
   // Reviewer N01: draw-phase real frame relabelled into S03 (anchor) with a forged time and self-asserted proof.
   const forged = clone(p); forged.projectionId = 'forged';
   const src = forged.slots.find((s) => s.status === 'real'), dst = forged.slots[2];
-  Object.assign(dst, { status: 'real', actualFrameUID: src.actualFrameUID, derivationId: src.derivationId, candidateId: src.candidateId, actualMasterTime: dst.targetMasterTime, signedDelta: 0, missingReason: null, mappingUncertaintyUs: 0, toleranceUs: 50000, actualPhaseEvidenceRefs: ['tl-anchor'], selectionReason: 'forged', sourceId: src.sourceId, streamGeneration: src.streamGeneration, frameSeq: src.frameSeq, contentDigest: src.contentDigest, frameEnvelopeRef: src.frameEnvelopeRef, contributingReasons: [], phaseProof: { phase: 'anchor', timelineRefs: ['tl-anchor'], intervalCheck: 'inside', settledAnchorBoundary: true } });
+  Object.assign(dst, { status: 'real', actualFrameUID: src.actualFrameUID, derivationId: src.derivationId, candidateId: src.candidateId, actualMasterTime: dst.targetMasterTime, signedDelta: 0, missingReason: null, mappingUncertaintyUs: 0, toleranceUs: 50000, actualPhaseEvidenceRefs: ['tl-anchor'], selectionReason: 'forged', sourceId: src.sourceId, streamGeneration: src.streamGeneration, frameSeq: src.frameSeq, contentDigest: src.contentDigest, frameEnvelopeRef: src.frameEnvelopeRef, contributingReasons: [], phaseProof: { phase: 'anchor', timelineRefs: ['tl-anchor'], intervalCheck: 'inside', anchorIntervalKind: 'settled-anchor-interval' } });
   Object.assign(src, { status: 'missing', actualFrameUID: null, derivationId: null, candidateId: null, actualMasterTime: null, signedDelta: null, missingReason: 'no_frame_in_tolerance', mappingUncertaintyUs: null, toleranceUs: null, actualPhaseEvidenceRefs: [], selectionReason: 'missing', sourceId: null, streamGeneration: null, frameSeq: null, contentDigest: null, frameEnvelopeRef: null, phaseProof: null });
   return { forged, src, dst };
 }
@@ -431,6 +431,31 @@ block('S-12', () => {
     const src = fs.readFileSync(path.join(APP, 'static', f), 'utf8');
     assert.ok(!/shadow\/(contracts|decision|evidence_writer|event_log|archive|projector|scheduler|browser|review|ring|replay|adapters|telemetry)|ThreePMShadow|shadow_runtime_bundle/.test(src), `app/static/${f} must not import app/shadow`);
   }
+});
+
+// S-13 (OWNER DECISION D-A, default option 1): anchor proof states the contract interval kind; unknown timeline
+// fields (e.g. an ad-hoc `settled:false`) are rejected at the trust boundary instead of being silently ignored.
+block('S-13', () => {
+  const { project25, ANCHOR_INTERVAL_KIND } = req('shadow/projector/logical25');
+  const { InMemoryEvidenceWriter } = req('shadow/evidence_writer/in_memory_writer');
+  const VM = req('shadow/review/view_model');
+  const cand = F.candidate(1, 175000);
+  const p = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: TL, candidates: [cand], roleBindings: BIND, projectionId: 's', configDigest: 'cfg' });
+  const a = p.slots.find((s) => s.phase === 'anchor' && s.status === 'real');
+  assert.strictEqual(ANCHOR_INTERVAL_KIND, 'settled-anchor-interval');
+  assert.strictEqual(a.phaseProof.anchorIntervalKind, 'settled-anchor-interval');
+  assert.ok(!('settledAnchorBoundary' in a.phaseProof), 'no self-asserted settledness boolean');
+  assert.strictEqual(VM.anchorTarget(VM.buildReviewView(p)).status, 'real', 'behaviour kept: verified anchor interval -> Anchor target');
+  for (const s of p.slots.filter((x) => x.status === 'real' && x.phase !== 'anchor')) assert.ok(!('anchorIntervalKind' in s.phaseProof));
+  // A proof without the interval kind is not a verified anchor.
+  const noKind = clone(p); delete noKind.slots.find((s) => s.slotId === a.slotId).phaseProof.anchorIntervalKind;
+  assert.throws(() => VM.buildReviewView(noKind), /anchor settled proof required/);
+  // Timeline field outside the contract (reviewer N08 `settled:false`) is rejected by the writer.
+  const tlUnsettled = { masterClockId: 'm', anchor: { status: 'verified', start: 100000, end: 400000, refs: ['raw-anchor-not-settled'], settled: false } };
+  const pu = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: tlUnsettled, candidates: [cand], roleBindings: BIND, projectionId: 'u', configDigest: 'cfg' });
+  const w = new InMemoryEvidenceWriter(); addCands(w, [cand], 0, 'a');
+  assert.throws(() => saveCmd(w, { projection: pu, timeline: tlUnsettled, releaseTime: null }, 1, 'u'), /PROJECTION_TIMELINE_INVALID.*settled/);
+  assert.strictEqual(saveCmd(w, { projection: p, timeline: TL, releaseTime: null }, 1, 's').status, 'committed');
 });
 
 (async () => {
