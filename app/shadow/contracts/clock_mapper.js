@@ -38,10 +38,12 @@ function validateClockMapping(input){
   if(!['validated','provisional','unmapped','discontinuous'].includes(input.status))fail('invalid status');
   if(input.status==='validated'){
     if(input.uncertaintyBoundUs===null)fail('validated mapping requires bounded uncertainty');
-    if(input.calibrationMethod==='fixture'&&!input.mappingNamespace.startsWith('shadow/replay'))fail('fixture mapping cannot be validated outside shadow/replay');
+    // S-03: exact namespace segment; 'shadow/replayPRODUCTION' is not under shadow/replay.
+    if(input.calibrationMethod==='fixture'&&!(input.mappingNamespace==='shadow/replay'||input.mappingNamespace.startsWith('shadow/replay/')))fail('fixture mapping cannot be validated outside shadow/replay');
     if(input.calibrationMethod==='sample-affine'&&(input.residualBoundUs===null||input.transportBoundUs===null))fail('sample-affine validated mapping requires residual and transport bounds');
     if(input.calibrationMethod==='trusted-api'&&(!isId(input.trustedApiId)||input.transportBoundUs===null))fail('trusted-api validated mapping requires trustedApiId and transport bound');
-    if(input.residualBoundUs!==null&&input.transportBoundUs!==null&&input.uncertaintyBoundUs<input.residualBoundUs+input.transportBoundUs)fail('uncertainty bound smaller than component bounds');
+    // S-03: the total bound covers every declared component, including when another component is unknown (null).
+    if(input.uncertaintyBoundUs<(input.residualBoundUs??0)+(input.transportBoundUs??0))fail('uncertainty bound smaller than component bounds');
   }
   if(input.calibrationMethod!=='trusted-api'&&input.trustedApiId!==null)fail('trustedApiId only valid for trusted-api');
   return immutablePlainCopy(input);

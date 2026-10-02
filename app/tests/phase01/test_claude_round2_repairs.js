@@ -73,6 +73,21 @@ block('S-02', () => {
   assert.throws(() => RV.validateObservation(Object.assign(clone(obs), { frameUIDs: [up] })), /frameUIDs/);
 });
 
+// S-03: uncertainty bound must cover each known component; fixture namespace is an exact segment (probe N04).
+block('S-03', () => {
+  const CM = req('shadow/contracts/clock_mapper');
+  const trusted = F.mapping({ calibrationMethod: 'trusted-api', trustedApiId: 'api', calibrationSampleIds: [], residualBoundUs: null, transportBoundUs: 5000, uncertaintyBoundUs: 0, mappingNamespace: 'shadow/live' });
+  assert.throws(() => CM.validateClockMapping(trusted), /uncertainty bound smaller than component bounds/);
+  assert.doesNotThrow(() => CM.validateClockMapping(Object.assign(clone(trusted), { uncertaintyBoundUs: 5000 })));
+  assert.throws(() => CM.validateClockMapping(F.mapping({ residualBoundUs: 300, transportBoundUs: null, uncertaintyBoundUs: 299 })), /uncertainty bound/);
+  assert.doesNotThrow(() => CM.validateClockMapping(F.mapping({ residualBoundUs: 300, transportBoundUs: null, uncertaintyBoundUs: 300 })));
+  assert.throws(() => CM.validateClockMapping(F.mapping({ mappingNamespace: 'shadow/replayPRODUCTION' })), /fixture mapping cannot be validated/);
+  assert.doesNotThrow(() => CM.validateClockMapping(F.mapping({ mappingNamespace: 'shadow/replay' })));
+  assert.doesNotThrow(() => CM.validateClockMapping(F.mapping({ mappingNamespace: 'shadow/replay/test' })));
+  // Non-validated mappings keep their existing semantics.
+  assert.doesNotThrow(() => CM.validateClockMapping(Object.assign(clone(trusted), { status: 'provisional' })));
+});
+
 let failed = 0;
 for (const [id, fn] of blocks) {
   try { fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
