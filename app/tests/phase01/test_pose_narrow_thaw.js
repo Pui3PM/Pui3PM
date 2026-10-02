@@ -8,6 +8,16 @@ const posePath=path.resolve(__dirname,'../../static/pose.js');
 const source=fs.readFileSync(posePath,'utf8');
 const BASELINE_SHA256='22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d';
 function sha(s){return crypto.createHash('sha256').update(s).digest('hex');}
+// P-06 (OWNER DECISION D-B option 1): a field_test_not_production artifact ships the frozen HV3 pose.js.
+// The seam is absent there, so the reconstruction guard is replaced by the stronger exact frozen-hash check.
+const ARTIFACT_CLASS=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../../PACKAGE_CONTRACT.json'),'utf8')).artifact_class;
+if(ARTIFACT_CLASS==='field_test_not_production'){
+  assert.equal(sha(source),BASELINE_SHA256,'field test build must ship the frozen HV3 pose.js byte-for-byte');
+  assert(!source.includes('Phase 0 narrow-thaw instrumentation seam')&&!source.includes('PHASE01_POSE_TRACE_CONFIG'),'field test build must not contain the trace seam');
+  console.log('Phase 0 pose narrow-thaw seam: PASS (field_test_not_production: frozen HV3 pose.js, no seam)');
+  process.exit(0);
+}
+assert.equal(ARTIFACT_CLASS,'development_not_release',`unknown artifact_class ${ARTIFACT_CLASS}`);
 
 // Removing only the approved trace seam/calls must reconstruct frozen HV3 pose.js byte-for-byte.
 const marker=source.indexOf('// Phase 0 narrow-thaw instrumentation seam.');

@@ -9,8 +9,7 @@
     "PROJECT_STATE.md",
     "PACKAGE_ID.txt",
     "PACKAGE_CONTRACT.json",
-    "SHA256SUMS.txt",
-    "DEV_NOT_RELEASE.txt"
+    "SHA256SUMS.txt"
   ],
   "root_directories": [
     "app",
@@ -209,5 +208,18 @@
     "frozen_baseline_sha256": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
     "approved_trace_seam_sha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
     "reconstruction_guard": "app/tests/phase01/test_pose_narrow_thaw.js"
+  },
+  "artifact_class_rule": "P-06: root also contains exactly the marker file of artifact_class. The pose.js pin per class is hard-coded in the gates (static_integrity_x282.py, test_distribution_contract_r6.py, test_pose_narrow_thaw.js); this contract only selects the class and can never relax a pin.",
+  "artifact_classes": {
+    "development_not_release": {
+      "marker_file": "DEV_NOT_RELEASE.txt",
+      "pose_sha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
+      "pose_reconstruction_guard": true
+    },
+    "field_test_not_production": {
+      "marker_file": "FIELD_TEST_NOT_PRODUCTION.txt",
+      "pose_sha256": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+      "pose_reconstruction_guard": false
+    }
   }
 }
