@@ -8,7 +8,9 @@ const APP = path.resolve(__dirname, '..', '..');
 const req = (p) => require(path.join(APP, p));
 
 const blocks = [];
-function block(id, fn) { blocks.push([id, fn]); }
+// ROUND2_ONLY=S-02,S-03 runs a subset while iterating; the default (and every gate) runs all blocks.
+const only = process.env.ROUND2_ONLY ? new Set(process.env.ROUND2_ONLY.split(',')) : null;
+function block(id, fn) { if (!only || only.has(id)) blocks.push([id, fn]); }
 
 // S-01: linear base64, canonical padding, large archives.
 block('S-01', () => {
@@ -32,6 +34,43 @@ block('S-01', () => {
   const a = AR.buildArchive({ archiveId: 'big', baselineDigest: base, records: { frames: [], candidates: [], events: [], projections: [] }, files: { 'clip.bin': blob } });
   assert.strictEqual(AR.validateArchive(a), true, '16 MiB archive validates');
   assert.strictEqual(a.manifest.fileTable[0].sha256, crypto.createHash('sha256').update(blob).digest('hex'));
+});
+
+// Shared fixtures for Track S blocks.
+const F = require('./_shadow_fixture.js');
+const { sha256Canonical } = req('shadow/contracts/canonical_json');
+const TL = { masterClockId: 'm', draw: { status: 'verified', start: 0, end: 90000, refs: ['tl-draw'] }, anchor: { status: 'verified', start: 100000, end: 400000, refs: ['tl-anchor'] } };
+const BIND = [F.binding({ startMasterTime: 0, endMasterTime: 1000000, capturePeriodUs: 100000, jitterUs: 0 })];
+const clone = (x) => JSON.parse(JSON.stringify(x));
+
+// S-02: FrameUID canonical lower-case and bound to its identity tuple in projections (probe N03).
+block('S-02', () => {
+  const T = req('shadow/contracts/strict_types');
+  const RV = req('shadow/contracts/record_validators');
+  const VM = req('shadow/review/view_model');
+  const { project25 } = req('shadow/projector/logical25');
+  const c8 = F.candidate(8, 175000), c9 = F.candidate(9, 250000);
+  const p = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: TL, candidates: [c8, c9], roleBindings: BIND, projectionId: 'q', configDigest: 'cfg' });
+  const reals = p.slots.filter((s) => s.status === 'real');
+  assert.strictEqual(reals.length, 2, 'precondition: honest projection has 2 real slots');
+  assert.doesNotThrow(() => VM.buildReviewView(p), 'honest projection still reviewable');
+  // (a) tuple mismatch: slot claims frameSeq 999 but carries the UID of seq 8/9.
+  const a = clone(p); a.slots.find((s) => s.status === 'real').frameSeq = '999';
+  assert.throws(() => VM.buildReviewView(a), /FrameUID tuple mismatch/);
+  // (b) same image twice via an upper-case UID spelling.
+  const b = clone(p); const rs = b.slots.filter((s) => s.status === 'real');
+  rs[1].actualFrameUID = 'f1/' + rs[0].actualFrameUID.slice(3).toUpperCase();
+  Object.assign(rs[1], { sourceId: rs[0].sourceId, streamGeneration: rs[0].streamGeneration, frameSeq: rs[0].frameSeq, contentDigest: rs[0].contentDigest, frameEnvelopeRef: rs[0].frameEnvelopeRef });
+  assert.throws(() => VM.buildReviewView(b), /FrameUID/);
+  // Upper-case UID is not a FrameUID anywhere.
+  const up = 'f1/' + c8.frameUID.slice(3).toUpperCase();
+  assert.strictEqual(T.isFrameUID(c8.frameUID), true);
+  assert.strictEqual(T.isFrameUID(up), false);
+  assert.throws(() => RV.validateEvidenceCandidate(Object.assign(clone(c8), { frameUID: up })), /frameUID/);
+  assert.throws(() => RV.validatePhaseClaim({ claimId: 'x', runId: 'r', cycleId: 'c', role: 'side', phase: 'anchor', frameUID: up, evidenceRef: 'e' }), /frameUID/);
+  const obs = { observationId: 'o', runId: 'r', masterClockId: 'm', kind: 'pose', role: 'side', frameUIDs: [c8.frameUID], sensorSampleUIDs: [], sourceInterval: { start: 0, end: 1, clockDomain: 'm' }, inferenceStart: null, inferenceEnd: null, receivedAt: 2, producer: 'p', status: 'valid', confidence: 0.5, payloadSchema: 's', payload: {}, reasonCodes: [] };
+  assert.doesNotThrow(() => RV.validateObservation(obs));
+  assert.throws(() => RV.validateObservation(Object.assign(clone(obs), { frameUIDs: [up] })), /frameUIDs/);
 });
 
 let failed = 0;

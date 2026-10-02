@@ -39,7 +39,8 @@ function isWellFormedString(v){
   return true;
 }
 function isId(v){ return typeof v === 'string' && v.length > 0 && v.length <= 512 && isWellFormedString(v); }
-function isFrameUID(v){ return typeof v==='string' && /^f1\/[0-9a-f]{64}$/i.test(v); }
+// S-02: FrameUID is canonical lower-case hex only; an upper-case spelling is a different string, never an alias.
+function isFrameUID(v){ return typeof v==='string' && /^f1\/[0-9a-f]{64}$/.test(v); }
 function isSha256(v){ return typeof v==='string' && /^[0-9a-f]{64}$/i.test(v); }
 function requireField(obj,key){
   if(!Object.prototype.hasOwnProperty.call(obj,key)) throw new TypeError(`Missing required field: ${key}`);
