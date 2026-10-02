@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/basecopy/app/tests/test_distribution_contract_r6.py", line 56, in <module>
+    assert hashlib.sha256((root / rel).read_bytes()).hexdigest() == wanted, f'Unreviewed content change: {rel}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Unreviewed content change: docs/phase01/phase0_repro_results.json

@@ -1,0 +1,99 @@
+{
+ "status": "PASS",
+ "vectors": 11,
+ "diffs": [],
+ "rejectOk": true,
+ "browserUA": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36",
+ "node": [
+  {
+   "name": "golden",
+   "uid": "f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a"
+  },
+  {
+   "name": "u64max",
+   "uid": "f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d"
+  },
+  {
+   "name": "utf8",
+   "uid": "f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49"
+  },
+  {
+   "name": "overflow",
+   "rejected": true
+  },
+  {
+   "name": "negative",
+   "rejected": true
+  },
+  {
+   "name": "leadingZero",
+   "rejected": true
+  },
+  {
+   "name": "numberSeq",
+   "rejected": true
+  },
+  {
+   "name": "boolSeq",
+   "rejected": true
+  },
+  {
+   "name": "nullSeq",
+   "rejected": true
+  },
+  {
+   "name": "emptyRun",
+   "rejected": true
+  },
+  {
+   "name": "missingGen",
+   "rejected": true
+  }
+ ],
+ "browser": [
+  {
+   "name": "golden",
+   "uid": "f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a"
+  },
+  {
+   "name": "u64max",
+   "uid": "f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d"
+  },
+  {
+   "name": "utf8",
+   "uid": "f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49"
+  },
+  {
+   "name": "overflow",
+   "rejected": true
+  },
+  {
+   "name": "negative",
+   "rejected": true
+  },
+  {
+   "name": "leadingZero",
+   "rejected": true
+  },
+  {
+   "name": "numberSeq",
+   "rejected": true
+  },
+  {
+   "name": "boolSeq",
+   "rejected": true
+  },
+  {
+   "name": "nullSeq",
+   "rejected": true
+  },
+  {
+   "name": "emptyRun",
+   "rejected": true
+  },
+  {
+   "name": "missingGen",
+   "rejected": true
+  }
+ ]
+}

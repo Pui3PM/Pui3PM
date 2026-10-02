@@ -1,0 +1,11 @@
+PROBE HARNESS ERROR TypeError: InMemoryShotEventLog: namespace policy is fixed to shadow/ (got "legacy-")
+    at shadowNamespacePolicy (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/shadow/contracts/strict_types.js:53:110)
+    at new InMemoryShotEventLog (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/shadow/event_log/in_memory_event_log.js:10:72)
+    at /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/handoff/3PM_Claude_Chat_Final_Review_Handoff/NEW_PROBES/claude_round2_probes.cjs:53:12
+    at Object.<anonymous> (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/handoff/3PM_Claude_Chat_Final_Review_Handoff/NEW_PROBES/claude_round2_probes.cjs:84:3)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)

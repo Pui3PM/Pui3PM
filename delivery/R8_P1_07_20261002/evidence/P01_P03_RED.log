@@ -1,0 +1,18 @@
+R8C evidence identity/writer regression FAIL
+ - F02 null mediaTime/frameSeq keeps 25 distinct samples: 1 == 25
+ - F02 240 FPS distinct mediaTime keeps 25 samples: 13 == 25
+ - F02 240 FPS frameSeq-only identity keeps 25 samples: 1 == 25
+ - F02 same-source captures without identity are not merged by epoch: 4 == 10
+ - F02 false/empty-string are unknown, not 0: 1 == 2
+ - F03 null masterTimeMs falls through to the next known clock, never 0: 0 == 123456
+ - F03 null frameSeq does not drop frames in canonicalFrames: 1 == 5
+ - F04 late native bundle must not erase Recovery end time: undefined == 102000
+ - F04 late native bundle must not erase the Recovery frame: The expression evaluated to a falsy value:
+
+  assert(rec.frames.some(f=>f.evidenceZone==='recovery-end'||(f.evidenceTags||[]).includes('recovery-end')))
+
+ - native null master_time_ms stays null (never 0): Expected values to be strictly equal:
+
+0 !== null
+
+ - native null frame_seq/media_time stay null and do not collapse samples: native frames persisted=3

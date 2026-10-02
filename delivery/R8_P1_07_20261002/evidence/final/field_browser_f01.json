@@ -1,0 +1,29 @@
+{
+ "status": "PASS",
+ "harnessCompleted": true,
+ "checks": {
+  "rail25": true,
+  "realCountMatchesFrames": true,
+  "noIdleLoop": true,
+  "activeFollowsReplay": true,
+  "slotClickWorks": true,
+  "anchorPicksTaggedFrameAtOrAfterTarget": true,
+  "anchorReboundAfterPanelRebuild": true,
+  "noPageErrors": true
+ },
+ "observed": {
+  "initialSlots": 25,
+  "initialReal": 3,
+  "idleCallbacks1500ms": 0,
+  "activeAfterStep": 2,
+  "idleAfterStep": 0,
+  "realAfterNewRecord": 5,
+  "indexAfterSlotClick": 1,
+  "indexAfterAnchor": 2,
+  "slotsAfterRebuild": 25,
+  "anchorRebound": true,
+  "idleAfterRebuild": 0,
+  "metaText": "Slot 1/25 · real 5/25"
+ },
+ "errors": []
+}

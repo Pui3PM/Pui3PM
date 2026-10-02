@@ -1,0 +1,2 @@
+AssertionError: static/pose.js frozen hash changed: 22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d
+AssertionError [ERR_ASSERTION]: trace block boundaries missing

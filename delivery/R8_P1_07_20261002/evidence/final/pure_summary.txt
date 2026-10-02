@@ -1,0 +1,15 @@
+0 12s test_artifact_class_policy.js
+0 0s test_astra_p106_repairs.js
+0 0s test_browser_portable_bundle.js
+0 0s test_claude_r8_repairs.js
+0 41s test_claude_round2_repairs.js
+0 0s test_contract_foundation.js
+0 0s test_p101_contract_clock.js
+0 0s test_p102_replay_identity.js
+0 0s test_p103_ring_scheduler.js
+0 0s test_p104_decision_eventlog.js
+0 0s test_p105_writer_projector.js
+0 0s test_p106_review_archive.js
+0 0s test_pose_narrow_thaw.js
+0 10s test_qa_browser_discovery.js
+0 30s test_qa_runner_isolation.js

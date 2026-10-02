@@ -1,0 +1,54 @@
+[
+  {
+    "name": "contract_foundation",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "Phase01 contract foundation: PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "F01_source_characterization",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F01\",\n  \"sourceCharacterization\": {\n    \"observerCallsRefresh\": true,\n    \"refreshCallsRender\": true,\n    \"rendererClearsObservedSubtree\": true,\n    \"rendererAppendsChildren\": true,\n    \"observerWatchesChildList\": true\n  },\n  \"dynamicBrowserRepro\": \"required externally; local Chromium runtime blocked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F02_budget_direct",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F02-budget\",\n  \"status\": \"MITIGATED_AT_BUDGET_CORE\",\n  \"nullInput\": 25,\n  \"nullRetained\": 25,\n  \"highFpsInput\": 25,\n  \"highFpsRetained\": 25\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F02_upstream_temporal",
+    "status": "closed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F02-upstream-temporal\",\n  \"status\": \"CLOSED\",\n  \"nullRetained\": 25,\n  \"highFpsRetained\": 25\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F03_null_clock",
+    "status": "closed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F03\",\n  \"status\": \"CLOSED\",\n  \"nullMasterFallsThrough\": true\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F04_stale_writer",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F04\",\n  \"baselineFinal\": {\n    \"key\": \"1:7:side\",\n    \"recordVersion\": 1,\n    \"frames\": [\n      {\n        \"uid\": \"A\"\n      },\n      {\n        \"uid\": \"N\"\n      }\n    ],\n    \"recovery\": null,\n    \"metadata\": {\n      \"base\": true\n    },\n    \"native\": true\n  },\n  \"lost\": [\n    \"R\",\n    \"recovery metadata\"\n  ],\n  \"note\": \"Controlled interleaving model derived from native/temporal whole-record put paths; source call graph recorded separately.\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F01_dynamic_chromium",
+    "status": "passed",
+    "method": "playwright-f01-harness",
+    "browser": "/opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+    "browserSource": "CHROMIUM_PATH",
+    "returncode": 0,
+    "stdoutTail": "{\n \"status\": \"PASS\",\n \"harnessCompleted\": true,\n \"checks\": {\n  \"rail25\": true,\n  \"realCountMatchesFrames\": true,\n  \"noIdleLoop\": true,\n  \"activeFollowsReplay\": true,\n  \"slotClickWorks\": true,\n  \"anchorPicksTaggedFrameAtOrAfterTarget\": true,\n  \"anchorReboundAfterPanelRebuild\": true,\n  \"noPageErrors\": true\n },\n \"observed\": {\n  \"initialSlots\": 25,\n  \"initialReal\": 3,\n  \"idleCallbacks1500ms\": 0,\n  \"activeAfterStep\": 2,\n  \"idleAfterStep\": 0,\n  \"realAfterNewRecord\": 5,\n  \"indexAfterSlotClick\": 1,\n  \"indexAfterAnchor\": 2,\n  \"slotsAfterRebuild\": 25,\n  \"anchorRebound\": true,\n  \"idleAfterRebuild\": 0,\n  \"metaText\": \"Slot 1/25 \u00b7 real 5/25\"\n },\n \"errors\": []\n}\n",
+    "stderrTail": ""
+  }
+]

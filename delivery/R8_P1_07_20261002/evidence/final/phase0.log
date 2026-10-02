@@ -1,0 +1,2 @@
+Phase0 results written to /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/r8-logs/final/qa/phase0_repro_results.json
+Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=closed, F03_null_clock=closed, F04_stale_writer=passed, F01_dynamic_chromium=passed

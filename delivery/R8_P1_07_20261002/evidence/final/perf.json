@@ -1,0 +1,27 @@
+{
+ "environment": {
+  "node": "v22.22.0",
+  "platform": "linux-x64",
+  "note": "Linux container; not a Mac/browser measurement"
+ },
+ "sha_base64_correctness": {
+  "checked": 506,
+  "mismatches": 0
+ },
+ "archive_hash_base64_throughput_MBps": {
+  "sha256": 29.3,
+  "base64Encode": 13,
+  "base64Decode": 47.3,
+  "estimated_seconds_for_512MB_archive_validate": 28.3
+ },
+ "ring_add_us_steady_state_1560rows": {
+  "p50": 124,
+  "p95": 326.5,
+  "p99": 429,
+  "max": 3445.7,
+  "rows": 1560,
+  "budget_note": "240 fps => 4167 us per frame per role"
+ },
+ "project25_ms_100_candidates": 21.2,
+ "project25_ms_530_candidates": 58.2
+}

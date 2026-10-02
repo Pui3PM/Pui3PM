@@ -1,0 +1,4 @@
+Projector optimality oracle: PASS 10000/10000
+{"kind":"independent-full25-oracle","checked":10000,"counterexample":null}
+{"kind":"independent-full25-oracle","checked":10000,"counterexample":null}
+{"kind":"independent-full25-oracle","checked":10000,"counterexample":null}

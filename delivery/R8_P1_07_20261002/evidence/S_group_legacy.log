@@ -1,0 +1,60 @@
+test_field_resilience_ble43894.js  node:assert:150
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: 'fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02' == '22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d'
+    at Object.<anonymous> (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/test_field_resilience_ble43894.js:91:8)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02',
+  expected: '22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d',
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.0
+
+test_multicamera_skeleton_ble4362.js  /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/test_multicamera_skeleton_ble4362.js:16
+for(const [f,h] of Object.entries(expected)){const got=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,f))).digest('hex');if(got!==h)throw new Error(`Frozen hash changed ${f}: ${got}`);}
+                                                                                                                                                       ^
+
+Error: Frozen hash changed static/pose.js: fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02
+    at Object.<anonymous> (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/test_multicamera_skeleton_ble4362.js:16:158)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.22.0
+
+test_multiview_corroboration_integration_ble43895.js  /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/test_multiview_corroboration_integration_ble43895.js:7
+for(const [f,h] of Object.entries(expected)){const got=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,f))).digest('hex');if(got!==h)throw new Error(`Frozen changed ${f}`)}
+                                                                                                                                                       ^
+
+Error: Frozen changed static/pose.js
+    at Object.<anonymous> (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/test_multiview_corroboration_integration_ble43895.js:7:158)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.22.0
+
+Results written to /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/qa_S_group/r7_results.json
+JS regressions: 100/103 PASS

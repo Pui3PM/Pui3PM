@@ -1,0 +1,12 @@
+ok test_astra_p106_repairs.js
+ok test_browser_portable_bundle.js
+ok test_claude_r8_repairs.js
+ok test_claude_round2_repairs.js
+ok test_contract_foundation.js
+ok test_p101_contract_clock.js
+ok test_p102_replay_identity.js
+ok test_p103_ring_scheduler.js
+ok test_p104_decision_eventlog.js
+ok test_p105_writer_projector.js
+ok test_p106_review_archive.js
+ok test_pose_narrow_thaw.js

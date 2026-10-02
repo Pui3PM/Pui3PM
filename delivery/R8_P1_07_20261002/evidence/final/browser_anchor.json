@@ -1,0 +1,21 @@
+{
+ "status": "SINGLE_OWNER",
+ "atLoad": {
+  "present": true,
+  "clickListeners": 1,
+  "listenerScripts": [
+   "script#37:20"
+  ],
+  "hv2Bound": "1",
+  "onclickProp": "object"
+ },
+ "after3s": {
+  "present": true,
+  "clickListeners": 1,
+  "listenerScripts": [
+   "script#37:20"
+  ],
+  "hv2Bound": "1",
+  "onclickProp": "object"
+ }
+}

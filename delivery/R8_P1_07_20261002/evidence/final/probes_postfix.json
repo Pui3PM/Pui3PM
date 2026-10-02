@@ -1,0 +1,75 @@
+{
+ "N01_forged_slot_time_phase_accepted": {
+  "defectReproduced": false,
+  "candidateActualMasterTime": 30000,
+  "honestPlacement": [
+   "S01",
+   "draw"
+  ],
+  "forgedPlacement": [
+   "S03",
+   "anchor",
+   175000
+  ],
+  "writerSaved": "anchor settled proof required",
+  "anchorButtonTarget": "anchor settled proof required"
+ },
+ "N02_archive_payload_not_bound_to_contentDigest": {
+  "defectReproduced": false,
+  "declaredContentDigest": "369befbd75ad3b3d",
+  "actualFileSha256": "860c66b4332ddf69",
+  "archiveBuilt": "PAYLOAD_DIGEST_MISMATCH"
+ },
+ "N03_projection_uid_not_canonical_or_tuple_bound": {
+  "defectReproduced": false,
+  "realSlots": 2,
+  "tupleMismatchAccepted": false,
+  "sameImageTwiceViaUppercaseUidAccepted": false
+ },
+ "N04_uncertainty_below_component_bound": {
+  "defectReproduced": false,
+  "transportBoundUs": 5000,
+  "uncertaintyBoundUs": 0,
+  "accepted": "uncertainty bound smaller than component bounds",
+  "fixtureNamespacePrefixLoose_shadow_replayPRODUCTION": false
+ },
+ "N05_shadow_sinks_namespace_policy_configurable": {
+  "defectReproduced": false,
+  "eventLogAcceptedConfirmedInLegacyProduction": false,
+  "writerAcceptedLegacyProduction": false
+ },
+ "N06_scheduler_timeout_does_not_cancel_executor": {
+  "defectReproduced": false,
+  "concurrentOutstandingExecutorJobs": 1,
+  "timedOut": 1,
+  "cancelledGenerationsRetained": 50
+ },
+ "N07_descriptor_validation_shallow": {
+  "defectReproduced": false,
+  "accepted": false,
+  "structuredCloneable": false
+ },
+ "N08_settled_anchor_flag_not_derived": {
+  "defectReproduced": false,
+  "timelineDeclaredSettled": false,
+  "anchorButton": "real"
+ },
+ "N09_command_memo_capacity_global_failclosed": {
+  "defectReproduced": false,
+  "newCycleWrite": "ok"
+ },
+ "N10_projection_aborts_on_undefined_field": {
+  "defectReproduced": false,
+  "result": "projected"
+ },
+ "N11_reducer_no_reset_watermark_or_evidence_gate": {
+  "defectReproduced": false,
+  "confirmedWithoutObservations": "rejected: CONFIRMED_REQUIRES_EVIDENCE: confirmed needs supporting observations",
+  "hasAuthorityStreamReset": true,
+  "hasWatermark": true
+ },
+ "N12_archive_imports_non_shadow_events": {
+  "defectReproduced": false,
+  "staged": "ARCHIVE_EVENT_NAMESPACE_DENIED"
+ }
+}

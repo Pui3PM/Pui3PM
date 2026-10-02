@@ -1,0 +1,33 @@
+{
+ "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36",
+ "B1": {
+  "bundleRanWithoutNodeGlobals": {
+   "require": "undefined",
+   "Buffer": "undefined",
+   "process": "undefined"
+  },
+  "uidParity": true,
+  "uids": [
+   "f1/c211a2255",
+   "f1/ed3baad72",
+   "REJECT",
+   "REJECT",
+   "REJECT",
+   "REJECT"
+  ],
+  "projectionCanonicalParity": true,
+  "projectionReal": 17,
+  "archiveDigestParity": true,
+  "pageErrors": []
+ },
+ "B2": {
+  "archive1MB": true,
+  "archive4MB": false,
+  "archive16MB": false,
+  "meaning": "false = RangeError (stack overflow in base64 validation)"
+ },
+ "B3": {
+  "url": "http://127.0.0.1:8762/static/index.html",
+  "reachedLoad": false
+ }
+}

@@ -1,0 +1,2 @@
+S-11: FAIL TypeError: canonical JSON unsupported type: undefined
+    at canonicalize (/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/shadow/contracts/canonical_json.js:3:511)

@@ -1,0 +1,115 @@
+{
+  "schema": "3pm-delivery-provenance-v1",
+  "generated_at": "2026-10-02",
+  "work_block": "R8 P1-07 Claude Code implementation (FINAL_REVIEW_FOR_CLAUDE_CODE)",
+  "lineage": "EL18 -> R7 parent -> selective HV3 merge -> R8 (R7 TransactionRepair behaviour unchanged)",
+  "inputs": {
+    "source_zip": {
+      "filename": "3PM_Analyzer_R8_P1_06_ClaudeRepair_DEV_20261002.zip",
+      "sha256": "1904f87d2d0b2ef60f413e23fa5880481dc67cc58f538f483ae71bd1914dbf21"
+    },
+    "handoff_zip": {
+      "filename": "3PM_Claude_Chat_Final_Review_Handoff.zip",
+      "sha256": "559182bef9a399e129c0ee34cdda75a7746e2b5eed813e562d66763956ce54e1"
+    },
+    "production_patch": {
+      "filename": "R8C_production_evidence.diff",
+      "sha256": "bb9310309cd4194e13fc08b0b00b125badd4971482cf11e2e7c7cfcd5eaa8e68",
+      "applied": "unmodified"
+    }
+  },
+  "artifacts": {
+    "3PM_Analyzer_R8_FIELD_TEST_20261002.zip": {
+      "sha256": "b6f0220ed81337c47ca12c611459df37f329841a433ef2784116e8a9ec3a2afc",
+      "bytes": 19739993,
+      "artifact_class": "field_test_not_production",
+      "zip_root": "3PM_Analyzer_R8_FIELD_TEST",
+      "changed_count_vs_base": 78,
+      "claims": {
+        "production_app_static_changed_count": 6,
+        "production_app_static_changed_paths": [
+          "app/static/camera_timeline_core.js",
+          "app/static/evidence_integrity_repair_layer.js",
+          "app/static/index.html",
+          "app/static/native_capture_layer.js",
+          "app/static/pose.js",
+          "app/static/temporal_evidence_core.js"
+        ],
+        "equipment_athlete_session_changed_count": 0,
+        "pose_js_sha256": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d"
+      },
+      "qa_run_at_packaging": {
+        "app/tests/run_regressions.py": "JS regressions: 104/104 PASS",
+        "app/tests/phase01/run_phase0_repros.py": "Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=closed, F03_null_clock=closed, F04_stale_writer=passed, F01_dynamic_chromium=passed",
+        "app/tests/phase01/run_p006_regressions.py": "JS regressions: 104/104 PASS"
+      },
+      "verification_from_fresh_unzip": {
+        "distribution_contract": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint",
+        "static_integrity": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=field_test_not_production",
+        "pose_guard": "Phase 0 pose narrow-thaw seam: PASS (field_test_not_production: frozen HV3 pose.js, no seam)",
+        "provenance_manifest": "376/376 current_sha256 exact; unlisted only ['SHA256SUMS.txt', 'docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json']",
+        "protected_files": "12/12 byte-identical",
+        "pose_js": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+        "shadow_isolation": "no app/static file references app/shadow",
+        "launchers": [
+          "START_3PM.command"
+        ]
+      },
+      "in_zip_provenance_manifest": "3PM_Analyzer_R8_FIELD_TEST/docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json"
+    },
+    "3PM_Analyzer_R8_P1_07_DEV_20261002.zip": {
+      "sha256": "70ec292878eef46d16b4bf1c64aa1467c8a3567b055ff5db9c9bcdcb47017734",
+      "bytes": 19741742,
+      "artifact_class": "development_not_release",
+      "zip_root": "3PM_Analyzer_R8_P1_07_DEV",
+      "changed_count_vs_base": 75,
+      "claims": {
+        "production_app_static_changed_count": 5,
+        "production_app_static_changed_paths": [
+          "app/static/camera_timeline_core.js",
+          "app/static/evidence_integrity_repair_layer.js",
+          "app/static/index.html",
+          "app/static/native_capture_layer.js",
+          "app/static/temporal_evidence_core.js"
+        ],
+        "equipment_athlete_session_changed_count": 0,
+        "pose_js_sha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02"
+      },
+      "qa_run_at_packaging": {
+        "app/tests/run_regressions.py": "JS regressions: 101/104 PASS",
+        "app/tests/phase01/run_phase0_repros.py": "Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=closed, F03_null_clock=closed, F04_stale_writer=passed, F01_dynamic_chromium=passed",
+        "app/tests/phase01/run_p006_regressions.py": "Node.js v22.22.0"
+      },
+      "verification_from_fresh_unzip": {
+        "distribution_contract": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint",
+        "static_integrity": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=development_not_release",
+        "pose_guard": "Phase 0 pose narrow-thaw seam: PASS",
+        "provenance_manifest": "376/376 current_sha256 exact; unlisted only ['SHA256SUMS.txt', 'docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json']",
+        "protected_files": "12/12 byte-identical",
+        "pose_js": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
+        "shadow_isolation": "no app/static file references app/shadow",
+        "launchers": [
+          "START_3PM.command"
+        ]
+      },
+      "in_zip_provenance_manifest": "3PM_Analyzer_R8_P1_07_DEV/docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json"
+    }
+  },
+  "source_history_bundle": {
+    "file": "artifacts/r8_p1_07_source_history.bundle",
+    "sha256": "784a342bb066950af06b233583db6a7e89bafb23c17aa7f65959a8c0edca354b",
+    "use": "git clone r8_p1_07_source_history.bundle  -> per-finding commits for git revert"
+  },
+  "status": {
+    "source_repair": "DONE",
+    "deterministic_tests": "PASS",
+    "offline_integration": "PASS (dev 101/104 = 3 untouched pose sentinels; field 104/104)",
+    "browser_verification": "PASS on Linux headless Chromium 141 (dev tree and unzipped field build)",
+    "mac_runtime": "NOT RUN",
+    "windows_runtime": "NOT RUN (stub)",
+    "real_camera": "NOT RUN",
+    "real_archer": "NOT RUN",
+    "labeled_field_dataset": "NOT RUN",
+    "overall": "Software Candidate Ready for Field Validation (NOT Production Ready)"
+  }
+}

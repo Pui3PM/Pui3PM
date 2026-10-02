@@ -1,0 +1,80 @@
+{
+ "N01_forged_slot_time_phase_accepted": {
+  "defectReproduced": true,
+  "candidateActualMasterTime": 30000,
+  "honestPlacement": [
+   "S01",
+   "draw"
+  ],
+  "forgedPlacement": [
+   "S03",
+   "anchor",
+   175000
+  ],
+  "writerSaved": "committed",
+  "anchorButtonTarget": {
+   "status": "real",
+   "slotId": "S03",
+   "frameUID": "f1/ff5cabb548bf2e8669ecab6164091ed628d49e050f516adb66971905a34bb9b3"
+  }
+ },
+ "N02_archive_payload_not_bound_to_contentDigest": {
+  "defectReproduced": true,
+  "declaredContentDigest": "369befbd75ad3b3d",
+  "actualFileSha256": "860c66b4332ddf69",
+  "archiveBuilt": "yes"
+ },
+ "N03_projection_uid_not_canonical_or_tuple_bound": {
+  "defectReproduced": true,
+  "realSlots": 2,
+  "tupleMismatchAccepted": true,
+  "sameImageTwiceViaUppercaseUidAccepted": true
+ },
+ "N04_uncertainty_below_component_bound": {
+  "defectReproduced": true,
+  "transportBoundUs": 5000,
+  "uncertaintyBoundUs": 0,
+  "accepted": "yes",
+  "fixtureNamespacePrefixLoose_shadow_replayPRODUCTION": true
+ },
+ "N05_shadow_sinks_namespace_policy_configurable": {
+  "defectReproduced": true,
+  "eventLogAcceptedConfirmedInLegacyProduction": true,
+  "writerAcceptedLegacyProduction": true
+ },
+ "N06_scheduler_timeout_does_not_cancel_executor": {
+  "defectReproduced": true,
+  "concurrentOutstandingExecutorJobs": 8,
+  "timedOut": 8,
+  "cancelledGenerationsRetained": 50
+ },
+ "N07_descriptor_validation_shallow": {
+  "defectReproduced": true,
+  "accepted": true,
+  "structuredCloneable": false
+ },
+ "N08_settled_anchor_flag_not_derived": {
+  "defectReproduced": true,
+  "timelineDeclaredSettled": false,
+  "slotSettledAnchorBoundary": true,
+  "anchorButton": "real"
+ },
+ "N09_command_memo_capacity_global_failclosed": {
+  "defectReproduced": true,
+  "newCycleWrite": "COMMAND_MEMO_CAPACITY"
+ },
+ "N10_projection_aborts_on_undefined_field": {
+  "defectReproduced": true,
+  "result": "canonical JSON unsupported type: undefined"
+ },
+ "N11_reducer_no_reset_watermark_or_evidence_gate": {
+  "defectReproduced": true,
+  "confirmedWithoutObservations": "applied",
+  "hasAuthorityStreamReset": false,
+  "hasWatermark": false
+ },
+ "N12_archive_imports_non_shadow_events": {
+  "defectReproduced": true,
+  "staged": "staged"
+ }
+}

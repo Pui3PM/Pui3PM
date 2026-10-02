@@ -1,0 +1,1 @@
+{"defectReproduced":true,"largestDecodableBytes":3355238,"firstFailingBytesApprox":3359334,"archiveBuildWithBlobAboveLimit":"RangeError: Maximum call stack size exceeded","contractMaxTotalBytes":536870912}

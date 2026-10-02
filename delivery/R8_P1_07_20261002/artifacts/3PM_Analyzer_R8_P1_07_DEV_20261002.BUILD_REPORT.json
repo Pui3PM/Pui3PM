@@ -1,0 +1,45 @@
+{
+  "zip": "/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/delivery_build/3PM_Analyzer_R8_P1_07_DEV_20261002.zip",
+  "zip_sha256": "70ec292878eef46d16b4bf1c64aa1467c8a3567b055ff5db9c9bcdcb47017734",
+  "zip_bytes": 19741742,
+  "artifact_class": "development_not_release",
+  "changed_count": 75,
+  "claims": {
+    "production_app_static_changed_count": 5,
+    "production_app_static_changed_paths": [
+      "app/static/camera_timeline_core.js",
+      "app/static/evidence_integrity_repair_layer.js",
+      "app/static/index.html",
+      "app/static/native_capture_layer.js",
+      "app/static/temporal_evidence_core.js"
+    ],
+    "equipment_athlete_session_changed_count": 0,
+    "pose_js_sha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02"
+  },
+  "qa_run_at_packaging": {
+    "app/tests/run_regressions.py": {
+      "returncode": 1,
+      "tail": "JS regressions: 101/104 PASS"
+    },
+    "app/tests/phase01/run_phase0_repros.py": {
+      "returncode": 0,
+      "tail": "Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=closed, F03_null_clock=closed, F04_stale_writer=passed, F01_dynamic_chromium=passed"
+    },
+    "app/tests/phase01/run_p006_regressions.py": {
+      "returncode": 1,
+      "tail": "Node.js v22.22.0"
+    }
+  },
+  "verification_from_fresh_unzip": {
+    "distribution_contract": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint",
+    "static_integrity": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=development_not_release",
+    "pose_guard": "Phase 0 pose narrow-thaw seam: PASS",
+    "provenance_manifest": "376/376 current_sha256 exact; unlisted only ['SHA256SUMS.txt', 'docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json']",
+    "protected_files": "12/12 byte-identical",
+    "pose_js": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
+    "shadow_isolation": "no app/static file references app/shadow",
+    "launchers": [
+      "START_3PM.command"
+    ]
+  }
+}

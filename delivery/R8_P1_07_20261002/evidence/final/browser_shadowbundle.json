@@ -1,0 +1,23 @@
+{
+ "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36",
+ "checks": {
+  "noNodeGlobals": true,
+  "uidParity": true,
+  "projectionCanonicalParity": true,
+  "archiveV2DigestParity": true,
+  "archive16MB": true,
+  "payloadDigestBound": true,
+  "honestProjectionSaved": true,
+  "forgedProjectionRejected": true,
+  "namespacePolicyFixed": true,
+  "noPageErrors": true
+ },
+ "detail": {
+  "forgedSave": "PROJECTION_PHASE_MISMATCH: S06 time/uncertainty not the candidate's",
+  "honestSave": "committed",
+  "archive16MB": true,
+  "wrongBytes": "PAYLOAD_DIGEST_MISMATCH",
+  "pageErrors": []
+ }
+}
+Shadow bundle Chromium gate: PASS (10 checks)

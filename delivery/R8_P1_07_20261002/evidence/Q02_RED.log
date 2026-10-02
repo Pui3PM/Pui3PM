@@ -1,0 +1,1 @@
+Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=open_confirmed, F03_null_clock=passed, F04_stale_writer=passed, F01_dynamic_chromium=blocked

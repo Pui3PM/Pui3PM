@@ -1,0 +1,7 @@
+page.evaluate: TypeError: unknown archive record collection: timelines
+    at validateRecords (<anonymous>:70:226)
+    at Object.buildArchive (<anonymous>:83:153)
+    at eval (eval at evaluate (:290:30), <anonymous>:7:25)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at /tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/r8-work/3PM_Analyzer_R8_P1_06_Repair_DEV/app/tests/phase01/run_shadow_bundle_chromium.cjs:40:24
