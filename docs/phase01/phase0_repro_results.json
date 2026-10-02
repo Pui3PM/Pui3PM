@@ -1,0 +1,49 @@
+[
+  {
+    "name": "contract_foundation",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "Phase01 contract foundation: PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "F01_source_characterization",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F01\",\n  \"sourceCharacterization\": {\n    \"observerCallsRefresh\": true,\n    \"refreshCallsRender\": true,\n    \"rendererClearsObservedSubtree\": true,\n    \"rendererAppendsChildren\": true,\n    \"observerWatchesChildList\": true\n  },\n  \"dynamicBrowserRepro\": \"required externally; local Chromium runtime blocked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F02_budget_direct",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F02-budget\",\n  \"status\": \"MITIGATED_AT_BUDGET_CORE\",\n  \"nullInput\": 25,\n  \"nullRetained\": 25,\n  \"highFpsInput\": 25,\n  \"highFpsRetained\": 25\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F02_upstream_temporal",
+    "status": "open_confirmed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F02-upstream-temporal\",\n  \"status\": \"OPEN_CONFIRMED\",\n  \"nullRetained\": 1,\n  \"highFpsRetained\": 13,\n  \"productionRepairAuthorized\": false\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F03_null_clock",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F03\",\n  \"input\": {\n    \"masterTimeMs\": null,\n    \"captureEpochMs\": 123456,\n    \"epochMs\": 123456,\n    \"mediaTimeMs\": null,\n    \"mediaTime\": null,\n    \"frameSeq\": 1\n  },\n  \"baselineFrameTimeMs\": 0,\n  \"expectedNewPath\": \"mappedMasterTime=null; epoch remains display-only\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F04_stale_writer",
+    "status": "passed",
+    "returncode": 0,
+    "stdout": "{\n  \"finding\": \"F04\",\n  \"baselineFinal\": {\n    \"key\": \"1:7:side\",\n    \"recordVersion\": 1,\n    \"frames\": [\n      {\n        \"uid\": \"A\"\n      },\n      {\n        \"uid\": \"N\"\n      }\n    ],\n    \"recovery\": null,\n    \"metadata\": {\n      \"base\": true\n    },\n    \"native\": true\n  },\n  \"lost\": [\n    \"R\",\n    \"recovery metadata\"\n  ],\n  \"note\": \"Controlled interleaving model derived from native/temporal whole-record put paths; source call graph recorded separately.\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "F01_dynamic_chromium",
+    "status": "blocked",
+    "reason": "Chromium headless smoke timed out even on trivial HTML in this environment."
+  }
+]

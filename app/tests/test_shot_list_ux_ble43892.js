@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'static/index.html'),'utf8');
+const ux=fs.readFileSync(path.join(root,'static/shot_list_ux_layer.js'),'utf8');
+assert(html.includes('shot_list_ux_layer.js?v=ble43892'),'Shot List UX layer not wired');
+assert(html.indexOf('app.js?v=ble43888')<html.indexOf('shot_list_ux_layer.js?v=ble43892'),'Shot List UX must normalize frozen app DOM after app.js');
+assert(ux.includes("const VERSION='BLE4.3.8.9.2-shot-list-ux-v1';"));
+assert(ux.includes('sort((a,b)=>endNo(a)-endNo(b))'),'Ends must sort chronological ascending');
+assert(ux.includes('sort((a,b)=>shotNo(a)-shotNo(b))'),'Shots must sort chronological ascending');
+assert(ux.includes('const followLatest=newShot&&maxShot>0&&selectedNo===maxShot'),'auto-follow must only happen when newly selected latest shot is active');
+assert(ux.includes('else if(changed){host.scrollTop=beforeScroll;}'),'review scroll must be preserved during reorder');
+assert(ux.includes("host.dataset.shotListOrder='chronological'"));
+console.log('BLE4.3.8.9.2 Shot List UX QA PASS · End/Shot chronological · latest follow only · old-shot review scroll stable');

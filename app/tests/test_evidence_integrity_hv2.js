@@ -1,0 +1,22 @@
+const fs=require('fs'),path=require('path'),vm=require('vm');
+function assert(c,m){if(!c)throw new Error(m);}
+const budget=require('../static/evidence_budget_core.js');
+const backfill=require('../static/coach_keyframe25_backfill_core.js');
+assert(backfill.targetCount(1)===25,'1 role must target 25');
+assert(backfill.targetCount(2)===25,'2 roles must still target 25 per role');
+assert(backfill.targetCount(3)===25,'3 roles must still target 25 per role');
+const mk=(epoch,media,seq)=>({epochMs:epoch,mediaTime:media,frameSeq:seq,blob:{},source:'native-avfoundation'});
+const inverted=[mk(1000,1.000,1),mk(1100,1.033,2),mk(1060,1.066,3),mk(1140,1.099,4)];
+const canon=budget.canonicalUnique(inverted);
+assert(canon.map(x=>x.frameSeq).join(',')==='1,2,3,4','camera chronology must beat epoch correction');
+assert(budget.isStrictChronology(canon),'camera chronology should validate');
+const fifteen=Array.from({length:15},(_,i)=>mk(1000+i*33,1+i*.033,i+1));
+const rec=budget.normalizeRecord({frames:fifteen,releaseEpochMs:1200},25);
+assert(rec.frames.length===15,'must not fabricate frames');
+assert(rec.reviewSlots.length===25,'review must expose fixed 25 slots');
+assert(rec.reviewSlots.filter(x=>x.missing).length===10,'missing slots must be explicit');
+const layer=fs.readFileSync(path.join(__dirname,'..','static','evidence_integrity_repair_layer.js'),'utf8');
+for(const marker of ['build25','cloneNode(true)','o<Number(target)','Fixed 25 evidence slots'])assert(layer.includes(marker),`missing integration marker ${marker}`);
+const html=fs.readFileSync(path.join(__dirname,'..','static','index.html'),'utf8');
+assert(html.includes('evidence_integrity_repair_layer.js?v=hv2'),'HV2 layer not loaded');
+console.log('HV2 evidence integrity QA: PASS',{target_per_role:[backfill.targetCount(1),backfill.targetCount(2),backfill.targetCount(3)],camera_order:canon.map(x=>x.frameSeq),actual:rec.frames.length,slots:rec.reviewSlots.length,missing:10});

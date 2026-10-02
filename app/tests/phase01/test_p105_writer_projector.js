@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('assert');
+const {sha256Canonical}=require('../../shadow/contracts/canonical_json');
+const {InMemoryEvidenceWriter}=require('../../shadow/evidence_writer/in_memory_writer');
+const {project25}=require('../../shadow/projector/logical25');
+const F=require('./_shadow_fixture');
+const ns='shadow/e/r',baseCmd={namespace:ns,runId:'r',cycleId:'c',role:'side'};
+const w=new InMemoryEvidenceWriter();
+const first=F.candidate(1,1000,{phaseEvidenceRefs:['p']});let payload={candidates:[first]},cmd={...baseCmd,commandId:'cmd1',expectedRecordVersion:0,operation:'addCandidates',payload,payloadDigest:sha256Canonical(payload)};assert.equal(w.execute(cmd).recordVersion,1);payload.candidates[0].phaseEvidenceRefs.push('MUTATE');assert.deepEqual(w.snapshot(baseCmd).candidates[0].phaseEvidenceRefs,['p']);const wrongScope={...cmd,cycleId:'other',payload:{candidates:[F.candidate(1,1000,{cycleId:'other'})]}};wrongScope.payloadDigest=sha256Canonical(wrongScope.payload);assert.throws(()=>w.execute(wrongScope),/SCOPE|CONFLICT/);
+const timeline={masterClockId:'m',draw:{status:'verified',start:0,end:600,refs:['draw-proof']},anchor:{status:'verified',start:700,end:1000,refs:['anchor-proof']},hold:{status:'verified',start:1000,end:1300,refs:['hold-proof']},expansion:{status:'verified',start:1300,end:1500,refs:['exp-proof']},follow_through:{status:'verified',start:1700,end:2300,refs:['follow-proof']},recovery:{status:'verified',start:2300,end:2500,refs:['recovery-proof']}};
+const candidates=[];for(let i=2;i<42;i++)candidates.push(F.candidate(i,i*70,{phaseEvidenceRefs:['candidate-claim']}));
+let p2={candidates},c2={...baseCmd,commandId:'cmd2',expectedRecordVersion:1,operation:'addCandidates',payload:p2,payloadDigest:sha256Canonical(p2)};assert.equal(w.execute(c2).recordVersion,2);
+const bindings=[F.binding({startMasterTime:0,endMasterTime:5000,capturePeriodUs:33333,jitterUs:1000})];const p=project25({runId:'r',cycleId:'c',masterClockId:'m',role:'side',timeline,releaseTime:1600,candidates:[first,...candidates],projectionId:'p1',roleBindings:bindings,configDigest:'cfg'});assert.equal(p.slots.length,25);assert.equal(p.uniqueRealCount,new Set(p.slots.filter(s=>s.status==='real').map(s=>s.actualFrameUID)).size);assert.equal(p.uniqueRealCount+p.missingCount,25);
+assert.throws(()=>project25({runId:'r',cycleId:'c',masterClockId:'m',role:'side',releaseTime:1600,candidates:[first]}),/roleBindings/);
+let save={projection:p},saveCmd={...baseCmd,commandId:'cmd3',expectedRecordVersion:2,operation:'saveProjection',payload:save,payloadDigest:sha256Canonical(save)};assert.equal(w.execute(saveCmd).recordVersion,3);
+const forged=JSON.parse(JSON.stringify(p));const real=forged.slots.find(s=>s.status==='real');if(real){real.candidateId='not-in-writer';const fp={projection:forged};assert.throws(()=>w.execute({...baseCmd,commandId:'bad-proj',expectedRecordVersion:3,operation:'saveProjection',payload:fp,payloadDigest:sha256Canonical(fp)}),/CANDIDATE_MISMATCH/);}
+const claims={claims:[{claimId:'cl1',runId:'r',cycleId:'c',role:'side',phase:'anchor',frameUID:first.frameUID,evidenceRef:'timeline/anchor'}]};assert.equal(w.execute({...baseCmd,commandId:'cmd4',expectedRecordVersion:3,operation:'addPhaseEvidence',payload:claims,payloadDigest:sha256Canonical(claims)}).recordVersion,4);const badClaims={claims:[{claimId:'bad',runId:'r',cycleId:'c',role:'side',phase:'banana',frameUID:first.frameUID,evidenceRef:'x'}]};assert.throws(()=>w.execute({...baseCmd,commandId:'badclaim',expectedRecordVersion:4,operation:'addPhaseEvidence',payload:badClaims,payloadDigest:sha256Canonical(badClaims)}),/phase/);
+console.log('P1-05 writer/projector hardened: PASS');

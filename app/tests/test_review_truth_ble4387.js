@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('fs'),assert=require('assert'),path=require('path');
+const app=fs.readFileSync(path.join(__dirname,'../static/app.js'),'utf8');
+const html=fs.readFileSync(path.join(__dirname,'../static/index.html'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'../static/style.css'),'utf8');
+assert(app.includes('targetCount=15'),'15-frame backfill target missing');
+assert(app.includes('liveCoachFrameToken'),'release-epoch keyframe tagging missing');
+assert(app.includes('clearReviewForIncomingCapture'),'incoming-shot stale review clear missing');
+assert(app.includes('Recovery is now in the authoritative evidence record'),'recovery backfill missing');
+assert(html.includes('coach_keyframe_plan_core.js?v=ble43894'),'15-frame planner not loaded/cache-busted');
+assert(html.includes('style.css?v=ble438941'),'style cache not bumped');
+assert(css.includes('BLE4.3.8.8 · Baseline / Calibration + monotonic phase truth'),'review truth CSS missing');
+assert(css.includes('overflow-x:auto'),'horizontal evidence rail missing');
+console.log('BLE4.3.8.7 review truth integration QA: PASS');

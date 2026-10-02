@@ -1,0 +1,50 @@
+{
+  "mismatches": [
+    {
+      "path": "AGENTS.md",
+      "parent": "candidate",
+      "listed": "6db398f28fca3dc0743a5ba95dc3855f4ba21643ba3270160272f05dae37a4d2",
+      "actual": "d36b28549225d8ac6a3582c3a7fb7b37fdb850d964f420095a8e74a368005ac6"
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "parent": "candidate",
+      "listed": "4895b2dfdf00f7ba0134c0b5ae1ebf91528051cf70cf6787429672567e054764",
+      "actual": "8995c55d1c4a828aa57851361d89cbdeb79d97da45862fbc1272c935cae163c4"
+    },
+    {
+      "path": "docs/HANDOFF_NEXT_CHAT.md",
+      "parent": "candidate",
+      "listed": "13d1b7bb8f75c06267e5e63148a538345109cb566114c14c50981c1d780b0a69",
+      "actual": "0bb3fd179721e20bf294efc7497a5f39eab3296375612f148ad461d13d5c400b"
+    },
+    {
+      "path": "docs/QA_CURRENT.md",
+      "parent": "candidate",
+      "listed": "9e8f4e3f72878531e4fa0770f5c2bc6d5e653be555ad595dc65288e4c0430819",
+      "actual": "f87eca0eafdfef50d5893adfa126d4f99b3a6c406e825f43a002717a96d6e6f5"
+    },
+    {
+      "path": "docs/architecture/ARCHITECTURE_AUTHORITY.md",
+      "parent": "candidate",
+      "listed": "32ce54c73fd7677ff4ba9bd0b8ec867884b91fdb211d414c9d2a795361c5c304",
+      "actual": "9735e4e235d9594bb03c65e8c8b7cc6c7e728241d6ebb9b6e54e1b7e4514e6f3"
+    },
+    {
+      "path": "docs/architecture/DECISION_LOG.md",
+      "parent": "candidate",
+      "listed": "b64dd42fb4fb7673fec15b40413364a40f00e2dc085311ffc9e0e2e09de41626",
+      "actual": "5db7347531825509c10782f6e65dfc98b7da358d2f9dcc422c668856bf47e29b"
+    },
+    {
+      "path": "docs/phase01/PHASE0_PLAN.md",
+      "parent": "candidate",
+      "listed": "fcf06533e45b44a40504b6e01f31cc5443609558610304463bf6bd2f1644315d",
+      "actual": "a42a3a8841ebe62efba291ac169986d3a8f66d157371a32b43b22d9576b210a2"
+    }
+  ],
+  "missingCandidate": [
+    "docs/qa/r6_distribution_checks.json",
+    "docs/qa/r6_results.json"
+  ]
+}

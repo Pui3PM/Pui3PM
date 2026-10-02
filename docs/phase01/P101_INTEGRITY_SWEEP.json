@@ -1,0 +1,49 @@
+{
+  "changed_existing_files": [
+    {
+      "file": "app/static/pose.js",
+      "baseline": "22ee024b6365d8aca20cbe2ada6ac713b4ffd1d4cf84e29d79c4643ed2bd014d",
+      "current": "ca544eb05f68e309de2b8c6b0855448b211788230d7820edb651f7c7c4e5cb50"
+    }
+  ],
+  "missing_baseline_files": [],
+  "new_files_count": 36,
+  "new_files": [
+    "app/shadow/telemetry/event_tape.js",
+    "app/shadow/contracts/strict_types.js",
+    "app/shadow/contracts/canonical_json.js",
+    "app/shadow/contracts/contract_v1.js",
+    "app/shadow/contracts/time.js",
+    "app/shadow/contracts/clock_mapper.js",
+    "app/shadow/contracts/identity.js",
+    "app/shadow/replay/virtual_clock.js",
+    "app/tests/phase01/repro_f02_null_highfps.js",
+    "app/tests/phase01/repro_f01_source_characterization.js",
+    "app/tests/phase01/repro_f04_stale_writer.js",
+    "app/tests/phase01/test_p101_contract_clock.js",
+    "app/tests/phase01/test_contract_foundation.js",
+    "app/tests/phase01/run_p006_regressions.py",
+    "app/tests/phase01/repro_f03_null_clock.js",
+    "app/tests/phase01/test_pose_narrow_thaw.js",
+    "app/tests/phase01/f01_dom_harness.html",
+    "app/tests/phase01/run_phase0_repros.py",
+    "docs/phase01/PHASE0_PLAN.md",
+    "docs/phase01/KNOWN_FAILURES.md",
+    "docs/phase01/phase0_repro_results.json",
+    "docs/phase01/WRITER_CALL_GRAPH.md",
+    "docs/phase01/p006_static_integrity_legacy.txt",
+    "docs/phase01/NARROW_THAW_POSE_TRACE.md",
+    "docs/phase01/p006_js_regressions.json",
+    "docs/phase01/PHASE0_DOSSIER.md",
+    "docs/phase01/P008_OBSERVER_EFFECT_STATUS.md",
+    "docs/phase01/P006_STATUS.json",
+    "docs/phase01/P007_NATIVE_INVENTORY.md",
+    "docs/phase01/PHASE0_BASELINE.json",
+    "docs/phase01/PHASE0_BOUNDARIES.md",
+    "docs/architecture/DECISION_LOG.md",
+    "docs/architecture/ARCHITECTURE_AUDIT_2026-10-01.md",
+    "docs/architecture/PHASE_0_1_IMPLEMENTATION_CONTRACT_v1.md",
+    "docs/architecture/ARCHITECTURE_AUTHORITY.md",
+    "docs/architecture/INVARIANTS.md"
+  ]
+}

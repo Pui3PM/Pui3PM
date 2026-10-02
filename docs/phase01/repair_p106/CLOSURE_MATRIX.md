@@ -1,0 +1,19 @@
+# R8 P1-06 Repair Closure Matrix
+
+| Finding | Modules changed | Regression / evidence | Current result |
+|---|---|---|---|
+| M06 / Node-browser negative validation | `contracts/identity_material.js`, `identity.js`, `identity_browser.js`, `contract_v1.js`, `clock_mapper.js` | `test_p102_replay_identity.js`, `test_astra_p106_repairs.js` | **REPAIRED in Node/WebCrypto pure scope.** Actual Chromium execution BLOCKED in this container; rerun required in browser QA environment. |
+| Mapping semantic gaps | `clock_mapper.js` | `test_p101_contract_clock.js` | **REPAIRED/PARTIAL.** timebase/timestamp-kind binding + method/sample/bound semantics enforced offline; live clock calibration NOT RUN. |
+| RT-01 replay silent defaults | `adapters/replay/replay_adapter.js` | `test_p102_replay_identity.js`, `test_astra_p106_repairs.js` | **REPAIRED offline.** Missing/invalid fixture metadata rejects; no silent 1920x1080/mirror/decode truth. |
+| RT-02 ring hard bound / lease cleanup | `ring/role_ring.js` | `test_p103_ring_scheduler.js`, `test_astra_p106_repairs.js` | **REPAIRED pure scope.** hard admission + release/advance cleanup. Runtime memory/thermal NOT RUN. |
+| RT-03 scheduler compute claim | `scheduler/priority_scheduler.js` | `test_p103_ring_scheduler.js`, `test_astra_p106_repairs.js` | **REPAIRED as boundary contract.** arbitrary sync compute rejected; actual Worker/OS compute isolation NOT IMPLEMENTED/NOT RUN. |
+| RT-04 event log caller trust / mutation | `decision/shot_cycle_reducer.js`, `event_log/in_memory_event_log.js`, `contracts/record_validators.js` | `test_p104_decision_eventlog.js`, `test_astra_p106_repairs.js` | **REPAIRED in-memory shadow scope.** canonical digest/chain/scope/deep immutability. Durable event log still OPEN. |
+| RT-05 writer scope / immutable snapshot | `evidence_writer/in_memory_writer.js`, `contracts/record_validators.js` | `test_p105_writer_projector.js`, `test_astra_p106_repairs.js` | **REPAIRED in-memory shadow scope.** Cross-scope replay rejected; deep copy/validation. IndexedDB fencing/journal/crash remains OPEN. |
+| RT-06 logical25 truth / deterministic tie | `projector/logical25.js`, `contracts/record_validators.js` | `test_p105_writer_projector.js`, `test_astra_p106_repairs.js`, `projector_oracle_postrepair.cjs` | **REPAIRED for tested pure cases.** Invalid/no-payload/wrong-scope/negative-uncertainty candidates cannot become real; input reversal stable; 3360-case oracle no counterexample. Full large-scale optimality/property proof still PARTIAL. |
+| RT-07 Anchor trusts slot number | `review/view_model.js` | `test_p106_review_archive.js`, `test_astra_p106_repairs.js` | **REPAIRED pure view-model.** Slot plan/phase proof validated; actual production DOM/button wiring remains OPEN (M04/F01). |
+| RT-08 archive graph/path boundary | `archive/shadow_archive.js` | `test_p106_review_archive.js`, `test_astra_p106_repairs.js` | **REPAIRED pure import-validation/test-double scope.** unsafe paths/dangling refs rejected, records immutable, idempotent namespace staging. Persistent transactional importer still OPEN. |
+| M07 trace seam observer effect | no new production expansion this round | `test_pose_narrow_thaw.js`, diagnostic continuation | **PARTIAL / unchanged policy.** offline use allowed; live observer-effect/runtime budget NOT RUN. |
+| M01/F02 upstream temporal dedup | production `temporal_evidence_core.js` | original Astra repro preserved | **OPEN BY DESIGN.** Production repair prohibited in this round. |
+| M03/F04 native writer bypass | legacy/native writer | original Astra review | **OPEN BY DESIGN.** Persistent single-writer migration not promoted. |
+| M04/F01 legacy UI loop / Anchor handler ownership | legacy UI layers | original Chromium evidence | **OPEN BY DESIGN.** Pure Review does not reuse legacy renderer. |
+| F03/F06/F07/F08/F09/F10/F11/F12 | production/runtime/native | prior audits | **OPEN / NOT RUN as applicable.** No production closure claim. |

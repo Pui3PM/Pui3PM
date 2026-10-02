@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-10-02",
+  "artifact_class": "development_not_release",
+  "results": [
+    {
+      "name": "phase01_suite",
+      "status": "passed",
+      "detail": "All app/tests/phase01/test_*.js PASS, including Claude C01-C20 and Astra repair regressions."
+    },
+    {
+      "name": "projector_optimality_10000",
+      "status": "passed",
+      "detail": "Projector optimality oracle: PASS 10000/10000"
+    },
+    {
+      "name": "projector_input_reversal_3360",
+      "status": "passed",
+      "detail": "Input-reversal invariance only; not an optimality claim."
+    },
+    {
+      "name": "browser_bundle_vm",
+      "status": "passed",
+      "detail": "Generated from current shadow sources; executes in VM without require/Buffer/process."
+    },
+    {
+      "name": "pose_narrow_thaw",
+      "status": "passed",
+      "detail": "Approved trace seam strips back to frozen pose baseline byte-for-byte."
+    },
+    {
+      "name": "phase0_repros",
+      "status": "mixed_expected",
+      "detail": {
+        "contract_foundation": "passed",
+        "F01_source_characterization": "passed",
+        "F02_budget_direct": "passed",
+        "F02_upstream_temporal": "open_confirmed",
+        "F03_null_clock": "passed",
+        "F04_stale_writer": "passed",
+        "F01_dynamic_chromium": "blocked"
+      }
+    },
+    {
+      "name": "legacy_js_103",
+      "status": "expected_policy_failures",
+      "passed": 100,
+      "failed": 3,
+      "detail": "Three original tests retain the pre-thaw pose.js frozen-hash sentinel. Assertions were not changed."
+    },
+    {
+      "name": "static_integrity",
+      "status": "passed",
+      "detail": "Active artifact gate pins approved trace-seam hash; app.js/core_runtime.js/native binaries remain frozen and reconstruction guard is separate."
+    },
+    {
+      "name": "cpp_shared_ring_compile_run",
+      "status": "passed"
+    },
+    {
+      "name": "windows_adapter_sentinel_compile",
+      "status": "passed",
+      "detail": "Compile sentinel only; not Windows native runtime acceptance."
+    },
+    {
+      "name": "swift_native_bridge_parse",
+      "status": "passed",
+      "detail": "Syntax parse only; not macOS camera runtime acceptance."
+    },
+    {
+      "name": "actual_chromium",
+      "status": "blocked_not_run"
+    },
+    {
+      "name": "mac_windows_real_camera",
+      "status": "not_run"
+    },
+    {
+      "name": "real_archer_labeled_field",
+      "status": "not_run"
+    }
+  ],
+  "counts": {
+    "passed": 9,
+    "mixed_expected": 1,
+    "expected_policy_failures": 1,
+    "blocked_not_run": 1,
+    "not_run": 2
+  }
+}

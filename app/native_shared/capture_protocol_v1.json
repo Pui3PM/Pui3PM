@@ -1,0 +1,19 @@
+{
+  "protocol": "3pm-capture-v1",
+  "roles": ["side", "overhead", "rear"],
+  "secondary_views_block_primary": false,
+  "frame_identity": ["frame_seq", "capture_epoch_ms", "master_time_ms", "media_time_ms"],
+  "required_endpoints": ["/health", "/devices", "/open", "/close", "/diag", "/release", "/bundle", "/frame"],
+  "clock_policy": {
+    "master": "monotonic process clock shared by all active camera roles in one native adapter",
+    "capture_epoch": "wall clock for compatibility/debugging, not cross-view ordering authority",
+    "media_time": "source presentation timestamp when available",
+    "frame_seq": "strictly increasing per role"
+  },
+  "degradation_policy": {
+    "side": "preferred shot lifecycle authority in current production logic",
+    "overhead": "optional evidence provider",
+    "rear": "optional evidence provider",
+    "side_absent": "expose only supported auxiliary analyses; never pretend full phase/release parity"
+  }
+}

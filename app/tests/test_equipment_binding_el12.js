@@ -1,0 +1,16 @@
+const fs=require('fs'),assert=require('assert');
+const html=fs.readFileSync('static/index.html','utf8'), js=fs.readFileSync('static/equipment_lab_layer.js','utf8'), app=fs.readFileSync('static/app.js','utf8');
+for(const id of ['currentRiserBrand','currentRiserModel','currentLimbBrand','currentLimbModel','currentSightBrand','currentSightModel','currentLongRodBrand','currentLongRodModel','currentSideRodBrand','currentSideRodModel','currentExtenderBrand','currentExtenderModel','currentVbarBrand','currentVbarModel']) assert(html.includes(`id="${id}"`),id);
+assert(!html.includes('id="eqlabLimbBrand"'),'duplicate limb brand selector removed');
+assert(!html.includes('id="eqlabLimbModel"'),'duplicate limb model selector removed');
+assert(!html.includes('Long Rod Brand / Model<input'),'stabilizer free text removed');
+assert(!html.includes('Side Rod Brand / Model<input'),'side rod free text removed');
+assert(!html.includes('Extender Brand / Model<input'),'extender free text removed');
+assert(!html.includes('V-Bar Brand / Model<input'),'vbar free text removed');
+assert(!html.includes('name="riser_in" value="25"'),'no hard-coded riser default');
+assert(!html.includes('name="bow_length_in" value="68"'),'no hard-coded bow default');
+assert(js.includes('updateCurrentBowSummary'),'single-source summary present');
+assert(js.includes("componentModel('long_rod'"),'catalog model/length binding long rod');
+assert(!js.includes("f.elements?.riser_in)f.elements.riser_in.value=''"),'Equipment layer must not erase main-form riser defaults/state');
+assert(!js.includes("q('#autoBowLengthToggle').checked=false"),'Equipment layer must not disable Auto AMO after app reset');
+console.log('PASS equipment binding EL12');

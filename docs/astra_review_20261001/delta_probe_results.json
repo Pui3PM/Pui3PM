@@ -1,0 +1,35 @@
+{
+  "null25": 25,
+  "fps240": 25,
+  "crossSourceSamePTS": 1,
+  "newGenerationSameSeq": 1,
+  "comparatorCycle": [
+    -1000,
+    -1000,
+    -0.5
+  ],
+  "permutationOrders": [
+    [
+      1000,
+      2000,
+      3000
+    ],
+    [
+      1000,
+      2000,
+      3000
+    ],
+    [
+      3000,
+      1000,
+      2000
+    ]
+  ],
+  "sameEpochCandidates": 30,
+  "sameEpochSelected": 1,
+  "u64OverflowAccepted": true,
+  "i64OverflowAccepted": true,
+  "negativeZeroAccepted": true,
+  "unknownSourceValidatedAccepted": true,
+  "nestedMutationAccepted": true
+}

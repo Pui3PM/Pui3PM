@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key><string>com.3pmarchery.nativecapturebridge</string>
+  <key>CFBundleExecutable</key><string>3PMNativeCaptureBridge</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleName</key><string>3PM Native Capture Bridge</string>
+  <key>CFBundleDisplayName</key><string>3PM Native Capture Bridge</string>
+  <key>CFBundleVersion</key><string>4382</string>
+  <key>CFBundleShortVersionString</key><string>4.3.8.2</string>
+  <key>LSUIElement</key><true/>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSCameraUsageDescription</key><string>3PM Form Analyzer uses the camera to capture synchronized archery shot evidence.</string>
+</dict>
+</plist>

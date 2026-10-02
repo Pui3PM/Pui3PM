@@ -1,0 +1,13 @@
+{
+  "candidate_sha256": "035d5ed7dc954e688572023d362983966caa84d69e06892ace33362303e1bc87",
+  "manifest_copies_equal": true,
+  "results_copies_equal": true,
+  "hv3_import_mismatches": [],
+  "frozen_hv3_matches": {
+    "app/static/app.js": true,
+    "app/static/core_runtime.js": true,
+    "app/3PM_Form_Analyzer_arm64": true,
+    "app/3PM_Form_Analyzer_x64": true
+  },
+  "review_source_changes": []
+}
