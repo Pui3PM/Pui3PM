@@ -2,6 +2,7 @@
 const {sha256Canonical}=require('../contracts/canonical_json');
 const {immutablePlainCopy,isShadowNamespace,shadowNamespacePolicy}=require('../contracts/strict_types');
 const {validateEvidenceCandidate,validateProjection,validatePhaseClaim}=require('../contracts/record_validators');
+const {verifyProjectionBinding}=require('../projector/projection_binding');
 function keyTuple(parts){return JSON.stringify(parts);}
 function commandFingerprint(c){return sha256Canonical({namespace:c.namespace,runId:c.runId,cycleId:c.cycleId,role:c.role,operation:c.operation,expectedRecordVersion:c.expectedRecordVersion,payloadDigest:c.payloadDigest});}
 function validateCandidate(item,c){return validateEvidenceCandidate(item,{runId:c.runId,cycleId:c.cycleId,role:c.role});}
@@ -20,12 +21,16 @@ class InMemoryEvidenceWriter{
       if(!Array.isArray(payloadCopy?.claims))throw new TypeError('claims array required');for(const raw of payloadCopy.claims){const item=validatePhaseClaim(raw,{runId:c.runId,cycleId:c.cycleId,role:c.role}),d=sha256Canonical(item),prior=next.phaseClaims.get(item.claimId);if(prior&&prior.digest!==d)throw new Error('PHASE_CLAIM_CONFLICT');if(!prior)next.phaseClaims.set(item.claimId,{digest:d,value:item});}
     }else if(c.operation==='saveProjection'){
       const p=validateProjection(payloadCopy?.projection);if(p.runId!==c.runId||p.cycleId!==c.cycleId||p.role!==c.role)throw new TypeError('projection scope/identity required');for(const s of p.slots){if(s.status!=='real')continue;const cand=next.candidates.get(s.candidateId)?.value;if(!cand||cand.frameUID!==s.actualFrameUID||cand.derivationId!==s.derivationId||cand.contentDigest!==s.contentDigest||cand.frameEnvelopeRef!==s.frameEnvelopeRef||cand.sourceId!==s.sourceId||cand.streamGeneration!==s.streamGeneration||cand.frameSeq!==s.frameSeq)throw new Error('PROJECTION_CANDIDATE_MISMATCH');}
-      const d=sha256Canonical(p),prior=next.projections.get(p.projectionId);if(prior&&prior.digest!==d)throw new Error('PROJECTION_ID_CONFLICT');if(!prior)next.projections.set(p.projectionId,{digest:d,value:p});
+      // S-06: the projection must carry the timeline/releaseTime it was projected from; every real slot is re-derived from them.
+      for(const k of Object.keys(payloadCopy))if(!['projection','timeline','releaseTime'].includes(k))throw new TypeError(`saveProjection unknown payload field: ${k}`);
+      if(!Object.prototype.hasOwnProperty.call(payloadCopy,'timeline')||!Object.prototype.hasOwnProperty.call(payloadCopy,'releaseTime'))throw new Error('PROJECTION_PHASE_MISMATCH: saveProjection requires timeline and releaseTime (explicit null when unknown)');
+      const bound=verifyProjectionBinding({projection:p,timeline:payloadCopy.timeline,releaseTime:payloadCopy.releaseTime,candidateById:id=>next.candidates.get(id)?.value});
+      const d=sha256Canonical(p),prior=next.projections.get(p.projectionId);if(prior&&prior.digest!==d)throw new Error('PROJECTION_ID_CONFLICT');if(!prior)next.projections.set(p.projectionId,{digest:d,value:p,timeline:bound.timeline,releaseTime:bound.releaseTime});
     }else if(c.operation==='finalizeCycle'){
       if(next.projections.size===0)throw new Error('FINALIZE_REQUIRES_PROJECTION');next.finalized=true;
     }
     next.version=old.version+1;this.records.set(key,next);this.quarantine.push(...pendingQuarantine);const result=Object.freeze({status:'committed',recordVersion:next.version,commandId:c.commandId});this.commands.set(memoKey,{fingerprint,result});this.commandScopes.set(c.commandId,memoKey);return result;
   }
-  snapshot({namespace,runId,cycleId,role}){const r=this.records.get(keyTuple([namespace,runId,cycleId,role]));if(!r)return null;return immutablePlainCopy({version:r.version,finalized:r.finalized,candidates:[...r.candidates.values()].map(x=>x.value),phaseClaims:[...r.phaseClaims.values()].map(x=>x.value),projections:[...r.projections.values()].map(x=>x.value)});}
+  snapshot({namespace,runId,cycleId,role}){const r=this.records.get(keyTuple([namespace,runId,cycleId,role]));if(!r)return null;return immutablePlainCopy({version:r.version,finalized:r.finalized,candidates:[...r.candidates.values()].map(x=>x.value),phaseClaims:[...r.phaseClaims.values()].map(x=>x.value),projections:[...r.projections.values()].map(x=>x.value),projectionTimelines:[...r.projections.values()].map(x=>({projectionId:x.value.projectionId,timeline:x.timeline,releaseTime:x.releaseTime}))});}
 }
 module.exports={InMemoryEvidenceWriter};

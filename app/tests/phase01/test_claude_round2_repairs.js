@@ -136,6 +136,98 @@ block('S-05', () => {
   assert.throws(() => new AR.InMemoryArchiveImporter().stage(good, { namespace: 'shadow/production' }), /shadow namespace required/);
 });
 
+const saveCmd = (w, payload, ver, id) => w.execute({ commandId: id, namespace: 'shadow/n', runId: 'r', cycleId: 'c', role: 'side', operation: 'saveProjection', expectedRecordVersion: ver, payload, payloadDigest: sha256Canonical(payload) });
+const addCands = (w, cands, ver, id) => { const pay = { candidates: cands }; return w.execute({ commandId: id, namespace: 'shadow/n', runId: 'r', cycleId: 'c', role: 'side', operation: 'addCandidates', expectedRecordVersion: ver, payload: pay, payloadDigest: sha256Canonical(pay) }); };
+function forgeDrawIntoAnchor(p) {
+  // Reviewer N01: draw-phase real frame relabelled into S03 (anchor) with a forged time and self-asserted proof.
+  const forged = clone(p); forged.projectionId = 'forged';
+  const src = forged.slots.find((s) => s.status === 'real'), dst = forged.slots[2];
+  Object.assign(dst, { status: 'real', actualFrameUID: src.actualFrameUID, derivationId: src.derivationId, candidateId: src.candidateId, actualMasterTime: dst.targetMasterTime, signedDelta: 0, missingReason: null, mappingUncertaintyUs: 0, toleranceUs: 50000, actualPhaseEvidenceRefs: ['tl-anchor'], selectionReason: 'forged', sourceId: src.sourceId, streamGeneration: src.streamGeneration, frameSeq: src.frameSeq, contentDigest: src.contentDigest, frameEnvelopeRef: src.frameEnvelopeRef, contributingReasons: [], phaseProof: { phase: 'anchor', timelineRefs: ['tl-anchor'], intervalCheck: 'inside', settledAnchorBoundary: true } });
+  Object.assign(src, { status: 'missing', actualFrameUID: null, derivationId: null, candidateId: null, actualMasterTime: null, signedDelta: null, missingReason: 'no_frame_in_tolerance', mappingUncertaintyUs: null, toleranceUs: null, actualPhaseEvidenceRefs: [], selectionReason: 'missing', sourceId: null, streamGeneration: null, frameSeq: null, contentDigest: null, frameEnvelopeRef: null, phaseProof: null });
+  return { forged, src, dst };
+}
+
+// S-06: projection slot time/phase/proof bound to candidate + timeline in writer and archive (probe N01).
+block('S-06', () => {
+  const { InMemoryEvidenceWriter } = req('shadow/evidence_writer/in_memory_writer');
+  const { project25 } = req('shadow/projector/logical25');
+  const AR = req('shadow/archive/shadow_archive');
+  const drawCand = F.candidate(1, 30000);
+  const p = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: TL, candidates: [drawCand], roleBindings: BIND, projectionId: 'honest', configDigest: 'cfg' });
+  const honest = p.slots.find((s) => s.status === 'real');
+  assert.strictEqual(honest.phase, 'draw', 'precondition: candidate honestly projected into a draw slot');
+  const { forged } = forgeDrawIntoAnchor(p);
+
+  const w = new InMemoryEvidenceWriter(); addCands(w, [drawCand], 0, 'a');
+  // Forged projection, even when submitted WITH the honest timeline, is rejected.
+  assert.throws(() => saveCmd(w, { projection: forged, timeline: TL, releaseTime: null }, 1, 'f1'), /PROJECTION_PHASE_MISMATCH/);
+  assert.throws(() => saveCmd(w, { projection: forged }, 1, 'f2'), /PROJECTION_PHASE_MISMATCH/, 'timeline is mandatory');
+  // Consistent-time variant: keep the candidate's real time but claim the anchor slot.
+  const v2 = clone(forged); const d2 = v2.slots[2]; d2.actualMasterTime = drawCand.actualMasterTime; d2.signedDelta = drawCand.actualMasterTime - d2.targetMasterTime;
+  assert.throws(() => saveCmd(w, { projection: v2, timeline: TL, releaseTime: null }, 1, 'f3'), /PROJECTION_PHASE_MISMATCH/);
+  // Honest slot with a forged phaseProof / refs / target / uncertainty.
+  for (const mutate of [
+    (s) => { s.phaseProof.timelineRefs = ['tl-anchor']; },
+    (s) => { s.phaseProof.phase = 'anchor'; },
+    (s) => { s.actualPhaseEvidenceRefs = ['tl-anchor']; },
+    (s) => { s.mappingUncertaintyUs = 0 + 1; },
+    (s) => { s.toleranceUs = 60000; },
+    (s) => { s.targetMasterTime += 1; s.signedDelta -= 1; },
+  ]) {
+    const m = clone(p); mutate(m.slots.find((s) => s.status === 'real'));
+    assert.throws(() => saveCmd(w, { projection: m, timeline: TL, releaseTime: null }, 1, 'm' + Math.random()), /PROJECTION_(PHASE|TIMELINE)|real slot phaseProof/);
+  }
+  // A different timeline than the one projected from.
+  const otherTL = clone(TL); otherTL.anchor.end = 400001;
+  assert.throws(() => saveCmd(w, { projection: p, timeline: otherTL, releaseTime: null }, 1, 't1'), /PROJECTION_TIMELINE_DIGEST_MISMATCH/);
+  assert.throws(() => saveCmd(w, { projection: p, timeline: TL, releaseTime: null, extra: 1 }, 1, 't2'), /unknown payload field/);
+  // Honest projection still saves; Review only ever sees the honest record.
+  assert.strictEqual(saveCmd(w, { projection: p, timeline: TL, releaseTime: null }, 1, 'ok').status, 'committed');
+  const snap = w.snapshot({ namespace: 'shadow/n', runId: 'r', cycleId: 'c', role: 'side' });
+  assert.deepStrictEqual(snap.projections.map((x) => x.projectionId), ['honest']);
+  assert.strictEqual(snap.projectionTimelines[0].projectionId, 'honest');
+
+  // Archive: same binding, typed timelines collection, explicit schema rejection.
+  const digest = crypto.createHash('sha256').update('img').digest('hex');
+  const c1 = F.candidate(1, 30000, { payloadRef: 'f/1.bin', contentDigest: digest });
+  const f1 = F.frame(1, { mappedMasterTime: 30000, payloadRef: 'f/1.bin', contentDigest: digest, decodeValid: true });
+  const pa = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: TL, candidates: [c1], roleBindings: BIND, projectionId: 'honest', configDigest: 'cfg' });
+  const base = crypto.createHash('sha256').update('b').digest('hex');
+  const files = { 'f/1.bin': Buffer.from('img') };
+  const goodRecords = { frames: [f1], candidates: [c1], events: [], projections: [pa], timelines: [{ projectionId: 'honest', timeline: TL, releaseTime: null }] };
+  const arc = AR.buildArchive({ archiveId: 'a', baselineDigest: base, records: goodRecords, files });
+  assert.strictEqual(AR.validateArchive(AR.roundTrip(arc)), true);
+  assert.strictEqual(arc.manifest.records.schemaVersion, 2);
+  const fa = forgeDrawIntoAnchor(pa).forged; fa.projectionId = 'honest';
+  assert.throws(() => AR.buildArchive({ archiveId: 'a', baselineDigest: base, records: Object.assign({}, goodRecords, { projections: [fa] }), files }), /PROJECTION_PHASE_MISMATCH/);
+  const reseal = (a) => { const { manifestDigest, ...body } = a.manifest; a.manifest.manifestDigest = sha256Canonical(body); return a; };
+  const tam = clone(arc); tam.manifest.records.projections = [fa]; reseal(tam);
+  assert.throws(() => AR.validateArchive(tam), /PROJECTION_PHASE_MISMATCH/);
+  assert.throws(() => new AR.InMemoryArchiveImporter().stage(tam, { namespace: 'shadow/import' }), /PROJECTION_PHASE_MISMATCH/);
+  assert.throws(() => AR.buildArchive({ archiveId: 'a', baselineDigest: base, records: Object.assign({}, goodRecords, { timelines: [] }), files }), /PROJECTION_TIMELINE_MISSING/);
+  const v1 = clone(arc); delete v1.manifest.records.schemaVersion; delete v1.manifest.records.timelines; reseal(v1);
+  assert.throws(() => AR.validateArchive(v1), /ARCHIVE_SCHEMA_UNSUPPORTED/);
+  const orphan = clone(arc); orphan.manifest.records.timelines.push({ projectionId: 'ghost', timeline: TL, releaseTime: null }); reseal(orphan);
+  assert.throws(() => AR.validateArchive(orphan), /ORPHAN_PROJECTION_TIMELINE/);
+
+  // No false rejection: randomized honest projections (all phases, release window, jitter, uncertainty) always verify.
+  const { verifyProjectionBinding } = req('shadow/projector/projection_binding');
+  let seed = 12345; const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 4294967296);
+  const fullTL = { masterClockId: 'm', draw: { status: 'verified', start: 0, end: 400000, refs: ['d'] }, anchor: { status: 'verified', start: 400000, end: 900000, refs: ['a'] }, hold: { status: 'verified', start: 900000, end: 1400000, refs: ['h'] }, expansion: { status: 'verified', start: 1400000, end: 1600000, refs: ['e'] }, release_window: { status: 'verified', refs: ['rw'] }, follow_through: { status: 'verified', start: 1800000, end: 2400000, refs: ['ft'] }, recovery: { status: 'verified', start: 2400000, end: 2600000, refs: ['rc'] } };
+  let verified = 0, realSlots = 0;
+  for (let k = 0; k < 150; k++) {
+    const tl = clone(fullTL); for (const ph of ['hold', 'expansion', 'recovery']) if (rnd() < 0.2) tl[ph].status = 'unverified';
+    const n = 5 + Math.floor(rnd() * 70), cands = [];
+    for (let i = 0; i < n; i++) cands.push(F.candidate(i + 1, Math.floor(rnd() * 2700000), { mappingUncertainty: Math.floor(rnd() * 4000), phaseEvidenceRefs: rnd() < 0.3 ? ['claim'] : [] }));
+    const releaseTime = rnd() < 0.85 ? 1650000 + Math.floor(rnd() * 100000) : null;
+    const pr = project25({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: tl, releaseTime, candidates: cands, roleBindings: [F.binding({ startMasterTime: 0, endMasterTime: 3000000, capturePeriodUs: 33333, jitterUs: Math.floor(rnd() * 3000) })], projectionId: 'p' + k, configDigest: 'cfg' });
+    const byId = new Map(cands.map((c) => [c.candidateId, c]));
+    verifyProjectionBinding({ projection: pr, timeline: tl, releaseTime, candidateById: (id) => byId.get(id) });
+    verified++; realSlots += pr.uniqueRealCount;
+  }
+  assert.strictEqual(verified, 150); assert.ok(realSlots > 1000, 'randomized set exercised many real slots: ' + realSlots);
+});
+
 let failed = 0;
 for (const [id, fn] of blocks) {
   try { fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
