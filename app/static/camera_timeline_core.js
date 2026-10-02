@@ -7,14 +7,17 @@ const ROLES=Object.freeze(['side','overhead','rear']);
 const ROLE_SET=new Set(ROLES);
 const finite=v=>Number.isFinite(Number(v));
 const num=(v,d=null)=>finite(v)?Number(v):d;
+// R8C/F03: clock/sequence fields use a strict reader: null/undefined/boolean/'' are UNKNOWN, never 0.
+// (num() above is left unchanged for fps/jitter policy inputs; see R8C patch note open item.)
+const known=(v,d=null)=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v))?Number(v):d;
 const role=r=>ROLE_SET.has(String(r||'').toLowerCase())?String(r).toLowerCase():null;
 function frameTimeMs(f){
-  for(const k of ['masterTimeMs','captureEpochMs','epochMs']){const v=num(f?.[k]);if(v!==null)return v;}
-  const media=num(f?.mediaTimeMs);if(media!==null)return media;
-  const legacyMedia=num(f?.mediaTime);if(legacyMedia!==null)return legacyMedia*1000;
+  for(const k of ['masterTimeMs','captureEpochMs','epochMs']){const v=known(f?.[k]);if(v!==null)return v;}
+  const media=known(f?.mediaTimeMs);if(media!==null)return media;
+  const legacyMedia=known(f?.mediaTime);if(legacyMedia!==null)return legacyMedia*1000;
   return null;
 }
-function chronologyKey(f,index=0){return{timeMs:frameTimeMs(f),mediaTimeMs:num(f?.mediaTimeMs,num(f?.mediaTime)!==null?num(f.mediaTime)*1000:null),frameSeq:num(f?.frameSeq),index};}
+function chronologyKey(f,index=0){return{timeMs:frameTimeMs(f),mediaTimeMs:known(f?.mediaTimeMs,known(f?.mediaTime)!==null?known(f.mediaTime)*1000:null),frameSeq:known(f?.frameSeq),index};}
 function canonicalFrames(frames=[]){
   const rows=(frames||[]).map((f,i)=>({f:{...f},k:chronologyKey(f,i)})).filter(x=>x.k.timeMs!==null||x.k.frameSeq!==null);
   rows.sort((a,b)=>{

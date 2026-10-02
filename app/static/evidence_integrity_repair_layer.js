@@ -42,16 +42,22 @@ function ensureRail(){
   const meta=document.getElementById('shotReplayMeta');if(!meta)return null;
   rail=document.createElement('div');rail.id='fixedEvidence25Rail';rail.className='fixed-evidence-25-rail';rail.setAttribute('aria-label','Fixed 25 evidence slots');meta.insertAdjacentElement('afterend',rail);return rail;
 }
+// R8C/F01: the MutationObserver below watches this subtree. Rewriting identical DOM on every refresh
+// re-triggered the observer forever (measured in Chromium: 100 callbacks in <300 ms while idle).
+// Render only when what the rail shows actually changed.
+function railSignature(frames,index){return `${index}|${frames.length}|`+frames.slice(0,TARGET).map(f=>Math.round(Number(f?.offsetMs)||0)).join(',');}
 function renderRail(){
   const rail=ensureRail();if(!rail)return;
   const r=typeof shotReplayState!=='undefined'?shotReplayState.record:null,frames=Array.isArray(r?.frames)?r.frames:[];
+  const sig=railSignature(frames,typeof shotReplayState!=='undefined'?Number(shotReplayState.index):null);
+  if(rail.dataset.sig===sig)return;
   rail.innerHTML='';
   for(let i=0;i<TARGET;i++){
     const b=document.createElement('button'),f=frames[i];b.type='button';b.className=`fixed-slot ${f?'real':'missing'}${f&&Number(shotReplayState.index)===i?' active':''}`;b.textContent=f?String(i+1):'—';b.title=f?`Evidence slot ${i+1} · ${Math.round(Number(f.offsetMs)||0)} ms`:`Evidence slot ${i+1} · Missing real frame`;b.disabled=!f;
     if(f)b.addEventListener('click',()=>{if(typeof stopShotReplay==='function')stopShotReplay();shotReplayState.index=i;if(typeof renderShotReplayFrame==='function')renderShotReplayFrame();});
     rail.appendChild(b);
   }
-  rail.dataset.actual=String(frames.length);rail.dataset.target=String(TARGET);
+  rail.dataset.actual=String(frames.length);rail.dataset.target=String(TARGET);rail.dataset.sig=sig;
 }
 function annotateMeta(){
   const meta=document.getElementById('shotReplayMeta'),r=typeof shotReplayState!=='undefined'?shotReplayState.record:null;if(!meta||!r)return;

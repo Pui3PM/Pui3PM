@@ -4,7 +4,8 @@
   if(root)root.TemporalEvidenceCore=api;
 })(typeof window!=="undefined"?window:globalThis,function(){
   'use strict';
-  const finite=v=>Number.isFinite(Number(v));
+  // R8C/F02: null, undefined, booleans and empty strings are UNKNOWN, never 0 (INV-001; same rule as evidence_budget_core).
+  const finite=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v));
   const num=v=>finite(v)?Number(v):null;
   const median=a=>{const x=(a||[]).filter(finite).map(Number).sort((p,q)=>p-q);if(!x.length)return null;const i=Math.floor(x.length/2);return x.length%2?x[i]:(x[i-1]+x[i])/2;};
   const percentile=(a,p=.95)=>{const x=(a||[]).filter(finite).map(Number).sort((u,v)=>u-v);if(!x.length)return null;return x[Math.max(0,Math.min(x.length-1,Math.round((x.length-1)*p)))];};
@@ -45,24 +46,29 @@
       return Number(a.epochMs)-Number(b.epochMs)||a.__i-b.__i;
     });
     const out=[],tagList=f=>[String(f?.evidenceZone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])].filter(Boolean);
-    let lastMedia=null,lastSeq=null;
+    let lastMedia=null;const lastSeqBySource=new Map();
     for(const raw of rows){
       const f={...raw};delete f.__i;
-      const mt=num(f.mediaTime),seq=num(f.frameSeq),last=out.at(-1),lmt=num(last?.mediaTime);
+      const mt=num(f.mediaTime),seq=num(f.frameSeq),last=out.at(-1),lmt=num(last?.mediaTime),src=String(f.source||''),lsrc=String(last?.source||'');
+      const lastSeq=lastSeqBySource.has(src)?lastSeqBySource.get(src):null;
       // Reject an actual camera-time inversion. This is the failure that makes Frame
       // playback visibly jump backwards even though epochMs happened to sort forward.
       if(mt!==null&&lastMedia!==null&&mt<lastMedia-.0004)continue;
       if(seq!==null&&lastSeq!==null&&seq<lastSeq&&mt===null)continue;
       const sameMedia=last&&mt!==null&&lmt!==null&&Math.abs(mt-lmt)<.0008;
-      const sameSeq=last&&seq!==null&&num(last?.frameSeq)!==null&&seq===num(last.frameSeq);
-      const sameEpoch=last&&Math.abs(Number(f.epochMs)-Number(last.epochMs))<=toleranceMs;
+      // R8C/F02: frameSeq is a per-source counter; equal numbers from different sources are not one sample.
+      const sameSeq=last&&seq!==null&&num(last?.frameSeq)!==null&&seq===num(last.frameSeq)&&src===lsrc;
+      // R8C/F02: epoch nearness is NOT camera identity. It may only fold a cross-pipeline duplicate
+      // (different source) when the two rows cannot be compared by camera mediaTime. Two known mediaTimes
+      // are decided by sameMedia above; same-source rows are distinct captures (240 FPS = 4.2 ms apart).
+      const sameEpoch=last&&src!==lsrc&&!(mt!==null&&lmt!==null)&&Math.abs(Number(f.epochMs)-Number(last.epochMs))<=toleranceMs;
       if(last&&(sameMedia||sameSeq||sameEpoch)){
         const fw=/worker|native-/.test(String(f.source||'')),lw=/worker|native-/.test(String(last.source||''));
         const tags=[...new Set([...tagList(last),...tagList(f)])];
         if(fw&&!lw)out[out.length-1]={...f,evidenceTags:tags};else out[out.length-1]={...last,evidenceTags:tags};
       }else out.push({...f,evidenceTags:[...new Set(tagList(f))]});
       const kept=out.at(-1),kmt=num(kept?.mediaTime),ks=num(kept?.frameSeq);
-      if(kmt!==null)lastMedia=kmt;if(ks!==null)lastSeq=ks;
+      if(kmt!==null)lastMedia=kmt;if(ks!==null)lastSeqBySource.set(String(kept?.source||''),ks);
     }
     return out.map((f,i)=>({...f,replaySeq:i}));
   }
