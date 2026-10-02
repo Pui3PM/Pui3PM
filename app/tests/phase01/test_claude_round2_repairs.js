@@ -355,6 +355,26 @@ block('S-10', () => {
   assert.ok(w4._memoCount() <= (64 + 1) * 3, 'memo memory bounded: ' + w4._memoCount());
 });
 
+// S-11: a malformed candidate is classified invalid, counted, and does not abort the projection (probe N10).
+block('S-11', () => {
+  const { project25 } = req('shadow/projector/logical25');
+  const good = F.candidate(4, 250000);
+  const args = (cands) => ({ runId: 'r', cycleId: 'c', masterClockId: 'm', role: 'side', timeline: TL, candidates: cands, roleBindings: BIND, projectionId: 'u', configDigest: 'cfg' });
+  const honest = project25(args([good]));
+  for (const bad of [Object.assign({}, F.candidate(3, 175000), { extensions: undefined }), Object.assign({}, F.candidate(5, 175000), { width: NaN }), null, undefined, 'junk']) {
+    const p = project25(args([good, bad]));
+    assert.strictEqual(p.inputCandidateCount, 2, 'invalid candidate counted, not dropped');
+    assert.strictEqual(p.eligibleCandidateCount, 1);
+    assert.strictEqual(p.uniqueRealCount, honest.uniqueRealCount, 'other candidates still real');
+    assert.ok(p.slots.filter((s) => s.status === 'missing').some((s) => s.contributingReasons.includes('candidate_invalid')), 'reason surfaced');
+    assert.notStrictEqual(p.inputCandidateDigest, honest.inputCandidateDigest, 'digest reflects the invalid input');
+  }
+  // Honest inputs hash exactly as before (raw list digest).
+  assert.strictEqual(honest.inputCandidateDigest, sha256Canonical([good]));
+  const inactive = project25(Object.assign(args([good, Object.assign({}, good, { extensions: undefined })]), { active: false }));
+  assert.strictEqual(inactive.inactiveCount, 25);
+});
+
 (async () => {
   let failed = 0;
   for (const [id, fn] of blocks) {
