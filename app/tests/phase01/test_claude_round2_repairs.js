@@ -253,9 +253,69 @@ block('S-07', () => {
   assert.doesNotThrow(() => AR.buildArchive({ archiveId: 'y', baselineDigest: base, records: rec([frU], [cU]), files: { 'blobs/7.jpg': imgA } }));
 });
 
-let failed = 0;
-for (const [id, fn] of blocks) {
-  try { fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
-}
-if (failed) { console.error(`Claude round-2 repairs: ${failed} FAIL`); process.exit(1); }
-console.log(`Claude round-2 repairs: PASS (${blocks.length} blocks)`);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const D = (messageType, payloadRef = null) => ({ workerId: 'w', messageType, payloadRef });
+
+// S-08: timeout aborts the executor job; a hung worker cannot accumulate jobs; generation set is bounded (probe N06).
+block('S-08', async () => {
+  const { AnalysisScheduler, CANCELLED_GENERATIONS_RETAINED } = req('shadow/scheduler/priority_scheduler');
+  // (a) N06 inverted: 8 aux submissions onto one hung worker -> never more than 1 outstanding executor job.
+  let running = 0, peak = 0; const signals = []; const drops = [];
+  const s = new AnalysisScheduler({ jobTimeoutMs: 10, onDrop: (j, r) => drops.push(r), executor: (d, m, ctx) => { running++; peak = Math.max(peak, running); signals.push(ctx.signal); return new Promise(() => {}); } });
+  for (let i = 0; i < 8; i++) { s.submit('overhead', D('hang'), { id: 'j' + i, generation: 'g' + i }); await sleep(14); }
+  assert.strictEqual(peak, 1, 'hung worker never receives a second job');
+  assert.strictEqual(signals.length, 1); assert.strictEqual(signals[0].aborted, true, 'timed-out job was aborted');
+  assert.strictEqual(String(signals[0].reason), 'SCHEDULER_JOB_TIMEOUT');
+  assert.strictEqual(drops.filter((r) => r === 'worker_unresponsive').length, 7);
+  const snap = s.snapshot(); assert.strictEqual(snap.auxDegraded, true); assert.strictEqual(snap.metrics.workerUnresponsiveDrops, 7); assert.strictEqual(snap.metrics.timedOut, 1);
+  // Side is unaffected by the hung aux worker and completes promptly.
+  const sideDone = []; const s2 = new AnalysisScheduler({ jobTimeoutMs: 50, onOutcome: (j, st) => sideDone.push([j.role, j.meta.id, st]), executor: (d) => d.messageType === 'hang' ? new Promise(() => {}) : Promise.resolve(d.messageType) });
+  s2.submit('overhead', D('hang'), { id: 'aux1' }); await sleep(60); s2.submit('rear', D('hang'), { id: 'aux2' });
+  const t0 = Date.now(); s2.submit('side', D('ok'), { id: 'side1' }); await sleep(2);
+  assert.ok(sideDone.some((x) => x[1] === 'side1' && x[2] === 'completed'), 'Side completes while aux worker is hung');
+  assert.ok(Date.now() - t0 < 40, 'Side did not wait for an aux timeout (50 ms)');
+  assert.strictEqual(s2.snapshot().sideDegraded, false); assert.strictEqual(s2.snapshot().auxDegraded, true);
+  // (b) An executor that honours abort settles late -> lane recovers and the next job runs.
+  const out = []; const s3 = new AnalysisScheduler({ jobTimeoutMs: 10, onOutcome: (j, st) => out.push([j.meta.id, st]), executor: (d, m, { signal }) => d.messageType === 'slow' ? new Promise((_, rej) => signal.addEventListener('abort', () => setTimeout(() => rej(new Error('aborted')), 5))) : Promise.resolve(1) });
+  s3.submit('overhead', D('slow'), { id: 'slow' }); await sleep(12);
+  assert.strictEqual(s3.snapshot().auxDegraded, true, 'degraded until the aborted job settles');
+  await sleep(10); assert.strictEqual(s3.snapshot().auxDegraded, false, 'recovered after late settle');
+  s3.submit('rear', D('ok'), { id: 'after' }); await sleep(2);
+  assert.deepStrictEqual(out.filter((x) => x[0] === 'slow'), [['slow', 'timed_out']], 'exactly one outcome for the timed-out job');
+  assert.ok(out.some((x) => x[0] === 'after' && x[1] === 'completed'));
+  assert.strictEqual(s3.snapshot().metrics.lateSettled, 1);
+  // (c) Stale-generation cancel aborts the running job and frees the lane for the newer generation; capped.
+  const out4 = []; const sig4 = []; const s4 = new AnalysisScheduler({ jobTimeoutMs: 1000, maxCancelledInFlight: 2, onOutcome: (j, st) => out4.push([j.meta.id, st]), onDrop: (j, r) => out4.push([j.meta.id, 'drop:' + r]), executor: (d, m, { signal }) => { sig4.push(signal); return d.messageType === 'hang' ? new Promise(() => {}) : Promise.resolve(1); } });
+  s4.submit('side', D('hang'), { id: 'h1', generation: 'a' }); s4.cancelGeneration('a'); await sleep(1);
+  assert.ok(sig4[0].aborted && String(sig4[0].reason) === 'SCHEDULER_GENERATION_CANCELLED');
+  s4.submit('side', D('hang'), { id: 'h2', generation: 'b' }); s4.cancelGeneration('b'); await sleep(1);
+  const r = s4.submit('side', D('ok'), { id: 'n', generation: 'c' });
+  assert.deepStrictEqual([r.accepted, r.dropped], [false, 'worker_unresponsive'], 'abandoned cancelled jobs are capped');
+  assert.ok(out4.some((x) => x[0] === 'h1' && x[1] === 'stale_discarded'));
+  // (d) Bounded cancelled-generation memory, most recent retained.
+  const s5 = new AnalysisScheduler({ executor: async () => 1 });
+  for (let i = 0; i < 200; i++) s5.cancelGeneration('gen-' + i);
+  const gens = s5.snapshot().cancelledGenerations;
+  assert.strictEqual(gens.length, CANCELLED_GENERATIONS_RETAINED); assert.strictEqual(gens[gens.length - 1], 'gen-199'); assert.ok(!gens.includes('gen-0'));
+});
+
+// S-09: descriptor validation is deep (probe N07).
+block('S-09', () => {
+  const { validateDescriptor } = req('shadow/scheduler/priority_scheduler');
+  class Box { constructor() { this.v = 1; } }
+  for (const extra of [{ fn() { return 1; } }, { s: Symbol('x') }, { d: new Date(0) }, { m: new Map() }, { b: new Box() }, { u: undefined }, { n: NaN }, { deep: [{ f: () => 1 }] }]) {
+    assert.throws(() => validateDescriptor(Object.assign(D('m'), { extra })), /serializable|functions/, 'rejects ' + Object.keys(extra)[0]);
+  }
+  const ok = validateDescriptor(Object.assign(D('m'), { extra: { a: [1, 'x', { b: null }] } }));
+  assert.ok(Object.isFrozen(ok.extra.a[2]), 'deep-frozen copy');
+  assert.doesNotThrow(() => structuredClone(ok));
+});
+
+(async () => {
+  let failed = 0;
+  for (const [id, fn] of blocks) {
+    try { await fn(); console.log(`${id}: PASS`); } catch (e) { failed++; console.error(`${id}: FAIL`, e && e.stack || e); }
+  }
+  if (failed) { console.error(`Claude round-2 repairs: ${failed} FAIL`); process.exit(1); }
+  console.log(`Claude round-2 repairs: PASS (${blocks.length} blocks)`);
+})();
