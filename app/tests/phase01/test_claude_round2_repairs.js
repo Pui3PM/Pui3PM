@@ -311,6 +311,50 @@ block('S-09', () => {
   assert.doesNotThrow(() => structuredClone(ok));
 });
 
+// S-10: idempotency memos are per aggregate; pruned only after finalize + retention; expired retries are explicit (probe N09).
+block('S-10', () => {
+  const { InMemoryEvidenceWriter } = req('shadow/evidence_writer/in_memory_writer');
+  const { project25 } = req('shadow/projector/logical25');
+  const ex = (w, cycleId, op, payload, ver, id) => w.execute({ commandId: id, namespace: 'shadow/n', runId: 'r', cycleId, role: 'side', operation: op, expectedRecordVersion: ver, payload, payloadDigest: sha256Canonical(payload) });
+  // N09 inverted: other cycles stay writable after one aggregate's worth of memos.
+  const w = new InMemoryEvidenceWriter({ maxCommandMemos: 3 });
+  for (let i = 0; i < 3; i++) ex(w, 'c' + i, 'addCandidates', { candidates: [F.candidate(1, 0, { cycleId: 'c' + i })] }, 0, 'k' + i);
+  assert.strictEqual(ex(w, 'new-shot', 'addCandidates', { candidates: [F.candidate(2, 0, { cycleId: 'new-shot' })] }, 0, 'new').status, 'committed');
+  // Cap is fail-closed per aggregate only.
+  for (let i = 1; i < 3; i++) ex(w, 'c0', 'addCandidates', { candidates: [F.candidate(10 + i, 0, { cycleId: 'c0' })] }, i, 'c0-' + i);
+  assert.throws(() => ex(w, 'c0', 'addCandidates', { candidates: [F.candidate(20, 0, { cycleId: 'c0' })] }, 3, 'c0-x'), /COMMAND_MEMO_CAPACITY/);
+  assert.strictEqual(ex(w, 'c1', 'addCandidates', { candidates: [F.candidate(30, 0, { cycleId: 'c1' })] }, 1, 'c1-1').status, 'committed');
+  // Same-command retry inside retention returns the memoized result without re-executing.
+  const again = ex(w, 'c0', 'addCandidates', { candidates: [F.candidate(1, 0, { cycleId: 'c0' })] }, 0, 'k0');
+  assert.deepStrictEqual([again.status, again.recordVersion], ['committed', 1]);
+  assert.strictEqual(w.snapshot({ namespace: 'shadow/n', runId: 'r', cycleId: 'c0', role: 'side' }).version, 3, 'retry did not re-execute');
+
+  // Finalize + retention: oldest finalized aggregate is pruned; its retries are COMMAND_EXPIRED, never re-executed.
+  const shot = (wr, cycleId, seq) => {
+    const cand = F.candidate(seq, 30000, { cycleId });
+    ex(wr, cycleId, 'addCandidates', { candidates: [cand] }, 0, cycleId + '-a');
+    const pr = project25({ runId: 'r', cycleId, masterClockId: 'm', role: 'side', timeline: TL, candidates: [cand], roleBindings: BIND, projectionId: 'p-' + cycleId, configDigest: 'cfg' });
+    ex(wr, cycleId, 'saveProjection', { projection: pr, timeline: TL, releaseTime: null }, 1, cycleId + '-p');
+    return ex(wr, cycleId, 'finalizeCycle', {}, 2, cycleId + '-f');
+  };
+  const w2 = new InMemoryEvidenceWriter({ finalizedRetention: 2 });
+  for (const c of ['s1', 's2', 's3']) shot(w2, c, 1);
+  assert.throws(() => ex(w2, 's1', 'finalizeCycle', {}, 2, 's1-f'), /COMMAND_EXPIRED/);
+  assert.throws(() => ex(w2, 's1', 'addCandidates', { candidates: [F.candidate(1, 30000, { cycleId: 's1' })] }, 0, 's1-a'), /COMMAND_EXPIRED/);
+  assert.strictEqual(ex(w2, 's2', 'finalizeCycle', {}, 2, 's2-f').status, 'committed', 's2 still inside retention: memoized');
+  assert.strictEqual(w2.snapshot({ namespace: 'shadow/n', runId: 'r', cycleId: 's1', role: 'side' }).finalized, true, 'record itself is kept');
+  // Unfinalized aggregates are never pruned.
+  const w3 = new InMemoryEvidenceWriter({ finalizedRetention: 0 });
+  ex(w3, 'open', 'addCandidates', { candidates: [F.candidate(1, 30000, { cycleId: 'open' })] }, 0, 'open-a');
+  shot(w3, 'done', 2);
+  assert.strictEqual(ex(w3, 'open', 'addCandidates', { candidates: [F.candidate(1, 30000, { cycleId: 'open' })] }, 0, 'open-a').status, 'committed');
+
+  // Long session with defaults: 3,500 finalized shots (10,500 commands, above the old global 10,000 cap).
+  const w4 = new InMemoryEvidenceWriter();
+  for (let i = 0; i < 3500; i++) assert.strictEqual(shot(w4, 'L' + i, 1).status, 'committed');
+  assert.ok(w4._memoCount() <= (64 + 1) * 3, 'memo memory bounded: ' + w4._memoCount());
+});
+
 (async () => {
   let failed = 0;
   for (const [id, fn] of blocks) {
