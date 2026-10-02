@@ -56,9 +56,12 @@ M["archive/shadow_archive.js"]=function(module,exports,require){
 const {sha256Canonical}=require('../contracts/canonical_json');
 const Sha=require('../contracts/sha256_pure');
 const Bin=require('../contracts/binary_pure');
-const {immutablePlainCopy,isId}=require('../contracts/strict_types');
+const {immutablePlainCopy,isId,isShadowNamespace}=require('../contracts/strict_types');
 const {validateFrameEnvelope}=require('../contracts/contract_v1');
 const {validateEvidenceCandidate,validateShotEvent,validateProjection}=require('../contracts/record_validators');
+const {verifyProjectionBinding}=require('../projector/projection_binding');
+// records.schemaVersion 2 (S-06/S-07): adds `timelines` (projection timeline binding) and payload-digest binding.
+const RECORDS_SCHEMA_VERSION=2;
 const FORMAT='3pm-shadow-archive-v1',MAX_FILES=10000,MAX_TOTAL_BYTES=512*1024*1024;
 const WIN_RESERVED=/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
 function sha256Bytes(b){return Sha.hex(Bin.bytes(b));}
@@ -66,26 +69,35 @@ function normalizedPath(p){if(typeof p!=='string'||!p.length||p.includes('\\')||
 function safePath(p){return normalizedPath(p)!==null;}
 function pathKey(p){const n=normalizedPath(p);return n===null?null:n.toLocaleLowerCase('en-US');}
 function strictBase64(s){return Bin.base64Decode(s);}
-function validateRecords(records,fileSet){
-  if(!records||typeof records!=='object'||Array.isArray(records))throw new TypeError('archive records object required');for(const k of Object.keys(records))if(!['frames','candidates','events','projections'].includes(k))throw new TypeError(`unknown archive record collection: ${k}`);
+function validateRecords(records,fileSet,sha256ByPath=null){
+  if(!records||typeof records!=='object'||Array.isArray(records))throw new TypeError('archive records object required');if(records.schemaVersion!==RECORDS_SCHEMA_VERSION){const e=new Error(`ARCHIVE_SCHEMA_UNSUPPORTED: records.schemaVersion ${JSON.stringify(records.schemaVersion??null)} (required ${RECORDS_SCHEMA_VERSION}; v1 archives lack projection timelines)`);e.code='ARCHIVE_SCHEMA_UNSUPPORTED';throw e;}for(const k of Object.keys(records))if(!['schemaVersion','frames','candidates','events','projections','timelines'].includes(k))throw new TypeError(`unknown archive record collection: ${k}`);
   const frames=(records.frames||[]).map(validateFrameEnvelope),candidates=(records.candidates||[]).map(x=>validateEvidenceCandidate(x)),events=(records.events||[]).map(validateShotEvent),projections=(records.projections||[]).map(validateProjection);const frameByUid=new Map(frames.map(f=>[f.frameUID,f])),candById=new Map(candidates.map(c=>[c.candidateId,c]));
-  for(const f of frames)if(f.payloadRef!==null&&!fileSet.has(f.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');for(const c of candidates){if(!fileSet.has(c.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');const f=frameByUid.get(c.frameUID);if(!f||f.sourceId!==c.sourceId||f.streamGeneration!==c.streamGeneration||f.frameSeq!==c.frameSeq||f.contentDigest!==c.contentDigest)throw new Error('DANGLING_FRAME_REF');}
+  // S-05: a shadow archive carries shadow events only; legacy archives go through a separate legacy reader (contract §2.7), never relabelled.
+  for(const e of events)if(!isShadowNamespace(e.eventNamespace))throw new Error('ARCHIVE_EVENT_NAMESPACE_DENIED');
+  for(const f of frames)if(f.payloadRef!==null&&!fileSet.has(f.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');
+  // S-07: blobs are content-addressed (contract §2.2/§2.7): the referenced file's bytes must hash to the record's contentDigest.
+  if(sha256ByPath){const bound=(ref,digest)=>{if(ref===null||ref===undefined||digest===null||digest===undefined)return;if(sha256ByPath.get(ref)!==String(digest).toLowerCase())throw new Error('PAYLOAD_DIGEST_MISMATCH');};for(const f of frames)bound(f.payloadRef,f.contentDigest);for(const c of candidates)bound(c.payloadRef,c.contentDigest);}for(const c of candidates){if(!fileSet.has(c.payloadRef))throw new Error('DANGLING_PAYLOAD_REF');const f=frameByUid.get(c.frameUID);if(!f||f.sourceId!==c.sourceId||f.streamGeneration!==c.streamGeneration||f.frameSeq!==c.frameSeq||f.contentDigest!==c.contentDigest)throw new Error('DANGLING_FRAME_REF');}
   for(const p of projections)for(const s of p.slots)if(s.status==='real'){const c=candById.get(s.candidateId);if(!c||c.frameUID!==s.actualFrameUID||c.derivationId!==s.derivationId)throw new Error('DANGLING_CANDIDATE_REF');if(!frameByUid.has(s.actualFrameUID))throw new Error('DANGLING_FRAME_REF');}
-  return immutablePlainCopy({frames,candidates,events,projections});
+  // S-06: every projection is re-derived against its archived timeline and the archived candidates.
+  const timelines=Array.isArray(records.timelines)?records.timelines:(records.timelines===undefined?[]:null);if(timelines===null)throw new TypeError('archive timelines must be an array');
+  const tlByProjection=new Map();for(const t of timelines){if(!t||typeof t!=='object'||!isId(t.projectionId)||Object.keys(t).some(k=>!['projectionId','timeline','releaseTime'].includes(k))||!Object.prototype.hasOwnProperty.call(t,'releaseTime'))throw new TypeError('invalid archive timeline record');if(tlByProjection.has(t.projectionId))throw new Error('DUPLICATE_PROJECTION_TIMELINE');tlByProjection.set(t.projectionId,t);}
+  const projectionIds=new Set();for(const p of projections){if(projectionIds.has(p.projectionId))throw new Error('DUPLICATE_PROJECTION_ID');projectionIds.add(p.projectionId);const t=tlByProjection.get(p.projectionId);if(!t)throw new Error('PROJECTION_TIMELINE_MISSING');verifyProjectionBinding({projection:p,timeline:t.timeline,releaseTime:t.releaseTime,candidateById:id=>candById.get(id)});}
+  for(const id of tlByProjection.keys())if(!projectionIds.has(id))throw new Error('ORPHAN_PROJECTION_TIMELINE');
+  return immutablePlainCopy({schemaVersion:RECORDS_SCHEMA_VERSION,frames,candidates,events,projections,timelines:[...tlByProjection.values()]});
 }
 function validateManifestBody(body,payloads){
   if(body.format!==FORMAT||!isId(body.archiveId)||!(/^[0-9a-f]{64}$/i.test(body.baselineDigest)))throw new TypeError('invalid archive identity');if(!Array.isArray(body.fileTable)||body.fileTable.length>MAX_FILES)throw new TypeError('invalid file table');const seenExact=new Set(),seenPortable=new Set();let total=0;
   for(const f of body.fileTable){const n=normalizedPath(f.path),pk=pathKey(f.path);if(n===null||n!==f.path||seenExact.has(n)||seenPortable.has(pk))throw new Error('UNSAFE_OR_DUPLICATE_PATH');seenExact.add(n);seenPortable.add(pk);if(!Number.isSafeInteger(f.byteLength)||f.byteLength<0||!/^[0-9a-f]{64}$/i.test(f.sha256)||typeof f.mime!=='string')throw new TypeError('invalid file entry');total+=f.byteLength;if(total>MAX_TOTAL_BYTES)throw new Error('ARCHIVE_SIZE_LIMIT');const bytes=strictBase64(payloads?.[f.path]);if(bytes.length!==f.byteLength||sha256Bytes(bytes)!==f.sha256)throw new Error('BLOB_INTEGRITY_ERROR');}
-  const payloadKeys=Object.keys(payloads||{});if(payloadKeys.length!==seenExact.size||payloadKeys.some(k=>!seenExact.has(k)))throw new Error('UNLISTED_PAYLOAD_KEY');const records=validateRecords(body.records,seenExact);return records;
+  const payloadKeys=Object.keys(payloads||{});if(payloadKeys.length!==seenExact.size||payloadKeys.some(k=>!seenExact.has(k)))throw new Error('UNLISTED_PAYLOAD_KEY');const sha256ByPath=new Map(body.fileTable.map(f=>[f.path,f.sha256.toLowerCase()]));const records=validateRecords(body.records,seenExact,sha256ByPath);return records;
 }
 function buildArchive({archiveId,baselineDigest,records,files={}}){
   if(!isId(archiveId)||!baselineDigest||!records)throw new TypeError('archive identity/records required');if(!/^[0-9a-f]{64}$/i.test(baselineDigest))throw new TypeError('baselineDigest must be sha256');const fileTable=[],payloads={},portable=new Set();for(const [p,value] of Object.entries(files)){const n=normalizedPath(p),pk=pathKey(p);if(n===null||n!==p||portable.has(pk))throw new TypeError('unsafe/colliding archive path');portable.add(pk);const bytes=Bin.bytes(value);fileTable.push({path:p,mime:'application/octet-stream',byteLength:bytes.length,sha256:sha256Bytes(bytes)});payloads[p]=Bin.base64Encode(bytes);}
-  fileTable.sort((a,b)=>a.path.localeCompare(b.path));const tempBody={format:FORMAT,archiveId,baselineDigest,records, fileTable};const validatedRecords=validateRecords(records,new Set(fileTable.map(f=>f.path)));const body=immutablePlainCopy({...tempBody,records:validatedRecords});validateManifestBody(body,payloads);return immutablePlainCopy({manifest:{...body,manifestDigest:sha256Canonical(body)},payloads});
+  fileTable.sort((a,b)=>a.path.localeCompare(b.path));const stamped={...records,schemaVersion:RECORDS_SCHEMA_VERSION};const tempBody={format:FORMAT,archiveId,baselineDigest,records:stamped,fileTable};const validatedRecords=validateRecords(stamped,new Set(fileTable.map(f=>f.path)));const body=immutablePlainCopy({...tempBody,records:validatedRecords});validateManifestBody(body,payloads);return immutablePlainCopy({manifest:{...body,manifestDigest:sha256Canonical(body)},payloads});
 }
 function validateArchive(archive){if(archive?.manifest?.format!==FORMAT)throw new TypeError('unsupported archive format');const {manifestDigest,...body}=archive.manifest;if(sha256Canonical(body)!==manifestDigest)throw new Error('MANIFEST_DIGEST_MISMATCH');validateManifestBody(body,archive.payloads);return true;}
 function roundTrip(archive){validateArchive(archive);const parsed=JSON.parse(JSON.stringify(archive));validateArchive(parsed);return immutablePlainCopy(parsed);}
-class InMemoryArchiveImporter{constructor(){this.byArchive=new Map();}stage(archive,{namespace}){if(typeof namespace!=='string'||!namespace.startsWith('shadow/'))throw new TypeError('shadow namespace required');validateArchive(archive);const k=JSON.stringify([namespace,archive.manifest.archiveId]),digest=archive.manifest.manifestDigest,prev=this.byArchive.get(k);if(prev){if(prev.manifest.manifestDigest!==digest)throw new Error('ARCHIVE_ID_CONFLICT');return {status:'existing',archive:prev};}const copy=roundTrip(archive);this.byArchive.set(k,copy);return {status:'staged',archive:copy};}}
-module.exports={FORMAT,buildArchive,validateArchive,roundTrip,InMemoryArchiveImporter,safePath,normalizedPath,validateRecords};
+class InMemoryArchiveImporter{constructor(){this.byArchive=new Map();}stage(archive,{namespace}){if(!isShadowNamespace(namespace))throw new TypeError('shadow namespace required');validateArchive(archive);const k=JSON.stringify([namespace,archive.manifest.archiveId]),digest=archive.manifest.manifestDigest,prev=this.byArchive.get(k);if(prev){if(prev.manifest.manifestDigest!==digest)throw new Error('ARCHIVE_ID_CONFLICT');return {status:'existing',archive:prev};}const copy=roundTrip(archive);this.byArchive.set(k,copy);return {status:'staged',archive:copy};}}
+module.exports={FORMAT,RECORDS_SCHEMA_VERSION,buildArchive,validateArchive,roundTrip,InMemoryArchiveImporter,safePath,normalizedPath,validateRecords};
 
 };
 M["contracts/binary_pure.js"]=function(module,exports,require){
@@ -100,11 +112,22 @@ function bytes(value){
   if(Array.isArray(value)&&value.every(x=>Number.isInteger(x)&&x>=0&&x<=255))return Uint8Array.from(value);
   throw new TypeError('binary value must be bytes, ArrayBuffer, byte array, or string');
 }
-function base64Encode(value){const b=bytes(value);let out='';for(let i=0;i<b.length;i+=3){const a=b[i],c=i+1<b.length?b[i+1]:0,d=i+2<b.length?b[i+2]:0,n=(a<<16)|(c<<8)|d;out+=ABC[(n>>>18)&63]+ABC[(n>>>12)&63]+(i+1<b.length?ABC[(n>>>6)&63]:'=')+(i+2<b.length?ABC[n&63]:'=');}return out;}
+// S-01: linear, table-driven base64. No regex (V8 regex recursion overflowed above ~3.2 MB).
+const DEC=(function(){const t=new Int16Array(256).fill(-1);for(let i=0;i<64;i++)t[ABC.charCodeAt(i)]=i;return t;})();
+function base64Encode(value){const b=bytes(value),parts=[];const CHUNK=3*8192;for(let start=0;start<b.length;start+=CHUNK){const end=Math.min(b.length,start+CHUNK);let out='';for(let i=start;i<end;i+=3){const a=b[i],c=i+1<end?b[i+1]:0,d=i+2<end?b[i+2]:0,n=(a<<16)|(c<<8)|d;out+=ABC[(n>>>18)&63]+ABC[(n>>>12)&63]+(i+1<end?ABC[(n>>>6)&63]:'=')+(i+2<end?ABC[n&63]:'=');}parts.push(out);}return parts.join('');}
 function base64Decode(s){
-  if(typeof s!=='string'||s.length%4!==0||!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(s))throw new Error('INVALID_BASE64');
-  const pad=s.endsWith('==')?2:s.endsWith('=')?1:0,out=new Uint8Array((s.length/4)*3-pad);let oi=0;
-  for(let i=0;i<s.length;i+=4){const a=ABC.indexOf(s[i]),b=ABC.indexOf(s[i+1]),c=s[i+2]==='='?0:ABC.indexOf(s[i+2]),d=s[i+3]==='='?0:ABC.indexOf(s[i+3]);const n=(a<<18)|(b<<12)|(c<<6)|d;if(oi<out.length)out[oi++]=(n>>>16)&255;if(oi<out.length)out[oi++]=(n>>>8)&255;if(oi<out.length)out[oi++]=n&255;}
+  if(typeof s!=='string'||s.length%4!==0)throw new Error('INVALID_BASE64');
+  const L=s.length;let pad=0;if(L>0&&s.charCodeAt(L-1)===61){pad=1;if(s.charCodeAt(L-2)===61)pad=2;}
+  const out=new Uint8Array((L/4)*3-pad),dataLen=L-pad;let oi=0;
+  for(let i=0;i<L;i+=4){
+    const q=[0,0,0,0];
+    for(let k=0;k<4;k++){const idx=i+k,code=s.charCodeAt(idx);if(idx>=dataLen){if(code!==61)throw new Error('INVALID_BASE64');continue;}const v=code<256?DEC[code]:-1;if(v<0)throw new Error('INVALID_BASE64');q[k]=v;}
+    const n=(q[0]<<18)|(q[1]<<12)|(q[2]<<6)|q[3];
+    out[oi++]=(n>>>16)&255;if(oi<out.length)out[oi++]=(n>>>8)&255;if(oi<out.length)out[oi++]=n&255;
+  }
+  // Canonical padding: the unused low bits of the last sextet must be zero (QQ== valid, QR== invalid).
+  if(pad===2&&(DEC[s.charCodeAt(L-3)]&15)!==0)throw new Error('INVALID_BASE64');
+  if(pad===1&&(DEC[s.charCodeAt(L-2)]&3)!==0)throw new Error('INVALID_BASE64');
   return out;
 }
 function utf8ByteLength(s){if(typeof s!=='string')throw new TypeError('string required');return new TextEncoder().encode(s).length;}
@@ -159,10 +182,12 @@ function validateClockMapping(input){
   if(!['validated','provisional','unmapped','discontinuous'].includes(input.status))fail('invalid status');
   if(input.status==='validated'){
     if(input.uncertaintyBoundUs===null)fail('validated mapping requires bounded uncertainty');
-    if(input.calibrationMethod==='fixture'&&!input.mappingNamespace.startsWith('shadow/replay'))fail('fixture mapping cannot be validated outside shadow/replay');
+    // S-03: exact namespace segment; 'shadow/replayPRODUCTION' is not under shadow/replay.
+    if(input.calibrationMethod==='fixture'&&!(input.mappingNamespace==='shadow/replay'||input.mappingNamespace.startsWith('shadow/replay/')))fail('fixture mapping cannot be validated outside shadow/replay');
     if(input.calibrationMethod==='sample-affine'&&(input.residualBoundUs===null||input.transportBoundUs===null))fail('sample-affine validated mapping requires residual and transport bounds');
     if(input.calibrationMethod==='trusted-api'&&(!isId(input.trustedApiId)||input.transportBoundUs===null))fail('trusted-api validated mapping requires trustedApiId and transport bound');
-    if(input.residualBoundUs!==null&&input.transportBoundUs!==null&&input.uncertaintyBoundUs<input.residualBoundUs+input.transportBoundUs)fail('uncertainty bound smaller than component bounds');
+    // S-03: the total bound covers every declared component, including when another component is unknown (null).
+    if(input.uncertaintyBoundUs<(input.residualBoundUs??0)+(input.transportBoundUs??0))fail('uncertainty bound smaller than component bounds');
   }
   if(input.calibrationMethod!=='trusted-api'&&input.trustedApiId!==null)fail('trustedApiId only valid for trusted-api');
   return immutablePlainCopy(input);
@@ -384,7 +409,7 @@ function validateProjection(x){
   x.slots.forEach((s,i)=>{
     const reqS=['slotId','phase','targetMasterTime','targetPhaseEvidenceRefs','status','actualFrameUID','derivationId','candidateId','actualMasterTime','signedDelta','missingReason','mappingUncertaintyUs','toleranceUs','actualPhaseEvidenceRefs','selectionReason','phaseProof'];requireKeys(s,reqS,`slot ${i}`);strictKeys(s,[...reqS,'sourceId','streamGeneration','frameSeq','contentDigest','frameEnvelopeRef','contributingReasons','runId','cycleId','masterClockId','role','projectionId','projectionVersion','planVersion'],`slot ${i}`);
     if(s.slotId!==`S${String(i+1).padStart(2,'0')}`||s.phase!==EXPECTED_PHASES[i])fail('projection slot plan mismatch');if(!Array.isArray(s.targetPhaseEvidenceRefs)||!s.targetPhaseEvidenceRefs.every(T.isId))fail('target phase refs');time(s.targetMasterTime,'targetMasterTime');if(!['real','missing','inactive'].includes(s.status))fail('invalid slot status');
-    if(s.status==='real'){real++;if(!T.isFrameUID(s.actualFrameUID)||seen.has(s.actualFrameUID))fail('projection duplicate/invalid FrameUID');seen.add(s.actualFrameUID);for(const k of ['derivationId','candidateId','sourceId','streamGeneration','frameEnvelopeRef'])if(!T.isId(s[k]))fail(`real slot ${k}`);if(!T.isU64String(s.frameSeq)||!T.isSha256(s.contentDigest))fail('real slot identity metadata');time(s.actualMasterTime,'actualMasterTime',{nullable:false});time(s.signedDelta,'signedDelta',{nullable:false});time(s.mappingUncertaintyUs,'mappingUncertaintyUs',{nullable:false,nonnegative:true});time(s.toleranceUs,'toleranceUs',{nullable:false,nonnegative:true});if(!Number.isSafeInteger(s.targetMasterTime)||s.signedDelta!==s.actualMasterTime-s.targetMasterTime)fail('real slot signedDelta mismatch');if(s.missingReason!==null)fail('real slot missingReason must be null');ids(s.actualPhaseEvidenceRefs,'actualPhaseEvidenceRefs');if(s.phase!=='release_window'){if(!s.phaseProof||s.phaseProof.phase!==s.phase||s.phaseProof.intervalCheck!=='inside'||!Array.isArray(s.phaseProof.timelineRefs)||!s.phaseProof.timelineRefs.every(T.isId))fail('real slot phaseProof');if(s.phase==='anchor'&&typeof s.phaseProof.settledAnchorBoundary!=='boolean')fail('anchor settled proof required');}else if(!(s.phaseProof===null||typeof s.phaseProof==='object'))fail('release phaseProof');
+    if(s.status==='real'){real++;if(!T.isFrameUID(s.actualFrameUID)||seen.has(s.actualFrameUID))fail('projection duplicate/invalid FrameUID');seen.add(s.actualFrameUID);for(const k of ['derivationId','candidateId','sourceId','streamGeneration','frameEnvelopeRef'])if(!T.isId(s[k]))fail(`real slot ${k}`);if(!T.isU64String(s.frameSeq)||!T.isSha256(s.contentDigest))fail('real slot identity metadata');let tupleUid;try{tupleUid=frameUID({runId:x.runId,sourceId:s.sourceId,streamGeneration:s.streamGeneration,frameSeq:s.frameSeq});}catch(e){fail('real slot identity tuple invalid');}if(tupleUid!==s.actualFrameUID)fail('real slot FrameUID tuple mismatch');time(s.actualMasterTime,'actualMasterTime',{nullable:false});time(s.signedDelta,'signedDelta',{nullable:false});time(s.mappingUncertaintyUs,'mappingUncertaintyUs',{nullable:false,nonnegative:true});time(s.toleranceUs,'toleranceUs',{nullable:false,nonnegative:true});if(!Number.isSafeInteger(s.targetMasterTime)||s.signedDelta!==s.actualMasterTime-s.targetMasterTime)fail('real slot signedDelta mismatch');if(s.missingReason!==null)fail('real slot missingReason must be null');ids(s.actualPhaseEvidenceRefs,'actualPhaseEvidenceRefs');if(s.phase!=='release_window'){if(!s.phaseProof||s.phaseProof.phase!==s.phase||s.phaseProof.intervalCheck!=='inside'||!Array.isArray(s.phaseProof.timelineRefs)||!s.phaseProof.timelineRefs.every(T.isId))fail('real slot phaseProof');if(s.phase==='anchor'&&s.phaseProof.anchorIntervalKind!=='settled-anchor-interval')fail('anchor settled proof required');}else if(!(s.phaseProof===null||typeof s.phaseProof==='object'))fail('release phaseProof');
     }else{if(s.status==='missing')missing++;else inactive++;for(const k of ['actualFrameUID','derivationId','candidateId','actualMasterTime','signedDelta','mappingUncertaintyUs','toleranceUs','sourceId','streamGeneration','frameSeq','contentDigest','frameEnvelopeRef'])if(Object.prototype.hasOwnProperty.call(s,k)&&s[k]!==null)fail('non-real slot must not reference frame');if(!T.isId(s.missingReason))fail('missing/inactive reason required');if(s.phaseProof!==null)fail('non-real phaseProof must be null');}
   });
   if(x.uniqueRealCount!==real||x.missingCount!==missing||x.inactiveCount!==inactive||real+missing+inactive!==25)fail('projection counts mismatch');return T.immutablePlainCopy(x);
@@ -446,7 +471,20 @@ function isWellFormedString(v){
   return true;
 }
 function isId(v){ return typeof v === 'string' && v.length > 0 && v.length <= 512 && isWellFormedString(v); }
-function isFrameUID(v){ return typeof v==='string' && /^f1\/[0-9a-f]{64}$/i.test(v); }
+// S-02: FrameUID is canonical lower-case hex only; an upper-case spelling is a different string, never an alias.
+function isFrameUID(v){ return typeof v==='string' && /^f1\/[0-9a-f]{64}$/.test(v); }
+// S-04/S-05 (INV-009/INV-030): the shadow write capability is an invariant, not a parameter.
+// One predicate shared by event log, evidence writer, reducer, archive records and importer.
+const SHADOW_NS_PREFIX='shadow/';
+function isShadowNamespace(ns){
+  return isId(ns)&&ns.startsWith(SHADOW_NS_PREFIX)&&ns.length>SHADOW_NS_PREFIX.length&&!/production|legacy/i.test(ns);
+}
+function shadowNamespacePolicy(prefix,label){
+  // Optional constructor prefix may only narrow the invariant (e.g. 'shadow/replay/'), never widen it.
+  if(prefix===undefined||prefix===null)return SHADOW_NS_PREFIX;
+  if(typeof prefix!=='string'||!prefix.startsWith(SHADOW_NS_PREFIX)||/production|legacy/i.test(prefix))throw new TypeError(`${label}: namespace policy is fixed to shadow/ (got ${JSON.stringify(prefix)})`);
+  return prefix;
+}
 function isSha256(v){ return typeof v==='string' && /^[0-9a-f]{64}$/i.test(v); }
 function requireField(obj,key){
   if(!Object.prototype.hasOwnProperty.call(obj,key)) throw new TypeError(`Missing required field: ${key}`);
@@ -500,7 +538,7 @@ function assertNoUnknownFields(obj,allowed,label='record'){
 
 module.exports={
   U64_MAX,I64_MIN,I64_MAX,isExplicitNull,isUnknown,isFiniteNumber,finiteNumberOrNull,positiveFiniteOrNull,
-  parseBoundedIntegerString,isU64String,isI64String,isWellFormedString,isId,isFrameUID,isSha256,requireField,assertKnownOrNull,timeUsOrNull,durationUsOrNull,
+  parseBoundedIntegerString,isU64String,isI64String,isWellFormedString,isId,isFrameUID,isSha256,SHADOW_NS_PREFIX,isShadowNamespace,shadowNamespacePolicy,requireField,assertKnownOrNull,timeUsOrNull,durationUsOrNull,
   clonePlain,deepFreeze,immutablePlainCopy,assertNoUnknownFields
 };
 
@@ -529,35 +567,77 @@ module.exports={rational,ticksToMicroseconds,mappedTimeOrNull};
 };
 M["decision/shot_cycle_reducer.js"]=function(module,exports,require){
 'use strict';
-const {immutablePlainCopy}=require('../contracts/strict_types');
+const {immutablePlainCopy,isShadowNamespace,isU64String,isId}=require('../contracts/strict_types');
 const {sha256Canonical}=require('../contracts/canonical_json');
 const {derivedIdempotencyKey}=require('../event_log/in_memory_event_log');
 const TERMINAL=new Set(['confirmed','rejected','uncertain']);
 function initialCycle({runId,cycleId,authorityRole='side',namespace,activeRoleSnapshot=[],policyVersion,configDigest,masterClockId=null}){
-  if(!runId||!cycleId||!namespace||!namespace.startsWith('shadow/')||!policyVersion||!configDigest||!masterClockId)throw new TypeError('cycle identity/policy required');
+  if(!runId||!cycleId||!isShadowNamespace(namespace)||!policyVersion||!configDigest||!masterClockId)throw new TypeError('cycle identity/policy required');
   return immutablePlainCopy({runId,cycleId,masterClockId,authorityRole,namespace,state:'candidate',eventSeq:'0',terminalEventId:null,lastEventDigest:null,activeRoleSnapshot:[...activeRoleSnapshot],policyVersion,configDigest,supportingObservationIds:[],contradictingObservationIds:[],reasonCodes:[]});
 }
 function reduceCycle(cycle,proposal){
-  if(!cycle||!proposal||proposal.cycleId!==cycle.cycleId||proposal.runId!==cycle.runId)throw new TypeError('cycle proposal mismatch');if(TERMINAL.has(cycle.state))return {cycle,event:null,status:'terminal_immutable'};const type=proposal.eventType;if(!['candidate','confirmed','rejected','uncertain'].includes(type))throw new TypeError('invalid eventType');const nextSeq=(BigInt(cycle.eventSeq)+1n).toString();
+  if(!cycle||!proposal||proposal.cycleId!==cycle.cycleId||proposal.runId!==cycle.runId)throw new TypeError('cycle proposal mismatch');if(TERMINAL.has(cycle.state))return {cycle,event:null,status:'terminal_immutable'};const type=proposal.eventType;if(!['candidate','confirmed','rejected','uncertain'].includes(type))throw new TypeError('invalid eventType');
+  // S-12 shadow evidence gate (contract §2.4). Shadow namespace only; this is NOT the legacy production decision.
+  const trigger=proposal.trigger??'evidence';if(!['evidence','timeout','stream_reset'].includes(trigger))throw new TypeError('invalid proposal trigger');
+  if(type==='confirmed'&&trigger!=='evidence'){const e=new Error('CONFIRMED_REQUIRES_EVIDENCE: a timeout/reset may produce uncertain, never confirmed');e.code='CONFIRMED_REQUIRES_EVIDENCE';throw e;}
+  if(type==='confirmed'&&!(Array.isArray(proposal.supportingObservationIds)&&proposal.supportingObservationIds.length>0)){const e=new Error('CONFIRMED_REQUIRES_EVIDENCE: confirmed needs supporting observations');e.code='CONFIRMED_REQUIRES_EVIDENCE';throw e;}const nextSeq=(BigInt(cycle.eventSeq)+1n).toString();
   const pre={eventId:proposal.eventId,runId:cycle.runId,cycleId:cycle.cycleId,masterClockId:cycle.masterClockId,seq:nextSeq,eventType:type,sourceEventTime:proposal.sourceEventTime??null,sourceInterval:proposal.sourceInterval??null,uncertaintyUs:proposal.uncertaintyUs??null,decidedAtMasterTime:proposal.decidedAtMasterTime,recordedAtMasterTime:proposal.recordedAtMasterTime,supportingObservationIds:[...(proposal.supportingObservationIds||[])],contradictingObservationIds:[...(proposal.contradictingObservationIds||[])],reasonCodes:[...(proposal.reasonCodes||[])],policyVersion:cycle.policyVersion,configDigest:cycle.configDigest,eventNamespace:cycle.namespace,idempotencyKey:'',previousEventDigest:cycle.lastEventDigest};
   if(typeof pre.eventId!=='string'||!pre.eventId)throw new TypeError('eventId required');if(!Number.isSafeInteger(pre.decidedAtMasterTime)||!Number.isSafeInteger(pre.recordedAtMasterTime))throw new TypeError('decision times required');pre.idempotencyKey=derivedIdempotencyKey(pre);if(proposal.idempotencyKey!==undefined&&proposal.idempotencyKey!==pre.idempotencyKey)throw new Error('PROPOSAL_IDEMPOTENCY_KEY_MISMATCH');const event=immutablePlainCopy({...pre,eventDigest:sha256Canonical(pre)});
   const merged=(a,b)=>[...new Set([...(a||[]),...(b||[])])];const next=immutablePlainCopy({...cycle,state:type,eventSeq:nextSeq,terminalEventId:TERMINAL.has(type)?event.eventId:null,lastEventDigest:event.eventDigest,supportingObservationIds:merged(cycle.supportingObservationIds,event.supportingObservationIds),contradictingObservationIds:merged(cycle.contradictingObservationIds,event.contradictingObservationIds),reasonCodes:merged(cycle.reasonCodes,event.reasonCodes)});return {cycle:next,event,status:'applied'};
 }
-module.exports={initialCycle,reduceCycle,TERMINAL};
+// S-12: Side generation change / source clock discontinuity -> a non-terminal cycle becomes
+// uncertain(reason=authority_stream_reset). The next cycle must reacquire; history is not continued.
+const STREAM_EVENT_KINDS=new Set(['side_generation_changed','clock_discontinuity']);
+function applyStreamEvent(cycle,streamEvent){
+  if(!cycle||!streamEvent||!STREAM_EVENT_KINDS.has(streamEvent.kind))throw new TypeError('stream event kind must be side_generation_changed|clock_discontinuity');
+  if(TERMINAL.has(cycle.state))return {cycle,event:null,status:'terminal_immutable'};
+  const r=reduceCycle(cycle,{runId:cycle.runId,cycleId:cycle.cycleId,eventType:'uncertain',trigger:'stream_reset',eventId:streamEvent.eventId,sourceEventTime:streamEvent.sourceEventTime??null,decidedAtMasterTime:streamEvent.decidedAtMasterTime,recordedAtMasterTime:streamEvent.recordedAtMasterTime,supportingObservationIds:[],contradictingObservationIds:[],reasonCodes:['authority_stream_reset',streamEvent.kind]});
+  return {...r,status:'stream_reset'};
+}
+// S-12: Side inference results may arrive out of order. They are released in Side frameSeq order within one
+// generation, waiting at most maxWaitUs of arrival time (virtual clock supplied by the caller; no timers).
+// After the wait the missing seqs are skipped with an explicit gap event. Results older than the watermark are
+// returned as `late` (kept for offline reassessment) and are never applied. Pure: state in, state + outputs out.
+const REORDER_POLICY_VERSION='shadow-reorder-v1-200ms';
+function initialReorderState({generation,startSeq='0',maxWaitUs=200000}={}){
+  if(!isId(generation)||!isU64String(startSeq)||!Number.isSafeInteger(maxWaitUs)||maxWaitUs<0)throw new TypeError('reorder state requires generation, U64 startSeq, maxWaitUs');
+  return Object.freeze({policyVersion:REORDER_POLICY_VERSION,generation,nextSeq:startSeq,maxWaitUs,waiting:Object.freeze([])});
+}
+function drain(state,outputs){let next=BigInt(state.nextSeq);const waiting=[...state.waiting];for(;;){const i=waiting.findIndex(w=>BigInt(w.frameSeq)===next);if(i<0)break;outputs.push(Object.freeze({kind:'result',frameSeq:waiting[i].frameSeq,result:waiting[i].result}));waiting.splice(i,1);next+=1n;}return Object.freeze({...state,nextSeq:next.toString(),waiting:Object.freeze(waiting)});}
+function reorderAdvance(state,nowUs){
+  if(!Number.isSafeInteger(nowUs))throw new TypeError('nowUs required');const outputs=[];let s=state;
+  for(;;){
+    if(!s.waiting.length)break;const oldest=s.waiting.reduce((a,b)=>a.arrivalUs<=b.arrivalUs?a:b);if(nowUs-oldest.arrivalUs<s.maxWaitUs)break;
+    const lowest=s.waiting.reduce((a,b)=>BigInt(a.frameSeq)<=BigInt(b.frameSeq)?a:b);
+    outputs.push(Object.freeze({kind:'gap',generation:s.generation,fromSeq:s.nextSeq,toSeq:(BigInt(lowest.frameSeq)-1n).toString(),policyVersion:s.policyVersion,atUs:nowUs}));
+    s=drain(Object.freeze({...s,nextSeq:lowest.frameSeq}),outputs);
+  }
+  return {state:s,outputs:Object.freeze(outputs)};
+}
+function reorderPush(state,{generation,frameSeq,arrivalUs,result}){
+  if(!isU64String(frameSeq)||!Number.isSafeInteger(arrivalUs))throw new TypeError('reorder input requires U64 frameSeq and arrivalUs');
+  if(generation!==state.generation)return {state,outputs:Object.freeze([Object.freeze({kind:'stale_generation',generation,frameSeq,result})])};
+  const seq=BigInt(frameSeq);
+  if(seq<BigInt(state.nextSeq)||state.waiting.some(w=>w.frameSeq===frameSeq)){const adv=reorderAdvance(state,arrivalUs);return {state:adv.state,outputs:Object.freeze([...adv.outputs,Object.freeze({kind:'late',generation,frameSeq,result})])};}
+  const outputs=[];let s=drain(Object.freeze({...state,waiting:Object.freeze([...state.waiting,Object.freeze({frameSeq,arrivalUs,result})])}),outputs);
+  const adv=reorderAdvance(s,arrivalUs);return {state:adv.state,outputs:Object.freeze([...outputs,...adv.outputs])};
+}
+module.exports={initialCycle,reduceCycle,applyStreamEvent,initialReorderState,reorderPush,reorderAdvance,REORDER_POLICY_VERSION,TERMINAL};
 
 };
 M["event_log/in_memory_event_log.js"]=function(module,exports,require){
 'use strict';
 const {sha256Canonical}=require('../contracts/canonical_json');
 const {validateShotEvent}=require('../contracts/record_validators');
+const {isShadowNamespace,shadowNamespacePolicy}=require('../contracts/strict_types');
 function scopeKey(e){return JSON.stringify([e.eventNamespace,e.runId,e.cycleId]);}
 function idemKey(e){return JSON.stringify([e.eventNamespace,e.runId,e.cycleId,e.idempotencyKey]);}
 function recomputeDigest(event){const {eventDigest,...body}=event;return sha256Canonical(body);}
 function derivedIdempotencyKey(e){return sha256Canonical({namespace:e.eventNamespace,runId:e.runId,cycleId:e.cycleId,seq:e.seq,eventType:e.eventType,policyVersion:e.policyVersion});}
 class InMemoryShotEventLog{
-  constructor({allowedNamespacePrefix='shadow/'}={}){if(typeof allowedNamespacePrefix!=='string'||!allowedNamespacePrefix)throw new TypeError('allowedNamespacePrefix required');this.allowedNamespacePrefix=allowedNamespacePrefix;this.byCycle=new Map();this.byIdempotency=new Map();}
+  constructor({allowedNamespacePrefix}={}){this.allowedNamespacePrefix=shadowNamespacePolicy(allowedNamespacePrefix,'InMemoryShotEventLog');this.byCycle=new Map();this.byIdempotency=new Map();}
   append(event,{expectedPreviousSeq=null}={}){
-    const frozen=validateShotEvent(event);if(!frozen.eventNamespace.startsWith(this.allowedNamespacePrefix))throw new Error('EVENT_NAMESPACE_DENIED');
+    const frozen=validateShotEvent(event);if(!isShadowNamespace(frozen.eventNamespace)||!frozen.eventNamespace.startsWith(this.allowedNamespacePrefix))throw new Error('EVENT_NAMESPACE_DENIED');if(frozen.eventType==='confirmed'&&frozen.supportingObservationIds.length===0)throw new Error('CONFIRMED_REQUIRES_EVIDENCE');
     const derived=derivedIdempotencyKey(frozen);if(frozen.idempotencyKey!==derived)throw new Error('EVENT_IDEMPOTENCY_KEY_MISMATCH');if(recomputeDigest(frozen)!==frozen.eventDigest)throw new Error('EVENT_DIGEST_MISMATCH');
     const sk=scopeKey(frozen),ik=idemKey(frozen),idem=this.byIdempotency.get(ik);if(idem){if(idem.eventDigest!==frozen.eventDigest||sha256Canonical(idem)!==sha256Canonical(frozen))throw new Error('IDEMPOTENCY_CONFLICT');return {status:'existing',event:idem};}
     const rows=this.byCycle.get(sk)||[],prev=rows.at(-1)||null;if(expectedPreviousSeq!==null&&String(prev?.seq||'0')!==String(expectedPreviousSeq))throw new Error('EVENT_SEQ_CONFLICT');if(BigInt(frozen.seq)!==BigInt(prev?.seq||'0')+1n)throw new Error('EVENT_SEQ_GAP');if((frozen.previousEventDigest??null)!==(prev?.eventDigest??null))throw new Error('EVENT_CHAIN_CONFLICT');if(prev&&['confirmed','rejected','uncertain'].includes(prev.eventType))throw new Error('TERMINAL_ALREADY_COMMITTED');rows.push(frozen);this.byCycle.set(sk,rows);this.byIdempotency.set(ik,frozen);return {status:'appended',event:frozen};
@@ -570,17 +650,24 @@ module.exports={InMemoryShotEventLog,recomputeDigest,derivedIdempotencyKey};
 M["evidence_writer/in_memory_writer.js"]=function(module,exports,require){
 'use strict';
 const {sha256Canonical}=require('../contracts/canonical_json');
-const {immutablePlainCopy}=require('../contracts/strict_types');
+const {immutablePlainCopy,isShadowNamespace,shadowNamespacePolicy}=require('../contracts/strict_types');
 const {validateEvidenceCandidate,validateProjection,validatePhaseClaim}=require('../contracts/record_validators');
+const {verifyProjectionBinding}=require('../projector/projection_binding');
 function keyTuple(parts){return JSON.stringify(parts);}
 function commandFingerprint(c){return sha256Canonical({namespace:c.namespace,runId:c.runId,cycleId:c.cycleId,role:c.role,operation:c.operation,expectedRecordVersion:c.expectedRecordVersion,payloadDigest:c.payloadDigest});}
 function validateCandidate(item,c){return validateEvidenceCandidate(item,{runId:c.runId,cycleId:c.cycleId,role:c.role});}
 class InMemoryEvidenceWriter{
-  constructor({allowedNamespacePrefix='shadow/',maxCommandMemos=10000}={}){this.allowedNamespacePrefix=allowedNamespacePrefix;this.maxCommandMemos=maxCommandMemos;this.records=new Map();this.commands=new Map();this.commandScopes=new Map();this.quarantine=[];}
+  // S-10: idempotency memos are scoped per aggregate (namespace, runId, cycleId, role). The cap is per aggregate
+  // (fail-closed for that aggregate only). Memos of an aggregate are pruned only after finalizeCycle and only once
+  // more than finalizedRetention aggregates have been finalized after it; a command for a pruned aggregate gets
+  // COMMAND_EXPIRED and is never re-executed.
+  constructor({allowedNamespacePrefix,maxCommandMemos=1000,finalizedRetention=64}={}){if(!Number.isSafeInteger(maxCommandMemos)||maxCommandMemos<1||!Number.isSafeInteger(finalizedRetention)||finalizedRetention<0)throw new TypeError('maxCommandMemos/finalizedRetention must be integers');this.allowedNamespacePrefix=shadowNamespacePolicy(allowedNamespacePrefix,'InMemoryEvidenceWriter');this.maxCommandMemos=maxCommandMemos;this.finalizedRetention=finalizedRetention;this.records=new Map();this.commands=new Map();this.commandScopes=new Map();this.finalizedOrder=[];this.expiredAggregates=new Set();this.quarantine=[];}
+  _memoCount(){let n=0;for(const m of this.commands.values())n+=m.size;return n;}
+  _pruneFinalized(){while(this.finalizedOrder.length>this.finalizedRetention){const agg=this.finalizedOrder.shift(),memos=this.commands.get(agg);if(memos)for(const id of memos.keys())if(this.commandScopes.get(id)===agg)this.commandScopes.delete(id);this.commands.delete(agg);this.expiredAggregates.add(agg);}}
   _key(c){return keyTuple([c.namespace,c.runId,c.cycleId,c.role]);}
   execute(c){
-    for(const k of ['commandId','namespace','runId','cycleId','role','operation','payloadDigest'])if(typeof c?.[k]!=='string'||!c[k])throw new TypeError(`command ${k} required`);if(!c.namespace.startsWith(this.allowedNamespacePrefix))throw new Error('WRITER_NAMESPACE_DENIED');if(!['side','overhead','rear'].includes(c.role))throw new TypeError('invalid command role');if(!['addCandidates','addPhaseEvidence','saveProjection','finalizeCycle'].includes(c.operation))throw new TypeError('invalid operation');
-    const payloadCopy=immutablePlainCopy(c.payload??null),digest=sha256Canonical(payloadCopy);if(digest!==c.payloadDigest)throw new Error('PAYLOAD_DIGEST_MISMATCH');const fingerprint=commandFingerprint(c),memoKey=keyTuple([c.namespace,c.runId,c.cycleId,c.role,c.commandId]),scopeKey=this.commandScopes.get(c.commandId);if(scopeKey&&scopeKey!==memoKey)throw new Error('COMMAND_SCOPE_CONFLICT');const prevCmd=this.commands.get(memoKey);if(prevCmd){if(prevCmd.fingerprint!==fingerprint)throw new Error('COMMAND_ID_CONFLICT');return prevCmd.result;}if(this.commands.size>=this.maxCommandMemos)throw new Error('COMMAND_MEMO_CAPACITY');
+    for(const k of ['commandId','namespace','runId','cycleId','role','operation','payloadDigest'])if(typeof c?.[k]!=='string'||!c[k])throw new TypeError(`command ${k} required`);if(!isShadowNamespace(c.namespace)||!c.namespace.startsWith(this.allowedNamespacePrefix))throw new Error('WRITER_NAMESPACE_DENIED');if(!['side','overhead','rear'].includes(c.role))throw new TypeError('invalid command role');if(!['addCandidates','addPhaseEvidence','saveProjection','finalizeCycle'].includes(c.operation))throw new TypeError('invalid operation');
+    const payloadCopy=immutablePlainCopy(c.payload??null),digest=sha256Canonical(payloadCopy);if(digest!==c.payloadDigest)throw new Error('PAYLOAD_DIGEST_MISMATCH');const fingerprint=commandFingerprint(c),aggKey=this._key(c);if(this.expiredAggregates.has(aggKey)){const e=new Error('COMMAND_EXPIRED');e.code='COMMAND_EXPIRED';throw e;}const scopeKey=this.commandScopes.get(c.commandId);if(scopeKey&&scopeKey!==aggKey)throw new Error('COMMAND_SCOPE_CONFLICT');const memos=this.commands.get(aggKey),prevCmd=memos?.get(c.commandId);if(prevCmd){if(prevCmd.fingerprint!==fingerprint)throw new Error('COMMAND_ID_CONFLICT');return prevCmd.result;}if(memos&&memos.size>=this.maxCommandMemos)throw new Error('COMMAND_MEMO_CAPACITY');
     const key=this._key(c),old=this.records.get(key)||{version:0,candidates:new Map(),phaseClaims:new Map(),projections:new Map(),finalized:false};if(!Number.isInteger(c.expectedRecordVersion)||c.expectedRecordVersion!==old.version)throw new Error('RECORD_VERSION_CONFLICT');if(old.finalized&&c.operation!=='finalizeCycle')throw new Error('EVIDENCE_RECORD_FINALIZED');
     if(c.operation==='finalizeCycle'&&old.finalized)return Object.freeze({status:'existing',recordVersion:old.version,commandId:c.commandId});
     const next={version:old.version,candidates:new Map(old.candidates),phaseClaims:new Map(old.phaseClaims),projections:new Map(old.projections),finalized:old.finalized};const pendingQuarantine=[];
@@ -590,13 +677,17 @@ class InMemoryEvidenceWriter{
       if(!Array.isArray(payloadCopy?.claims))throw new TypeError('claims array required');for(const raw of payloadCopy.claims){const item=validatePhaseClaim(raw,{runId:c.runId,cycleId:c.cycleId,role:c.role}),d=sha256Canonical(item),prior=next.phaseClaims.get(item.claimId);if(prior&&prior.digest!==d)throw new Error('PHASE_CLAIM_CONFLICT');if(!prior)next.phaseClaims.set(item.claimId,{digest:d,value:item});}
     }else if(c.operation==='saveProjection'){
       const p=validateProjection(payloadCopy?.projection);if(p.runId!==c.runId||p.cycleId!==c.cycleId||p.role!==c.role)throw new TypeError('projection scope/identity required');for(const s of p.slots){if(s.status!=='real')continue;const cand=next.candidates.get(s.candidateId)?.value;if(!cand||cand.frameUID!==s.actualFrameUID||cand.derivationId!==s.derivationId||cand.contentDigest!==s.contentDigest||cand.frameEnvelopeRef!==s.frameEnvelopeRef||cand.sourceId!==s.sourceId||cand.streamGeneration!==s.streamGeneration||cand.frameSeq!==s.frameSeq)throw new Error('PROJECTION_CANDIDATE_MISMATCH');}
-      const d=sha256Canonical(p),prior=next.projections.get(p.projectionId);if(prior&&prior.digest!==d)throw new Error('PROJECTION_ID_CONFLICT');if(!prior)next.projections.set(p.projectionId,{digest:d,value:p});
+      // S-06: the projection must carry the timeline/releaseTime it was projected from; every real slot is re-derived from them.
+      for(const k of Object.keys(payloadCopy))if(!['projection','timeline','releaseTime'].includes(k))throw new TypeError(`saveProjection unknown payload field: ${k}`);
+      if(!Object.prototype.hasOwnProperty.call(payloadCopy,'timeline')||!Object.prototype.hasOwnProperty.call(payloadCopy,'releaseTime'))throw new Error('PROJECTION_PHASE_MISMATCH: saveProjection requires timeline and releaseTime (explicit null when unknown)');
+      const bound=verifyProjectionBinding({projection:p,timeline:payloadCopy.timeline,releaseTime:payloadCopy.releaseTime,candidateById:id=>next.candidates.get(id)?.value});
+      const d=sha256Canonical(p),prior=next.projections.get(p.projectionId);if(prior&&prior.digest!==d)throw new Error('PROJECTION_ID_CONFLICT');if(!prior)next.projections.set(p.projectionId,{digest:d,value:p,timeline:bound.timeline,releaseTime:bound.releaseTime});
     }else if(c.operation==='finalizeCycle'){
       if(next.projections.size===0)throw new Error('FINALIZE_REQUIRES_PROJECTION');next.finalized=true;
     }
-    next.version=old.version+1;this.records.set(key,next);this.quarantine.push(...pendingQuarantine);const result=Object.freeze({status:'committed',recordVersion:next.version,commandId:c.commandId});this.commands.set(memoKey,{fingerprint,result});this.commandScopes.set(c.commandId,memoKey);return result;
+    next.version=old.version+1;this.records.set(key,next);this.quarantine.push(...pendingQuarantine);const result=Object.freeze({status:'committed',recordVersion:next.version,commandId:c.commandId});if(!this.commands.has(aggKey))this.commands.set(aggKey,new Map());this.commands.get(aggKey).set(c.commandId,{fingerprint,result});this.commandScopes.set(c.commandId,aggKey);if(c.operation==='finalizeCycle'&&!old.finalized){this.finalizedOrder.push(aggKey);this._pruneFinalized();}return result;
   }
-  snapshot({namespace,runId,cycleId,role}){const r=this.records.get(keyTuple([namespace,runId,cycleId,role]));if(!r)return null;return immutablePlainCopy({version:r.version,finalized:r.finalized,candidates:[...r.candidates.values()].map(x=>x.value),phaseClaims:[...r.phaseClaims.values()].map(x=>x.value),projections:[...r.projections.values()].map(x=>x.value)});}
+  snapshot({namespace,runId,cycleId,role}){const r=this.records.get(keyTuple([namespace,runId,cycleId,role]));if(!r)return null;return immutablePlainCopy({version:r.version,finalized:r.finalized,candidates:[...r.candidates.values()].map(x=>x.value),phaseClaims:[...r.phaseClaims.values()].map(x=>x.value),projections:[...r.projections.values()].map(x=>x.value),projectionTimelines:[...r.projections.values()].map(x=>({projectionId:x.value.projectionId,timeline:x.timeline,releaseTime:x.releaseTime}))});}
 }
 module.exports={InMemoryEvidenceWriter};
 
@@ -610,6 +701,14 @@ const PLAN='logical25-v1-shadow';
 const SLOT_PLAN=[...[['draw',1/3],['draw',2/3]],...[['anchor',1/4],['anchor',1/2],['anchor',3/4]],...[['hold',1/4],['hold',1/2],['hold',3/4]],...[['expansion',1/3],['expansion',2/3]],...Array.from({length:9},(_,i)=>['release_window',i-4]),...Array.from({length:5},(_,i)=>['follow_through',(i+1)/6]),['recovery',1]];
 function phaseInterval(timeline,name){const p=timeline?.[name];return p&&p.status==='verified'&&Number.isSafeInteger(p.start)&&Number.isSafeInteger(p.end)&&p.end>=p.start&&Array.isArray(p.refs)&&p.refs.every(isId)?p:null;}
 function slotTargets({timeline={},releaseTime=null}){return SLOT_PLAN.map(([phase,pos],i)=>{let target=null,refs=[];if(phase==='release_window'){if(Number.isSafeInteger(releaseTime))target=releaseTime+pos*33333;const p=timeline?.release_window;if(p?.status==='verified'&&Array.isArray(p.refs))refs=[...p.refs];}else{const iv=phaseInterval(timeline,phase);if(iv){target=phase==='recovery'?iv.end:Math.round(iv.start+(iv.end-iv.start)*pos);refs=[...iv.refs];}}return {slotId:`S${String(i+1).padStart(2,'0')}`,phase,targetMasterTime:target,targetPhaseEvidenceRefs:refs};});}
+// Single definition of a non-release phase proof, shared with projection_binding.js (S-06).
+// S-13 / D-A option 1: by contract (§3 slot plan) timeline.anchor IS the settled-anchor interval. The proof states
+// that interval kind; it does not claim an independent settledness measurement (the old boolean was hard-coded).
+const ANCHOR_INTERVAL_KIND='settled-anchor-interval';
+function phaseProofFor(phase,timelineRefs){const p={phase,timelineRefs:[...timelineRefs],intervalCheck:'inside'};if(phase==='anchor')p.anchorIntervalKind=ANCHOR_INTERVAL_KIND;return p;}
+// S-11: one malformed candidate must not abort the projection. The digest covers a normalized list: each raw
+// candidate is its plain copy (same canonical bytes as an honest input) or {invalid:true,reason}; nothing is dropped.
+function normalizedCandidateInput(candidates){return candidates.map(c=>{try{return immutablePlainCopy(c===undefined?null:c);}catch(e){return {invalid:true,reason:'candidate_invalid',detail:String(e&&e.message||e)};}});}
 function bindingKey(c){return `${c.sourceId}\u0000${c.streamGeneration}`;}
 function normalizeBindings(roleBindings){if(!Array.isArray(roleBindings)||roleBindings.length===0)throw new TypeError('roleBindings required');const out=new Map();for(const b of roleBindings){if(!b||!isId(b.sourceId)||!isId(b.streamGeneration)||!Number.isSafeInteger(b.startMasterTime)||!(b.endMasterTime===null||Number.isSafeInteger(b.endMasterTime))||b.endMasterTime!==null&&b.endMasterTime<b.startMasterTime||!Number.isSafeInteger(b.capturePeriodUs)||b.capturePeriodUs<=0||!Number.isSafeInteger(b.jitterUs)||b.jitterUs<0)throw new TypeError('invalid role binding');const k=`${b.sourceId}\u0000${b.streamGeneration}`;if(out.has(k))throw new TypeError('duplicate role binding');out.set(k,immutablePlainCopy(b));}return out;}
 function identitySignature(c){return sha256Canonical({frameUID:c.frameUID,runId:c.runId,sourceId:c.sourceId,streamGeneration:c.streamGeneration,frameSeq:c.frameSeq,sourcePTS:c.sourcePTS,contentDigest:c.contentDigest,frameEnvelopeRef:c.frameEnvelopeRef});}
@@ -630,13 +729,66 @@ function minCostLexMatch(slots,rows,timeline){
 }
 function project25({runId,cycleId,masterClockId,role,active=true,timeline={},releaseTime=null,candidates=[],projectionId='projection-1',projectionVersion=1,planVersion=PLAN,roleBindings,configDigest='shadow-default'}={}){
   if(!isId(runId)||!isId(cycleId)||!isId(masterClockId)||!['side','overhead','rear'].includes(role)||!isId(projectionId)||!isId(configDigest))throw new TypeError('projection identity required');const hasVerifiedTimeline=Object.entries(timeline||{}).some(([k,v])=>k!=='masterClockId'&&v&&v.status==='verified');if(hasVerifiedTimeline&&timeline.masterClockId!==masterClockId)throw new Error('TIMELINE_CLOCK_MISMATCH');const slots=slotTargets({timeline,releaseTime});const baseSlot=s=>({...s,runId,cycleId,masterClockId,role,projectionId,projectionVersion,planVersion});
-  if(!active){const rows=slots.map(s=>({...baseSlot(s),status:'inactive',actualFrameUID:null,derivationId:null,candidateId:null,actualMasterTime:null,signedDelta:null,missingReason:'role_not_active',mappingUncertaintyUs:null,toleranceUs:null,actualPhaseEvidenceRefs:[],selectionReason:'inactive',sourceId:null,streamGeneration:null,frameSeq:null,contentDigest:null,frameEnvelopeRef:null,contributingReasons:[],phaseProof:null}));return immutablePlainCopy({projectionId,projectionVersion,planVersion,runId,cycleId,masterClockId,role,inputCandidateCount:candidates.length,eligibleCandidateCount:0,inputCandidateDigest:sha256Canonical(candidates),timelineDigest:sha256Canonical(timeline),configDigest,slots:rows,uniqueRealCount:0,missingCount:0,inactiveCount:25});}
+  if(!active){const rows=slots.map(s=>({...baseSlot(s),status:'inactive',actualFrameUID:null,derivationId:null,candidateId:null,actualMasterTime:null,signedDelta:null,missingReason:'role_not_active',mappingUncertaintyUs:null,toleranceUs:null,actualPhaseEvidenceRefs:[],selectionReason:'inactive',sourceId:null,streamGeneration:null,frameSeq:null,contentDigest:null,frameEnvelopeRef:null,contributingReasons:[],phaseProof:null}));return immutablePlainCopy({projectionId,projectionVersion,planVersion,runId,cycleId,masterClockId,role,inputCandidateCount:candidates.length,eligibleCandidateCount:0,inputCandidateDigest:sha256Canonical(normalizedCandidateInput(candidates)),timelineDigest:sha256Canonical(timeline),configDigest,slots:rows,uniqueRealCount:0,missingCount:0,inactiveCount:25});}
   const bindings=normalizeBindings(roleBindings);preflightRawUidConflicts(candidates);const ctx={runId,cycleId,masterClockId,role,bindings},classified=candidates.map(c=>classifyCandidate(c,ctx)),ineligibleReasons=classified.filter(x=>!x.ok).map(x=>x.reason),validRows=classified.filter(x=>x.ok),frames=bestDerivations(validRows),assignment=minCostLexMatch(slots,frames,timeline);
   const used=new Set();const rows=slots.map((s,i)=>{const j=assignment.get(i);if(j===undefined){let reason='no_frame_in_tolerance';if(!Number.isSafeInteger(s.targetMasterTime))reason=s.phase==='release_window'?'release_time_unknown':'phase_unverified';else if(candidates.length===0)reason='no_candidates';else if(validRows.length===0)reason=ineligibleReasons.includes('generation_mismatch')?'generation_mismatch':ineligibleReasons.includes('payload_missing')?'payload_missing':ineligibleReasons.includes('clock_uncertain')?'clock_uncertain':'no_eligible_candidates';else if(frames.length===used.size)reason='unique_frame_exhausted';return {...baseSlot(s),status:'missing',actualFrameUID:null,derivationId:null,candidateId:null,actualMasterTime:null,signedDelta:null,missingReason:reason,mappingUncertaintyUs:null,toleranceUs:null,actualPhaseEvidenceRefs:[],selectionReason:'missing',sourceId:null,streamGeneration:null,frameSeq:null,contentDigest:null,frameEnvelopeRef:null,contributingReasons:[...new Set(ineligibleReasons)],phaseProof:null};}
-    const r=frames[j],f=r.value,tol=tolerance(r);used.add(f.frameUID);const timelineRefs=[...(s.targetPhaseEvidenceRefs||[])];const phaseRefs=s.phase==='release_window'?[...timelineRefs,...(f.phaseEvidenceRefs||[])]:timelineRefs;const phaseProof=s.phase==='release_window'?null:{phase:s.phase,timelineRefs,intervalCheck:'inside',settledAnchorBoundary:s.phase==='anchor'};return {...baseSlot(s),status:'real',actualFrameUID:f.frameUID,derivationId:f.derivationId,candidateId:f.candidateId,actualMasterTime:f.actualMasterTime,signedDelta:f.actualMasterTime-s.targetMasterTime,missingReason:null,mappingUncertaintyUs:f.mappingUncertainty,toleranceUs:tol,actualPhaseEvidenceRefs:[...new Set(phaseRefs)],selectionReason:'max_cardinality_min_delta_lexicographic',sourceId:f.sourceId,streamGeneration:f.streamGeneration,frameSeq:f.frameSeq,contentDigest:f.contentDigest,frameEnvelopeRef:f.frameEnvelopeRef,contributingReasons:[],phaseProof};});
-  const uniqueRealCount=rows.filter(x=>x.status==='real').length,missingCount=rows.filter(x=>x.status==='missing').length;return immutablePlainCopy({projectionId,projectionVersion,planVersion,runId,cycleId,masterClockId,role,inputCandidateCount:candidates.length,eligibleCandidateCount:validRows.length,inputCandidateDigest:sha256Canonical(candidates),timelineDigest:sha256Canonical(timeline),configDigest,slots:rows,uniqueRealCount,missingCount,inactiveCount:0});
+    const r=frames[j],f=r.value,tol=tolerance(r);used.add(f.frameUID);const timelineRefs=[...(s.targetPhaseEvidenceRefs||[])];const phaseRefs=s.phase==='release_window'?[...timelineRefs,...(f.phaseEvidenceRefs||[])]:timelineRefs;const phaseProof=s.phase==='release_window'?null:phaseProofFor(s.phase,timelineRefs);return {...baseSlot(s),status:'real',actualFrameUID:f.frameUID,derivationId:f.derivationId,candidateId:f.candidateId,actualMasterTime:f.actualMasterTime,signedDelta:f.actualMasterTime-s.targetMasterTime,missingReason:null,mappingUncertaintyUs:f.mappingUncertainty,toleranceUs:tol,actualPhaseEvidenceRefs:[...new Set(phaseRefs)],selectionReason:'max_cardinality_min_delta_lexicographic',sourceId:f.sourceId,streamGeneration:f.streamGeneration,frameSeq:f.frameSeq,contentDigest:f.contentDigest,frameEnvelopeRef:f.frameEnvelopeRef,contributingReasons:[],phaseProof};});
+  const uniqueRealCount=rows.filter(x=>x.status==='real').length,missingCount=rows.filter(x=>x.status==='missing').length;return immutablePlainCopy({projectionId,projectionVersion,planVersion,runId,cycleId,masterClockId,role,inputCandidateCount:candidates.length,eligibleCandidateCount:validRows.length,inputCandidateDigest:sha256Canonical(normalizedCandidateInput(candidates)),timelineDigest:sha256Canonical(timeline),configDigest,slots:rows,uniqueRealCount,missingCount,inactiveCount:0});
 }
-module.exports={PLAN,SLOT_PLAN,slotTargets,project25,minCostLexMatch};
+module.exports={PLAN,SLOT_PLAN,ANCHOR_INTERVAL_KIND,slotTargets,phaseInterval,phaseProofFor,project25,minCostLexMatch};
+
+};
+M["projector/projection_binding.js"]=function(module,exports,require){
+'use strict';
+// S-06: a projection crossing a trust boundary (evidence writer, archive, importer) is bound to the
+// stored candidates and to the phase timeline it was projected from. Slot time, uncertainty, delta,
+// tolerance, target, phase interval, evidence refs and phaseProof are recomputed, never trusted as data.
+const {immutablePlainCopy,isId}=require('../contracts/strict_types');
+const {sha256Canonical}=require('../contracts/canonical_json');
+const {validateProjection}=require('../contracts/record_validators');
+const {slotTargets,phaseInterval,phaseProofFor}=require('./logical25');
+const PHASES=['draw','anchor','hold','expansion','release_window','follow_through','recovery'];
+const MAX_TOLERANCE_US=50000;
+function fail(code,detail){const e=new Error(detail?`${code}: ${detail}`:code);e.code=code;throw e;}
+function validateTimeline(timeline,masterClockId){
+  let tl;try{tl=immutablePlainCopy(timeline);}catch(e){fail('PROJECTION_TIMELINE_INVALID',e.message);}
+  if(!tl||typeof tl!=='object'||Array.isArray(tl))fail('PROJECTION_TIMELINE_INVALID','timeline object required');
+  for(const k of Object.keys(tl))if(k!=='masterClockId'&&!PHASES.includes(k))fail('PROJECTION_TIMELINE_INVALID',`unknown timeline key ${k}`);
+  const phases=Object.keys(tl).filter(k=>k!=='masterClockId');
+  for(const k of phases){if(!tl[k]||typeof tl[k]!=='object'||Array.isArray(tl[k]))fail('PROJECTION_TIMELINE_INVALID',`timeline.${k} must be an object`);
+    // S-13: only contract fields; e.g. an ad-hoc `settled:false` would otherwise be silently ignored.
+    for(const f of Object.keys(tl[k]))if(!['status','start','end','refs'].includes(f))fail('PROJECTION_TIMELINE_INVALID',`timeline.${k}.${f} is not a contract field`);}
+  if(phases.length&&tl.masterClockId!==masterClockId)fail('PROJECTION_TIMELINE_INVALID','timeline masterClockId must equal projection masterClockId');
+  return tl;
+}
+function sameJson(a,b){return sha256Canonical(a===undefined?null:a)===sha256Canonical(b===undefined?null:b);}
+function verifyProjectionBinding({projection,timeline,releaseTime,candidateById}){
+  const p=validateProjection(projection);
+  if(!(releaseTime===null||Number.isSafeInteger(releaseTime)))fail('PROJECTION_PHASE_MISMATCH','releaseTime must be TimeUs or null');
+  const tl=validateTimeline(timeline,p.masterClockId);
+  if(p.timelineDigest!==sha256Canonical(tl))fail('PROJECTION_TIMELINE_DIGEST_MISMATCH');
+  const targets=slotTargets({timeline:tl,releaseTime});
+  p.slots.forEach((s,i)=>{
+    const t=targets[i];
+    if(s.targetMasterTime!==t.targetMasterTime||!sameJson(s.targetPhaseEvidenceRefs,t.targetPhaseEvidenceRefs))fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} target does not follow the slot plan and timeline`);
+    if(s.status!=='real')return;
+    const cand=candidateById(s.candidateId);
+    if(!cand||cand.frameUID!==s.actualFrameUID||cand.derivationId!==s.derivationId||cand.contentDigest!==s.contentDigest||cand.frameEnvelopeRef!==s.frameEnvelopeRef||cand.sourceId!==s.sourceId||cand.streamGeneration!==s.streamGeneration||cand.frameSeq!==s.frameSeq||cand.runId!==p.runId||cand.cycleId!==p.cycleId||cand.role!==p.role)fail('PROJECTION_CANDIDATE_MISMATCH',s.slotId);
+    if(cand.masterClockId!==p.masterClockId||s.actualMasterTime!==cand.actualMasterTime||s.mappingUncertaintyUs!==cand.mappingUncertainty)fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} time/uncertainty not the candidate's`);
+    if(s.signedDelta!==cand.actualMasterTime-s.targetMasterTime||s.toleranceUs>MAX_TOLERANCE_US||s.toleranceUs<cand.mappingUncertainty||Math.abs(s.signedDelta)>s.toleranceUs)fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} delta/tolerance`);
+    if(s.phase==='release_window'){
+      if(s.phaseProof!==null)fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} release slot carries a phaseProof`);
+      if(!sameJson(s.actualPhaseEvidenceRefs,[...new Set([...t.targetPhaseEvidenceRefs,...(cand.phaseEvidenceRefs||[])])]))fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} evidence refs`);
+      return;
+    }
+    const iv=phaseInterval(tl,s.phase);
+    if(!iv||cand.actualMasterTime-cand.mappingUncertainty<iv.start||cand.actualMasterTime+cand.mappingUncertainty>iv.end)fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} candidate is not inside the verified ${s.phase} interval`);
+    if(!sameJson(s.phaseProof,phaseProofFor(s.phase,iv.refs)))fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} phaseProof not derived from the timeline`);
+    if(!sameJson(s.actualPhaseEvidenceRefs,[...new Set(t.targetPhaseEvidenceRefs)]))fail('PROJECTION_PHASE_MISMATCH',`${s.slotId} evidence refs`);
+  });
+  return {projection:p,timeline:tl,releaseTime};
+}
+module.exports={verifyProjectionBinding,validateTimeline,MAX_TOLERANCE_US};
 
 };
 M["replay/virtual_clock.js"]=function(module,exports,require){
@@ -661,7 +813,7 @@ M["review/view_model.js"]=function(module,exports,require){
 const {immutablePlainCopy}=require('../contracts/strict_types');
 const {validateProjection}=require('../contracts/record_validators');
 function buildReviewView(projection){const p=validateProjection(projection);const slots=p.slots.map(s=>Object.freeze({slotId:s.slotId,phase:s.phase,status:s.status,label:s.status==='real'?s.slotId:s.status==='inactive'?'Inactive':'Missing',frameUID:s.actualFrameUID??null,actualMasterTime:s.actualMasterTime??null,signedDelta:s.signedDelta??null,missingReason:s.missingReason??null,actualPhaseEvidenceRefs:Object.freeze([...(s.actualPhaseEvidenceRefs||[])]),sourceId:s.sourceId??null,streamGeneration:s.streamGeneration??null,frameSeq:s.frameSeq??null,phaseProof:s.phaseProof??null}));return immutablePlainCopy({projectionId:p.projectionId,runId:p.runId,cycleId:p.cycleId,masterClockId:p.masterClockId,planVersion:p.planVersion,role:p.role,slots,realCount:slots.filter(s=>s.status==='real').length,missingCount:slots.filter(s=>s.status==='missing').length,inactiveCount:slots.filter(s=>s.status==='inactive').length});}
-function anchorTarget(view){const anchors=view.slots.filter((s,i)=>i>=2&&i<=4&&s.phase==='anchor');const pick=anchors.find(s=>s.status==='real'&&s.phaseProof?.phase==='anchor'&&s.phaseProof.intervalCheck==='inside'&&s.phaseProof.settledAnchorBoundary===true&&Array.isArray(s.phaseProof.timelineRefs)&&s.phaseProof.timelineRefs.length>0);return pick?Object.freeze({status:'real',slotId:pick.slotId,frameUID:pick.frameUID}):Object.freeze({status:'missing',slotId:null,frameUID:null,reason:'verified_anchor_slot_missing'});}
+function anchorTarget(view){const anchors=view.slots.filter((s,i)=>i>=2&&i<=4&&s.phase==='anchor');const pick=anchors.find(s=>s.status==='real'&&s.phaseProof?.phase==='anchor'&&s.phaseProof.intervalCheck==='inside'&&s.phaseProof.anchorIntervalKind==='settled-anchor-interval'&&Array.isArray(s.phaseProof.timelineRefs)&&s.phaseProof.timelineRefs.length>0);return pick?Object.freeze({status:'real',slotId:pick.slotId,frameUID:pick.frameUID}):Object.freeze({status:'missing',slotId:null,frameUID:null,reason:'verified_anchor_slot_missing'});}
 function playbackOrder(projection){const p=validateProjection(projection),real=p.slots.filter(s=>s.status==='real');return Object.freeze(real.slice().sort((a,b)=>(a.actualMasterTime-b.actualMasterTime)||String(a.sourceId).localeCompare(String(b.sourceId))||String(a.streamGeneration).localeCompare(String(b.streamGeneration))||(BigInt(a.frameSeq)<BigInt(b.frameSeq)?-1:BigInt(a.frameSeq)>BigInt(b.frameSeq)?1:0)||String(a.actualFrameUID).localeCompare(String(b.actualFrameUID))).map(s=>s.actualFrameUID));}
 module.exports={buildReviewView,anchorTarget,playbackOrder,validateProjection};
 
@@ -713,44 +865,100 @@ module.exports={RoleRing,identityRecord};
 };
 M["scheduler/priority_scheduler.js"]=function(module,exports,require){
 'use strict';
+const {immutablePlainCopy}=require('../contracts/strict_types');
+// S-09: a descriptor crosses a Worker boundary, so it must be plain data all the way down
+// (no functions/symbols/class instances/undefined/non-finite numbers at any depth). A frozen deep copy is used.
 function isPlainObject(v){return !!v&&typeof v==='object'&&!Array.isArray(v)&&Object.getPrototypeOf(v)===Object.prototype;}
-function validateDescriptor(d){if(!isPlainObject(d)||typeof d.workerId!=='string'||!d.workerId||typeof d.messageType!=='string'||!d.messageType||!(d.payloadRef===null||typeof d.payloadRef==='string'))throw new TypeError('scheduler requires serializable worker descriptor');for(const v of Object.values(d))if(typeof v==='function')throw new TypeError('scheduler descriptor must not contain functions');return Object.freeze({...d});}
-class LatestLane{
-  constructor(name,{onDrop,onOutcome,execute,timeoutMs,isCancelled}){this.name=name;this.onDrop=onDrop;this.onOutcome=onOutcome;this.execute=execute;this.timeoutMs=timeoutMs;this.isCancelled=isCancelled;this.active=false;this.pending=null;this.generation=null;this.token=0;}
-  submit(job){if(!job||!job.descriptor)throw new TypeError('descriptor required');if(!this.active){this._start(job);return {accepted:true,replaced:false};}const replaced=!!this.pending;if(replaced)this.onDrop(this.pending,'replaced_by_latest');this.pending=job;return {accepted:true,replaced};}
-  cancelGeneration(generation){if(this.pending&&this.pending.meta?.generation===generation){this.onDrop(this.pending,'generation_cancelled');this.pending=null;}}
-  _start(job){
-    this.active=true;this.generation=job.meta?.generation??null;const myToken=++this.token;let timer=null;
-    const timeout=new Promise((_,rej)=>{timer=setTimeout(()=>{const e=new Error('SCHEDULER_JOB_TIMEOUT');e.code='SCHEDULER_JOB_TIMEOUT';rej(e);},this.timeoutMs);});
-    Promise.race([Promise.resolve().then(()=>this.execute(job.descriptor,job.meta)),timeout]).then(v=>{
-      if(this.isCancelled(job.meta?.generation))this.onOutcome(job,'stale_discarded',v);else this.onOutcome(job,'completed',v);
-    },e=>{if(e&&e.code==='SCHEDULER_JOB_TIMEOUT')this.onOutcome(job,'timed_out',e);else if(this.isCancelled(job.meta?.generation))this.onOutcome(job,'stale_discarded',e);else this.onOutcome(job,'failed',e);}).finally(()=>{
-      if(timer)clearTimeout(timer);if(myToken!==this.token)return;this.active=false;this.generation=null;const next=this.pending;this.pending=null;if(next)this._start(next);
-    });
+function validateDescriptor(d){
+  if(!isPlainObject(d)||typeof d.workerId!=='string'||!d.workerId||typeof d.messageType!=='string'||!d.messageType||!(d.payloadRef===null||typeof d.payloadRef==='string'))throw new TypeError('scheduler requires serializable worker descriptor');
+  for(const v of Object.values(d))if(typeof v==='function')throw new TypeError('scheduler descriptor must not contain functions');
+  try{return immutablePlainCopy(d);}catch(e){throw new TypeError(`scheduler descriptor must be plain serializable data (no nested functions/symbols/class instances): ${e.message}`);}
+}
+const CANCELLED_GENERATIONS_RETAINED=64;
+// S-08: one job slot with an explicit cancellation contract.
+// executor(descriptor, meta, {signal, jobId}) receives an AbortSignal that is aborted on timeout or stale-generation
+// cancel; a real Worker executor must forward it (post a cancel keyed by jobId / terminate the worker).
+// A job that timed out and has not settled keeps the lane `degraded`: further jobs are dropped as
+// `worker_unresponsive` instead of piling more work onto a hung worker. A job aborted because its generation was
+// cancelled frees the lane at once (the newer generation must not wait on a superseded one); such abandoned
+// in-flight jobs are capped by maxCancelledInFlight, beyond which the lane is degraded as well.
+class JobSlot{
+  constructor(name,{execute,timeoutMs,maxOutstanding,maxCancelledInFlight,outcome,metrics}){
+    this.name=name;this.execute=execute;this.timeoutMs=timeoutMs;this.maxOutstanding=maxOutstanding;this.maxCancelledInFlight=maxCancelledInFlight;this.outcome=outcome;this.metrics=metrics;
+    this.current=null;this.timedOutUnsettled=0;this.cancelledUnsettled=0;this.peakRunning=0;this.seq=0;this.onFree=null;
   }
+  get active(){return !!this.current;}
+  // Outstanding executor work = the current job + timed-out jobs that never settled (bounded by maxOutstanding).
+  get outstanding(){return (this.current?1:0)+this.timedOutUnsettled;}
+  get degraded(){return !this.current&&(this.timedOutUnsettled>=this.maxOutstanding||this.cancelledUnsettled>=this.maxCancelledInFlight);}
+  canStart(){return !this.current&&this.timedOutUnsettled<this.maxOutstanding&&this.cancelledUnsettled<this.maxCancelledInFlight;}
+  start(job){
+    const controller=typeof AbortController==='function'?new AbortController():null;const run={job,controller,state:'running',timer:null,jobId:`${this.name}:${++this.seq}`};
+    this.current=run;this.peakRunning=Math.max(this.peakRunning,1+this.timedOutUnsettled+this.cancelledUnsettled);
+    run.timer=setTimeout(()=>{if(run.state!=='running')return;run.state='timed_out';this.timedOutUnsettled++;this._abort(run,'SCHEDULER_JOB_TIMEOUT');const e=new Error('SCHEDULER_JOB_TIMEOUT');e.code='SCHEDULER_JOB_TIMEOUT';this.outcome(job,'timed_out',e);this._free(run);},this.timeoutMs);
+    Promise.resolve().then(()=>this.execute(job.descriptor,job.meta,{signal:controller?controller.signal:null,jobId:run.jobId})).then(v=>this._settle(run,true,v),e=>this._settle(run,false,e));
+  }
+  cancelRunning(generation){
+    const run=this.current;if(!run||run.state!=='running'||generation==null||run.job.meta?.generation!==generation)return false;
+    run.state='cancelled';this.cancelledUnsettled++;clearTimeout(run.timer);this._abort(run,'SCHEDULER_GENERATION_CANCELLED');this.outcome(run.job,'stale_discarded',null);this._free(run);return true;
+  }
+  _abort(run,reason){this.metrics.aborted++;try{run.controller?.abort(reason);}catch{}}
+  _settle(run,ok,value){
+    if(run.state==='running'){run.state='settled';clearTimeout(run.timer);this.outcome(run.job,ok?'completed':'failed',value,{stalenessCheck:true});this._free(run);return;}
+    // Late settle of a timed-out or cancelled job: release its capacity; never report a second outcome.
+    this.metrics.lateSettled++;if(run.state==='timed_out')this.timedOutUnsettled--;else if(run.state==='cancelled')this.cancelledUnsettled--;run.state='settled';this.onFree?.();
+  }
+  _free(run){if(this.current===run)this.current=null;this.onFree?.();}
+}
+class LatestLane{
+  constructor(name,{onDrop,slot}){this.name=name;this.onDrop=onDrop;this.slot=slot;this.pending=null;slot.onFree=()=>this._pump();}
+  get active(){return this.slot.active;}
+  submit(job){
+    if(!job||!job.descriptor)throw new TypeError('descriptor required');
+    if(this.slot.canStart()&&!this.pending){this.slot.start(job);return {accepted:true,replaced:false};}
+    if(this.slot.degraded){this.onDrop(job,'worker_unresponsive');return {accepted:false,replaced:false,dropped:'worker_unresponsive'};}
+    const replaced=!!this.pending;if(replaced)this.onDrop(this.pending,'replaced_by_latest');this.pending=job;return {accepted:true,replaced};
+  }
+  cancelGeneration(generation){if(this.pending&&this.pending.meta?.generation===generation){this.onDrop(this.pending,'generation_cancelled');this.pending=null;}this.slot.cancelRunning(generation);}
+  _pump(){if(!this.pending)return;if(this.slot.canStart()){const n=this.pending;this.pending=null;this.slot.start(n);}else if(this.slot.degraded){const n=this.pending;this.pending=null;this.onDrop(n,'worker_unresponsive');}}
 }
 class AnalysisScheduler{
-  constructor({onDrop=null,onOutcome=null,executor=null,jobTimeoutMs=1000}={}){
+  constructor({onDrop=null,onOutcome=null,executor=null,jobTimeoutMs=1000,maxOutstanding=1,maxCancelledInFlight=4}={}){
     if(typeof executor!=='function')executor=async()=>{throw new Error('SCHEDULER_EXECUTOR_UNAVAILABLE');};
     if(!Number.isInteger(jobTimeoutMs)||jobTimeoutMs<1)throw new TypeError('jobTimeoutMs required');
-    this.cancelledGenerations=new Set();this.metrics={sideSubmitted:0,auxSubmitted:0,droppedPending:0,failed:0,completed:0,timedOut:0,staleDiscarded:0,observerErrors:0};
-    this._safeDrop=(job,reason)=>{this.metrics.droppedPending++;try{onDrop?.(job,reason);}catch{this.metrics.observerErrors++;}};
-    this._safeOutcome=(job,status,value)=>{if(status==='failed')this.metrics.failed++;else if(status==='timed_out')this.metrics.timedOut++;else if(status==='stale_discarded')this.metrics.staleDiscarded++;else this.metrics.completed++;try{onOutcome?.(job,status,value);}catch{this.metrics.observerErrors++;}};
-    const isCancelled=g=>g!=null&&this.cancelledGenerations.has(g);this.executor=executor;this.jobTimeoutMs=jobTimeoutMs;
-    this.side=new LatestLane('side',{onDrop:this._safeDrop,onOutcome:this._safeOutcome,execute:executor,timeoutMs:jobTimeoutMs,isCancelled});this.auxActive=false;this.auxToken=0;this.auxPending={overhead:null,rear:null};this.auxTurn='overhead';this.isCancelled=isCancelled;
+    if(!Number.isInteger(maxOutstanding)||maxOutstanding<1||!Number.isInteger(maxCancelledInFlight)||maxCancelledInFlight<1)throw new TypeError('maxOutstanding/maxCancelledInFlight must be positive integers');
+    this.cancelledGenerations=new Set();this.metrics={sideSubmitted:0,auxSubmitted:0,droppedPending:0,failed:0,completed:0,timedOut:0,staleDiscarded:0,observerErrors:0,workerUnresponsiveDrops:0,aborted:0,lateSettled:0};
+    this._safeDrop=(job,reason)=>{this.metrics.droppedPending++;if(reason==='worker_unresponsive')this.metrics.workerUnresponsiveDrops++;try{onDrop?.(job,reason);}catch{this.metrics.observerErrors++;}};
+    const isCancelled=g=>g!=null&&this.cancelledGenerations.has(g);this.isCancelled=isCancelled;
+    this._safeOutcome=(job,status,value,{stalenessCheck=false}={})=>{if(stalenessCheck&&isCancelled(job.meta?.generation))status='stale_discarded';if(status==='failed')this.metrics.failed++;else if(status==='timed_out')this.metrics.timedOut++;else if(status==='stale_discarded')this.metrics.staleDiscarded++;else this.metrics.completed++;try{onOutcome?.(job,status,value);}catch{this.metrics.observerErrors++;}};
+    this.executor=executor;this.jobTimeoutMs=jobTimeoutMs;
+    const slotOpts={execute:executor,timeoutMs:jobTimeoutMs,maxOutstanding,maxCancelledInFlight,outcome:this._safeOutcome,metrics:this.metrics};
+    // Side and aux run in separate slots: Side never waits on aux work, and a hung aux worker never degrades Side.
+    this.side=new LatestLane('side',{onDrop:this._safeDrop,slot:new JobSlot('side',slotOpts)});
+    this.auxSlot=new JobSlot('aux',slotOpts);this.auxSlot.onFree=()=>this._pumpAux();this.auxPending={overhead:null,rear:null};this.auxTurn='overhead';
   }
+  get auxActive(){return this.auxSlot.active;}
   submit(role,descriptor,meta={}){
     if(typeof descriptor==='function')throw new TypeError('scheduler does not accept functions');const desc=validateDescriptor(descriptor);if(meta.dispatchKind!==undefined&&meta.dispatchKind!=='worker-dispatch')throw new TypeError('invalid dispatchKind');const job={role,descriptor:desc,meta:{...meta,dispatchKind:'worker-dispatch'}};
-    if(role==='side'){this.metrics.sideSubmitted++;return this.side.submit(job);}if(!['overhead','rear'].includes(role))throw new TypeError('invalid role');this.metrics.auxSubmitted++;if(!this.auxActive){this._startAux(job);return {accepted:true,replaced:false};}const replaced=!!this.auxPending[role];if(replaced)this._safeDrop(this.auxPending[role],'replaced_by_latest');this.auxPending[role]=job;return {accepted:true,replaced};
+    if(role==='side'){this.metrics.sideSubmitted++;return this.side.submit(job);}if(!['overhead','rear'].includes(role))throw new TypeError('invalid role');this.metrics.auxSubmitted++;
+    if(this.auxSlot.canStart()&&!this.auxPending.overhead&&!this.auxPending.rear){this._startAux(job);return {accepted:true,replaced:false};}
+    if(this.auxSlot.degraded){this._safeDrop(job,'worker_unresponsive');return {accepted:false,replaced:false,dropped:'worker_unresponsive'};}
+    const replaced=!!this.auxPending[role];if(replaced)this._safeDrop(this.auxPending[role],'replaced_by_latest');this.auxPending[role]=job;return {accepted:true,replaced};
   }
-  cancelGeneration(generation){if(generation==null)return;this.cancelledGenerations.add(generation);this.side.cancelGeneration(generation);for(const role of ['overhead','rear'])if(this.auxPending[role]?.meta?.generation===generation){this._safeDrop(this.auxPending[role],'generation_cancelled');this.auxPending[role]=null;}}
-  _startAux(job){
-    this.auxActive=true;this.auxTurn=job.role==='overhead'?'rear':'overhead';const token=++this.auxToken;let timer=null;const timeout=new Promise((_,rej)=>{timer=setTimeout(()=>{const e=new Error('SCHEDULER_JOB_TIMEOUT');e.code='SCHEDULER_JOB_TIMEOUT';rej(e);},this.jobTimeoutMs);});
-    Promise.race([Promise.resolve().then(()=>this.executor(job.descriptor,job.meta)),timeout]).then(v=>{this._safeOutcome(job,this.isCancelled(job.meta?.generation)?'stale_discarded':'completed',v);},e=>{this._safeOutcome(job,e?.code==='SCHEDULER_JOB_TIMEOUT'?'timed_out':this.isCancelled(job.meta?.generation)?'stale_discarded':'failed',e);}).finally(()=>{if(timer)clearTimeout(timer);if(token!==this.auxToken)return;this.auxActive=false;const first=this.auxPending[this.auxTurn]?this.auxTurn:(this.auxPending.overhead?'overhead':this.auxPending.rear?'rear':null);if(first){const n=this.auxPending[first];this.auxPending[first]=null;this._startAux(n);}});
+  cancelGeneration(generation){
+    if(generation==null)return;this.cancelledGenerations.delete(generation);this.cancelledGenerations.add(generation);
+    while(this.cancelledGenerations.size>CANCELLED_GENERATIONS_RETAINED)this.cancelledGenerations.delete(this.cancelledGenerations.values().next().value);
+    this.side.cancelGeneration(generation);for(const role of ['overhead','rear'])if(this.auxPending[role]?.meta?.generation===generation){this._safeDrop(this.auxPending[role],'generation_cancelled');this.auxPending[role]=null;}this.auxSlot.cancelRunning(generation);
   }
-  snapshot(){return Object.freeze({metrics:Object.freeze({...this.metrics}),sideActive:this.side.active,sidePending:!!this.side.pending,auxActive:this.auxActive,auxPending:Object.freeze({overhead:!!this.auxPending.overhead,rear:!!this.auxPending.rear}),cancelledGenerations:Object.freeze([...this.cancelledGenerations])});}
+  _startAux(job){this.auxTurn=job.role==='overhead'?'rear':'overhead';this.auxSlot.start(job);}
+  _pumpAux(){
+    const first=this.auxPending[this.auxTurn]?this.auxTurn:(this.auxPending.overhead?'overhead':this.auxPending.rear?'rear':null);if(!first)return;
+    if(this.auxSlot.canStart()){const n=this.auxPending[first];this.auxPending[first]=null;this._startAux(n);}
+    else if(this.auxSlot.degraded){for(const r of ['overhead','rear'])if(this.auxPending[r]){const n=this.auxPending[r];this.auxPending[r]=null;this._safeDrop(n,'worker_unresponsive');}}
+  }
+  snapshot(){return Object.freeze({metrics:Object.freeze({...this.metrics}),sideActive:this.side.active,sidePending:!!this.side.pending,sideDegraded:this.side.slot.degraded,auxActive:this.auxSlot.active,auxDegraded:this.auxSlot.degraded,auxPending:Object.freeze({overhead:!!this.auxPending.overhead,rear:!!this.auxPending.rear}),peakRunning:Object.freeze({side:this.side.slot.peakRunning,aux:this.auxSlot.peakRunning}),cancelledGenerations:Object.freeze([...this.cancelledGenerations])});}
 }
-module.exports={AnalysisScheduler,validateDescriptor};
+module.exports={AnalysisScheduler,validateDescriptor,CANCELLED_GENERATIONS_RETAINED};
 
 };
 M["telemetry/event_tape.js"]=function(module,exports,require){
