@@ -185,7 +185,25 @@ if [ -n "$PORT" ]; then
   echo "Opening verified X2.8.2 UI: $URL"
   # The frozen runtime supports THREEPM_FORM_NO_BROWSER=1, so it does not race
   # the launcher by opening a second tab. Open exactly one preferred UI here.
-  if [ -d "/Applications/Google Chrome.app" ]; then
+  # R8 P1-08 M-05: a FIELD TEST build opens the UI in an isolated, package-specific browser profile so its
+  # IndexedDB evidence (and the boot-time evidence migration) never touches the browser data of R7/P1-07 or of
+  # real sessions. Opt out only deliberately: THREEPM_USE_DEFAULT_PROFILE=1.
+  ISOLATED_PROFILE=""
+  if [ "$PKG_CLASS" = "field_test_not_production" ] && [ "${THREEPM_USE_DEFAULT_PROFILE:-0}" != "1" ]; then
+    ISOLATED_PROFILE="$HOME/Library/Application Support/3PM_FieldTest_Profiles/${PKG_ID}"
+    mkdir -p "$ISOLATED_PROFILE" 2>/dev/null || true
+  fi
+  if [ -n "$ISOLATED_PROFILE" ] && [ -d "/Applications/Google Chrome.app" ]; then
+    echo "3PM UI browser: Google Chrome (isolated field-test profile: $ISOLATED_PROFILE)"
+    /usr/bin/open -na "Google Chrome" --args --user-data-dir="$ISOLATED_PROFILE" --no-first-run --no-default-browser-check "$URL" >/dev/null 2>&1 || echo "WARNING: could not open Chrome with the isolated profile. Open it manually (see FIELD_TEST_INSTRUCTIONS)."
+  elif [ -n "$ISOLATED_PROFILE" ] && [ -d "/Applications/Microsoft Edge.app" ]; then
+    echo "3PM UI browser: Microsoft Edge (isolated field-test profile: $ISOLATED_PROFILE)"
+    /usr/bin/open -na "Microsoft Edge" --args --user-data-dir="$ISOLATED_PROFILE" --no-first-run --no-default-browser-check "$URL" >/dev/null 2>&1 || echo "WARNING: could not open Edge with the isolated profile. Open it manually (see FIELD_TEST_INSTRUCTIONS)."
+  elif [ -n "$ISOLATED_PROFILE" ]; then
+    echo "WARNING: FIELD TEST build needs Google Chrome or Microsoft Edge for an isolated browser profile."
+    echo "The UI was NOT opened automatically to protect existing browser data. URL: $URL"
+    echo "To accept the risk and use the default browser profile, relaunch with THREEPM_USE_DEFAULT_PROFILE=1."
+  elif [ -d "/Applications/Google Chrome.app" ]; then
     echo "3PM UI browser: Google Chrome"
     /usr/bin/open -a "Google Chrome" "$URL" >/dev/null 2>&1 || /usr/bin/open "$URL" >/dev/null 2>&1 || true
   elif [ -d "/Applications/Microsoft Edge.app" ]; then
