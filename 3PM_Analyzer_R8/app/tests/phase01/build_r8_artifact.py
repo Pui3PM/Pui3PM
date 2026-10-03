@@ -17,10 +17,10 @@ import argparse, hashlib, json, os, shutil, stat, subprocess, sys, tempfile, zip
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[3]
-PROVENANCE_REL = 'docs/lineage/R8_P1_07_CLAUDE_CODE_PROVENANCE.json'
+PROVENANCE_REL = 'docs/lineage/R8_P1_08_CLAUDE_CODE_PROVENANCE.json'
 MARKER = {'development_not_release': 'DEV_NOT_RELEASE.txt', 'field_test_not_production': 'FIELD_TEST_NOT_PRODUCTION.txt'}
-ROOT_NAME = {'development_not_release': '3PM_Analyzer_R8_P1_07_DEV', 'field_test_not_production': '3PM_Analyzer_R8_FIELD_TEST'}
-ZIP_NAME = {'development_not_release': '3PM_Analyzer_R8_P1_07_DEV_{date}.zip', 'field_test_not_production': '3PM_Analyzer_R8_FIELD_TEST_{date}.zip'}
+ROOT_NAME = {'development_not_release': '3PM_Analyzer_R8_P1_08_DEV', 'field_test_not_production': '3PM_Analyzer_R8_P1_08_FIELD_TEST'}
+ZIP_NAME = {'development_not_release': '3PM_Analyzer_R8_P1_08_DEV_{date}.zip', 'field_test_not_production': '3PM_Analyzer_R8_P1_08_FIELD_TEST_{date}.zip'}
 PROTECTED = {
     'app/static/app.js': 'ed23976568e7f25b5fb370c516ba766f272548e13d8398be5f506029d769f378',
     'app/static/core_runtime.js': '89d637ce861466460a6c3889a08c45d70401d71ee904e6a4e6d6fd8dd9f9b3bf',
@@ -31,10 +31,19 @@ PROTECTED = {
     'app/static/equipment_lab_layer.js': 'dd425979d5e9b656ca870227d60e2ee690a2dd416f83bd8e84529eca86bf00c0',
     'internal/3PM_Equipment_Catalog_CANONICAL_EL18_FORM_UX_2026_09_30_R1.json': '40eb1a466f9f0d5f5db08d22b44791676aaf40022ae18d8b90803ef9ca4f4344',
     'internal/3PM_Equipment_Catalog_EL17_MERGE_AUDIT.json': 'bbefaa6cfc8a3382ecffa2cfda949b660ef397fcbb0cb4609cbe8db630ef5a22',
-    'app/static/evidence_budget_core.js': 'fd7335e88e02af4fa2d34a49006c0d0f821d2473e0bf924afcb0c62bf0ffc3cd',
-    'app/static/temporal_evidence_layer.js': '65aec49083091f60be6626775b5c89115e6646a4bc93c3b458ff846d9507db42',
+    # R8 P1-08 explicit thaw (DECISION_LOG D-108-02 / D-108-03; rollback: ROLLBACK.md). Previous pins in THAWED below.
+    'app/static/evidence_budget_core.js': 'de50d1eb86423fd3c093b1a5159dcb4ba3da7de455876405e1345c91685b1799',
+    'app/static/temporal_evidence_layer.js': '4af385e836e881150fe20956b8f5950ef92dbbb5d68855e253b185acbfec53bf',
     'app/static/capture_integrity_layer.js': '01f9bdfaec0ca7feb76f5a7a1d861de70437e80ca6ce0cfab6683baff110cbf3',
 }
+THAWED = {  # path: (P1-07 pinned sha256, decision) -- recorded so a reviewer can diff/rollback exactly these bytes
+    'app/static/evidence_budget_core.js': ('fd7335e88e02af4fa2d34a49006c0d0f821d2473e0bf924afcb0c62bf0ffc3cd', 'D-108-02 H-01/H-02 root cause (epoch-only identity, cross-domain mediaTime order)'),
+    'app/static/temporal_evidence_layer.js': ('65aec49083091f60be6626775b5c89115e6646a4bc93c3b458ff846d9507db42', 'D-108-03 H-02 adapter null->0 identity (augmentBundle mapping only)'),
+}
+P108_GATES = ['app/tests/test_p108_h01_chronology.js', 'app/tests/test_p108_h02_identity.js', 'app/tests/test_p108_h03_native_generation.js',
+              'app/tests/test_p108_m01_fps_scope.js', 'app/tests/test_p108_m02_alignment_anchor.js', 'app/tests/test_p108_astra_probes.js',
+              'app/tests/test_p108_m04_bridge_exposure.js', 'app/tests/test_p108_m05_migration_compat.js', 'app/tests/test_p108_m05_launcher_profile.js',
+              'app/tests/phase01/repro_astra_legacy_gaps.js']
 EQUIPMENT_ATHLETE_SESSION = ['app/static/app.js', 'app/static/equipment_catalog.js', 'app/static/equipment_lab_core.js', 'app/static/equipment_lab_layer.js',
                              'internal/3PM_Equipment_Catalog_CANONICAL_EL18_FORM_UX_2026_09_30_R1.json', 'internal/3PM_Equipment_Catalog_EL17_MERGE_AUDIT.json']
 
@@ -81,7 +90,7 @@ def stage(cls, work):
     return dst
 
 
-def refresh_qa_snapshots(tree, qa_out):
+def refresh_qa_snapshots(tree, qa_out, strict=False):
     env = dict(os.environ, THREEPM_QA_OUT=str(qa_out))
     summary = {}
     for runner, produced, target in [
@@ -91,6 +100,8 @@ def refresh_qa_snapshots(tree, qa_out):
     ]:
         r = run([sys.executable, '-B', str(tree / runner)], cwd=tree, env=env, check=False)
         summary[runner] = {'returncode': r.returncode, 'tail': (r.stdout.strip().splitlines() or [''])[-1]}
+        if strict and r.returncode != 0:
+            raise SystemExit(f'field build QA gate failed: {runner}\n{r.stdout[-4000:]}\n{r.stderr[-2000:]}')
         shutil.copyfile(Path(qa_out) / produced, tree / target)
     return summary
 
@@ -118,7 +129,8 @@ def write_provenance(tree, cls, base_tree, base_zip, base_zip_name, qa_summary):
         'generated_at': os.environ.get('R8_BUILD_DATE_ISO', ''),
         'artifact_class': cls,
         'baseline_zip': {'filename': base_zip_name, 'sha256': sha(base_zip)},
-        'lineage_policy': 'EL18 -> R7 parent -> selective HV3 merge -> R8; this work block starts from the ClaudeRepair DEV source (1904f87d...) and keeps R7 parent primacy',
+        'lineage_policy': 'EL18 -> R7 TransactionRepair parent -> selective HV3 merge -> R8; P1-08 starts from the audited P1-07 source (commit 511cfdb, field ZIP b6f0220e...) and keeps R7 parent primacy',
+        'thawed_protected_files': {f: {'previous_sha256': v[0], 'current_sha256': sha(tree / f), 'decision': v[1]} for f, v in THAWED.items()},
         'attestation_scope': {'excluded_paths': excluded, 'reason': 'provenance self-hash and SHA manifest would create circular attestation; SHA256SUMS is generated after this provenance and covers the provenance file.'},
         'current_tree_file_count_in_scope': len(cur),
         'base_tree_file_count_in_scope': len(base),
@@ -146,7 +158,7 @@ def write_zip(tree, zpath):
     with zipfile.ZipFile(zpath, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for f in files_of(tree):
             p = tree / f
-            zi = zipfile.ZipInfo(f'{tree.name}/{f}', date_time=(2026, 10, 2, 0, 0, 0))
+            zi = zipfile.ZipInfo(f'{tree.name}/{f}', date_time=(2026, 10, 3, 0, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = (stat.S_IFREG | (0o755 if os.access(p, os.X_OK) else 0o644)) << 16
             z.writestr(zi, p.read_bytes())
@@ -191,6 +203,17 @@ def verify_zip(zpath, cls, work):
     launchers = [str(p.relative_to(root)) for p in root.rglob('*.command')]
     assert launchers == ['START_3PM.command'], launchers
     report['launchers'] = launchers
+    marker = MARKER[cls]
+    assert (root / marker).is_file() and not (root / MARKER[[k for k in MARKER if k != cls][0]]).exists(), 'class marker mismatch'
+    report['class_marker'] = marker
+    if cls == 'field_test_not_production':
+        assert 'Phase 0 narrow-thaw instrumentation seam.' not in (root / 'app/static/pose.js').read_text(errors='replace'), 'trace seam present in field pose.js'
+        report['field_pose_seam'] = 'absent (frozen HV3 pose.js)'
+    gates = {}
+    for g in P108_GATES:
+        r = run(['node', g], cwd=root, env=dict(os.environ))
+        gates[g] = (r.stdout.strip().splitlines() or [''])[-1][:240]
+    report['p108_gates_fresh_unzip'] = gates
     shutil.rmtree(out)
     return report
 
@@ -210,7 +233,7 @@ def main():
         raise SystemExit('output directory must be outside the source tree')
     with tempfile.TemporaryDirectory(prefix='3pm-pack-') as work:
         tree = stage(a.cls, work)
-        qa = refresh_qa_snapshots(tree, Path(work) / 'qa')
+        qa = refresh_qa_snapshots(tree, Path(work) / 'qa', strict=a.cls == 'field_test_not_production')
         prov = write_provenance(tree, a.cls, a.base_tree, a.base_zip, a.base_zip_name, qa)
         write_sha256sums(tree)
         zpath = out / ZIP_NAME[a.cls].format(date=a.date)

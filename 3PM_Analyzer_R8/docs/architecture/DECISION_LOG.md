@@ -45,3 +45,6 @@ The pose trace-only seam was hardened within the already approved narrow-thaw sc
 ## 2026-10-02 — D-015 … D-024 (R8 P1-07 Claude Code)
 D-A option 1, D-B option 1 and D-C proceed were applied as **default applied by Claude Code per FINAL_REVIEW_FOR_CLAUDE_CODE §11.4**. Full table with reasons, evidence and rollback: `docs/phase01/claude_code_r8_p1_07_20261002/DECISION_LOG.md` (D-015 settled-anchor proof wording, D-016 field build ships frozen pose.js, D-017 proceed into Track P, D-018 binding inputs in p105/p106 honest calls, D-019 S-06 minimum form + full target recompute, D-020 fail-closed sink constructor, D-021 scheduler cancel semantics, D-022 event-log evidence gate, D-023 F01 Playwright/fallback method, D-024 git metadata outside the package root).
 
+## 2026-10-03 — D-108-01 … D-108-14 (R8 P1-08 Claude Code)
+Narrow integration repair after independent audit (BLOCKED BEFORE FIELD TEST). Shared `FrameIdentityCore` (clock-domain identity/order); explicit thaws of protected `evidence_budget_core.js` and `temporal_evidence_layer.js` (augmentBundle mapping only); native facade generation authority; Swift bridge and frozen `app.js` not edited (M-04/M-01 OPEN, scope-restricted). Full table with reasons, evidence and rollback: `docs/phase01/claude_code_r8_p1_08_20261003/DECISION_LOG.md`.
+

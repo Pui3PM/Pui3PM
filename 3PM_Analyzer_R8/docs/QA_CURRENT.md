@@ -1,4 +1,14 @@
-**CURRENT 2026-10-02: R8 P1-07 Claude Code — Software Candidate Ready for Field Validation (NOT Production Ready).**
+**CURRENT 2026-10-03: R8 P1-08 Narrow Integration Repair — Software Candidate Ready for Restricted Field Validation (NOT Production Ready).**
+
+- P1-08 regressions (`app/tests/test_p108_*.js`): H-01, H-02, H-03, M-02, M-05 GREEN (RED on the audited P1-07 bytes); M-01, M-04 characterized OPEN; Astra probes gate PASS (7/8 core invariants + 1 documented R7-contract conflict D-108-06).
+- Legacy JS suite: development class all green except the 3 policy pose sentinels; field class must be all green (packaging gate, strict).
+- Real Chromium 141 (Linux headless): full-app gate 25/25 (FAIL on P1-07), fullpage LOADED (liveness only), Anchor SINGLE_OWNER, F01 PASS, FrameUID parity PASS, shadow bundle PASS.
+- Exact numbers, fresh-unzip results and ZIP hashes: `phase01/claude_code_r8_p1_08_20261003/TEST_RESULTS.md`.
+- NOT RUN: macOS runtime, Mac browser, Swift bridge, Windows, real camera, real archer, labeled dataset.
+
+---
+
+**HISTORICAL 2026-10-02: R8 P1-07 Claude Code — claimed Software Candidate Ready for Field Validation; superseded by independent audit 2026-10-03 (BLOCKED BEFORE FIELD TEST).**
 
 - Pure/offline phase01: 15/15 PASS (incl. round-2 regressions, QA runner isolation, browser discovery, artifact class policy).
 - Legacy JS suite: development class 101/104 (only the 3 untouched pre-thaw `pose.js` sentinels); field class (frozen `pose.js`) **104/104**.
@@ -11,7 +21,7 @@
 
 ---
 
-**CURRENT 2026-10-02: R8 P1-06 Claude Repair DEV — NOT RELEASE / NOT FIELD BUILD.**
+**HISTORICAL 2026-10-02: R8 P1-06 Claude Repair DEV — NOT RELEASE / NOT FIELD BUILD.**
 
 - Claude C01-C20 converted regressions PASS.
 - 10,000-case brute-force projector optimality oracle PASS; historical 3360 test is input-reversal invariance only.
@@ -24,7 +34,7 @@
 
 ---
 
-**Current dev status: NOT RELEASE / NO LIVE SHOOTING.** The R7 section below remains historical parent evidence. Astra delta review found open integration gaps; current pure/offline P1 tests do not close legacy F01-F12.
+**Historical dev status (2026-10-01): NOT RELEASE / NO LIVE SHOOTING.** The R7 section below remains historical parent evidence. Astra delta review found open integration gaps; current pure/offline P1 tests do not close legacy F01-F12.
 
 # Current QA — R8 P1 Harden DEV over R7 Transaction Repair + EL18
 
