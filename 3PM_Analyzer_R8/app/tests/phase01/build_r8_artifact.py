@@ -84,6 +84,7 @@ def stage(cls, work):
             '3PM Analyzer R8 field test build. Legacy Shot Decision remains the only production authority;\n'
             'the R8 shadow pipeline is shadow-only and writes nothing to real shots.\n'
             'No accuracy claims. Not validated on a real camera, real archer or labeled field dataset yet.\n'
+            'Restricted scope: macOS, Side camera only, 30 FPS, isolated/disposable data, isolated network bench.\n'
             'Keep the R7 production/field candidate and all existing sessions/DB; do not delete user data.\n'
             'Read docs/FIELD_TEST_INSTRUCTIONS.md before shooting.\n')
     (dst / 'PACKAGE_ID.txt').write_text(ZIP_NAME[cls].replace('_{date}.zip', '') + '\n')
