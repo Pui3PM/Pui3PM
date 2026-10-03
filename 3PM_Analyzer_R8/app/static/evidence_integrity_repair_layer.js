@@ -22,7 +22,9 @@ function correctedAnchorJump(){
   const r=typeof shotReplayState!=='undefined'?shotReplayState.record:null,shot=typeof selectedShot==='function'?selectedShot():null;
   if(!r?.frames?.length||!shot)return false;
   const target=typeof replayAnchorOffsetForShot==='function'?replayAnchorOffsetForShot(shot,r):null;
-  if(!finite(target)){window.toast?.('Settled Anchor timing is not available for this shot.','warn',3000);return false;}
+  // R8 P1-08 M-02: null/undefined/''/boolean are UNKNOWN (Number(null)===0 used to jump to the release frame).
+  const known=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v));
+  if(!known(target)){window.toast?.('Settled Anchor timing is not available for this shot.','warn',3000);return false;}
   const tagged=f=>{const a=[String(f?.evidenceZone||f?.zone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])];return a.some(x=>['anchor-focus','anchor-pin','hold-pin','aim-hold'].includes(x));};
   let pick=null,best=Infinity;
   // Forward-biased: a Settled Anchor shortcut must never jump to a pre-confirmation Draw frame.
