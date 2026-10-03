@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),path=require('path');
+const root=path.resolve(process.argv[2]||'audit_input/3PM_Analyzer_R8_FIELD_TEST/app/static');
+const app=fs.readFileSync(path.join(root,'app.js'),'utf8');const ctx={console};vm.createContext(ctx);
+const a=app.indexOf('function evidenceUniqueByEpoch('),b=app.indexOf('function sampleEvidenceByGap(',a);vm.runInContext(app.slice(a,b),ctx);
+const high=Array.from({length:25},(_,i)=>({epochMs:1000+i*1000/240,mediaTime:i/240,blob:{i},source:'native30'}));
+const highOut=ctx.evidenceUniqueByEpoch(high);
+const messages=[];const anchor={console,window:{toast:(...a)=>messages.push(a)},document:{readyState:'loading',addEventListener(){}},shotReplayState:{index:0,record:{frames:[{offsetMs:-500,evidenceZone:'draw'},{offsetMs:0,evidenceZone:'release-focus'}]}},selectedShot:()=>({id:1}),replayAnchorOffsetForShot:()=>null,stopShotReplay(){},renderShotReplayFrame(){},setInterval(){}};
+vm.createContext(anchor);vm.runInContext(fs.readFileSync(path.join(root,'evidence_integrity_repair_layer.js'),'utf8'),anchor);
+const jumped=anchor.window.EvidenceIntegrityRepairLayer.correctedAnchorJump();
+console.log(JSON.stringify({frozenProductionSampler:{input:25,actual:highOut.length,expected:25},unknownAnchorTarget:{expectedJump:false,actualJump:jumped,index:anchor.shotReplayState.index,selectedZone:anchor.shotReplayState.record.frames[anchor.shotReplayState.index].evidenceZone,messages}},null,2));
