@@ -1,0 +1,234 @@
+{
+ "status": "FAIL",
+ "scope": "Linux headless Chromium + backend test double; not Mac backend/camera acceptance",
+ "checks": {
+  "reachedLoad": true,
+  "requiredModulesLoaded": false,
+  "p108CoresActive": false,
+  "expectedBackendStateVisible": true,
+  "rail25": true,
+  "keyControlsExist": true,
+  "anchorSingleOwnerAtLoad": true,
+  "idleObserverSettles": true,
+  "idbReadbackMergeNoDuplicates": true,
+  "idbMixedClockPhysicalOrder": false,
+  "shotOpens25Slots": true,
+  "reviewChronology": true,
+  "prevNext": true,
+  "play": true,
+  "anchorConsistentNoTarget": false,
+  "roleSwitch": true,
+  "shotSwitchNoStaleFrames": true,
+  "shotSwitchPhysicalOrder": false,
+  "panelRebuildRail25": true,
+  "anchorSingleOwnerAfterRebuild": true,
+  "noObjectUrlLeak": true,
+  "idleObserverSettlesAfterInteraction": true,
+  "noPageErrors": true,
+  "noUnhandledBackendRequests": true,
+  "onlyExpectedConsoleErrors": true
+ },
+ "detail": {
+  "requiredModulesLoaded": {
+   "FrameIdentityCore": false,
+   "TemporalEvidenceCore": true,
+   "EvidenceBudgetCore": true,
+   "CameraTimelineCore": true,
+   "NativeCaptureLayer": true,
+   "EvidenceIntegrityRepairLayer": true,
+   "EvidenceBudgetLayer": true,
+   "FormAnalyzer": true,
+   "budgetVersion": "R8-merge-fixed25-camera-witnesses-v1"
+  },
+  "p108CoresActive": {
+   "budget": "R8-merge-fixed25-camera-witnesses-v1"
+  },
+  "expectedBackendStateVisible": {
+   "bridge": {
+    "available": false,
+    "error": "Failed to fetch"
+   },
+   "storage": "/stub-backend (test double)"
+  },
+  "rail25": 25,
+  "keyControlsExist": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "idleObserverSettles": {
+   "rail": 3,
+   "maxPerSecond": 60,
+   "by": {
+    "field_polish_layer.js:26#5": 120,
+    "field_polish_layer.js:26#6": 120,
+    "field_polish_layer.js:26#7": 120,
+    "evidence_integrity_repair_layer.js:67#3": 3
+   }
+  },
+  "idbReadbackMergeNoDuplicates": 10,
+  "idbMixedClockPhysicalOrder": [
+   [
+    900,
+    "follow-summary"
+   ],
+   [
+    2000,
+    "recovery-end"
+   ],
+   [
+    -60,
+    "release-focus"
+   ],
+   [
+    -27,
+    "release-focus"
+   ],
+   [
+    6,
+    "release-focus"
+   ],
+   [
+    39,
+    "release-focus"
+   ]
+  ],
+  "shotOpens25Slots": {
+   "sel": 11,
+   "role": "side",
+   "n": 10,
+   "idx": 5,
+   "playing": false,
+   "real": 10,
+   "missing": 15,
+   "offs": [
+    -3000,
+    -2200,
+    -2000,
+    -1500,
+    -100,
+    0,
+    100,
+    800,
+    1300,
+    2000
+   ],
+   "anchorDisabled": true,
+   "urls": 11
+  },
+  "reviewChronology": [
+   -3000,
+   -2200,
+   -2000,
+   -1500,
+   -100,
+   0,
+   100,
+   800,
+   1300,
+   2000
+  ],
+  "prevNext": {
+   "i0": 5,
+   "after": 5
+  },
+  "play": {
+   "playing": true
+  },
+  "anchorConsistentNoTarget": {
+   "disabled": true,
+   "handler": {
+    "r": true,
+    "moved": true
+   }
+  },
+  "roleSwitch": {
+   "sel": 11,
+   "role": "rear",
+   "n": 5,
+   "idx": 2,
+   "playing": false,
+   "real": 5,
+   "missing": 20,
+   "offs": [
+    -200,
+    -100,
+    0,
+    100,
+    200
+   ],
+   "anchorDisabled": true,
+   "urls": 6
+  },
+  "shotSwitchNoStaleFrames": {
+   "sel": 12,
+   "role": "side",
+   "n": 6,
+   "idx": 4,
+   "playing": false,
+   "real": 6,
+   "missing": 19,
+   "offs": [
+    900,
+    2000,
+    -60,
+    -27,
+    6,
+    39
+   ],
+   "anchorDisabled": true,
+   "urls": 7
+  },
+  "shotSwitchPhysicalOrder": [
+   900,
+   2000,
+   -60,
+   -27,
+   6,
+   39
+  ],
+  "panelRebuildRail25": {
+   "sel": 12,
+   "role": "side",
+   "n": 6,
+   "idx": 4,
+   "playing": false,
+   "real": 6,
+   "missing": 19,
+   "offs": [
+    900,
+    2000,
+    -60,
+    -27,
+    6,
+    39
+   ],
+   "anchorDisabled": true,
+   "urls": 7
+  },
+  "noObjectUrlLeak": {
+   "liveObjectUrls": 7,
+   "currentFrames": 6
+  },
+  "idleObserverSettlesAfterInteraction": {
+   "rail": 2,
+   "maxPerSecond": 60,
+   "by": {
+    "field_polish_layer.js:26#5": 120,
+    "field_polish_layer.js:26#6": 120,
+    "field_polish_layer.js:26#7": 120,
+    "evidence_integrity_repair_layer.js:67#3": 2
+   }
+  },
+  "noPageErrors": [],
+  "noUnhandledBackendRequests": [],
+  "onlyExpectedConsoleErrors": {
+   "unexpected": [],
+   "refusedHosts": [
+    "127.0.0.1:48735"
+   ]
+  }
+ }
+}

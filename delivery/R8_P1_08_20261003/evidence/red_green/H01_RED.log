@@ -1,0 +1,18 @@
+P1-08 H-01 chronology FAIL
+ - core: native PTS + browser video time keep Release->Follow->Recovery: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   'recovery',
+    'release',
+    'follow',
+-   'recovery'
+  ]
+
+ - mixed native+browser (Recovery during native download): mixed native+browser (Recovery during native download): epoch order broken at 3: [99100,100800,102000,99940,99973,100006,100039]
+ - late Recovery after native bundle: late Recovery after native bundle: epoch order broken at 3: [99100,100800,102000,99940,99973,100006,100039]
+ - native bundle retried: native bundle retried: epoch order broken at 3: [99100,100800,102000,99940,99973,100006,100039]
+ - browser-only worker bundle + sparse frames + Recovery: browser-only: epoch order broken at 3: [98500,100900,102000,99800,99834,99868,99902,99936,99970,100004,100038,100072,100106,100140,100174]
+ - sparse + dense browser buffers ordered by capture epoch across domains: sparse+dense: epoch order broken at 1: [102000,99700,100800,99750]
+ - R7 trace pattern: Recovery slot after Release/Follow slots: trace pattern: epoch order broken at 1: [102000,99600,99640,99680,99720,99760,99800,99840,99880,99920,99960,100000,100040,100080,100120,100160,100200,100240,100280,100320,100360]
+ - media clock reset inside one source keeps physical order: media reset: epoch order broken at 1: [102000,99600,99800,100900]

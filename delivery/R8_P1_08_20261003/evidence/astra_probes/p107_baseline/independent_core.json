@@ -1,0 +1,73 @@
+[
+  {
+    "id": "PASS-HFPS",
+    "description": "25 samples at 240 FPS, one stream",
+    "expected": 25,
+    "actual": 25,
+    "invariantPass": true
+  },
+  {
+    "id": "ID-SOURCE",
+    "description": "different sources and FrameUIDs sharing media time",
+    "expected": 2,
+    "actual": 1,
+    "invariantPass": false
+  },
+  {
+    "id": "ID-GENERATION",
+    "description": "different generation, equal source and sequence",
+    "expected": 2,
+    "actual": 1,
+    "invariantPass": false
+  },
+  {
+    "id": "CLOCK-CHRONOLOGY",
+    "description": "native PTS and browser video time are different domains; physical epoch order",
+    "expected": [
+      "release",
+      "follow",
+      "recovery"
+    ],
+    "actual": [
+      "recovery",
+      "release",
+      "follow"
+    ],
+    "invariantPass": false
+  },
+  {
+    "id": "NULL-TARGET",
+    "description": "unknown alignment target must not match a real frame",
+    "expected": null,
+    "actual": {
+      "frame": {
+        "masterTimeMs": 0,
+        "frameSeq": 1
+      },
+      "deltaMs": 0,
+      "toleranceMs": 20.833333333333336
+    },
+    "invariantPass": false
+  },
+  {
+    "id": "NULL-SLOT",
+    "description": "null master clock must fall back to epoch, not 0",
+    "expected": 1000,
+    "actual": 0,
+    "invariantPass": false
+  },
+  {
+    "id": "ID-CLONE",
+    "description": "a stored frame plus its readback clone is one frame",
+    "expected": 1,
+    "actual": 2,
+    "invariantPass": false
+  },
+  {
+    "id": "WORKER-NULL-MAPPING",
+    "description": "unknown worker identity survives production mapping",
+    "expected": 25,
+    "actual": 1,
+    "invariantPass": false
+  }
+]

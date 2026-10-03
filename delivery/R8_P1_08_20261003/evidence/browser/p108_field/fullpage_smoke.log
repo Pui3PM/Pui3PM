@@ -1,0 +1,13 @@
+{
+ "status": "LOADED",
+ "responsive": true,
+ "state": {
+  "temporalCore": true,
+  "cameraTimeline": true,
+  "nativeCapture": true,
+  "evidenceRepair": true,
+  "formAnalyzer": true,
+  "rail25": 25
+ },
+ "pageErrors": []
+}

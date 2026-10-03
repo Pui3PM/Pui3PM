@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "work_block": "R8 P1-08 Narrow Integration Repair",
+  "date": "2026-10-03",
+  "status": "Software Candidate Ready for Restricted Field Validation — NOT Production Ready",
+  "lineage": "EL18 -> R7 TransactionRepair parent -> selective HV3 merge -> R8",
+  "source": {
+    "repository": "Pui3PM/Pui3PM",
+    "branch": "claude/3pm-analyzer-r8-qru71a",
+    "base_commit": "511cfdbad4ae34f1c863374cd4c911817e97c7ca",
+    "source_commit_of_artifacts": "85d282b386fb7bbab105707eb80acea65ef7871a"
+  },
+  "inputs": {
+    "audited_field_zip": {
+      "filename": "3PM_Analyzer_R8_FIELD_TEST_20261002.zip",
+      "sha256": "b6f0220ed81337c47ca12c611459df37f329841a433ef2784116e8a9ec3a2afc"
+    },
+    "audit_report": {
+      "filename": "3PM_R8_Independent_Final_Audit_TH_20261003.md",
+      "sha256": "399333ffadb7d97374837133b28ce32392a78883ea388495ed1a19c2932275ea"
+    },
+    "audit_evidence_zip": {
+      "filename": "3PM_R8_Independent_Audit_Evidence_20261003.zip",
+      "sha256": "de80d9c68389be242a98599fe6d5056cfa97e68d341d707febe6ed192448c148"
+    },
+    "capture_integrity_trace": {
+      "filename": "3PM_capture_integrity_trace_2026-10-03T04-55-23-580Z.json",
+      "status": "NOT RECEIVED"
+    },
+    "provenance_base_dev": {
+      "filename": "3PM_Analyzer_R8_P1_07_DEV_20261002.zip",
+      "sha256": "70ec292878eef46d16b4bf1c64aa1467c8a3567b055ff5db9c9bcdcb47017734"
+    }
+  },
+  "outputs": {
+    "field": {
+      "filename": "3PM_Analyzer_R8_P1_08_FIELD_TEST_20261003.zip",
+      "sha256": "3445c12850313946d8313a7589b52c152aebc3b302c3632ea4d762a5cb280fc7",
+      "bytes": 19815287
+    },
+    "dev": {
+      "filename": "3PM_Analyzer_R8_P1_08_DEV_20261003.zip",
+      "sha256": "b7ae1c5e4784052129d6bfb6bae1e815e1cbffe0465ab2254abc1f9d65bd08c3",
+      "bytes": 19812158
+    }
+  },
+  "in_zip_provenance": "docs/lineage/R8_P1_08_CLAUDE_CODE_PROVENANCE.json (schema 2; per-file base/current sha256; thawed_protected_files)",
+  "verbatim_probes": {
+    "independent_core_probes.cjs": "16d7f91dcca3b47875c073cc84b55cf18e4853906d0bebd236b490d233a3e439",
+    "production_path_probes.cjs": "5c1f0c2cc8595a60f502fb5eb2707672a842afb22000756556b4b1cff56ed37f",
+    "native_open_race_probe.cjs": "88239f65721572fbd5da9d485c456f9e7fd474587282f725645c611ff121571d",
+    "additional_probes.cjs": "647807bf8e2be1842a1f809989fe7463ffb50cb31d26ade12e41dad1afe69026"
+  },
+  "reproducibility": "Rebuild differs only in captured QA log text (random id from test_persistence_r7.js) and the hashes of it; all other files byte-identical. See TEST_RESULTS addendum."
+}

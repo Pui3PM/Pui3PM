@@ -1,0 +1,22 @@
+P1-08 M-02 alignment/Anchor FAIL
+ - nearestFrame: unknown target never matches a frame at time 0: target null
++ actual - expected
+
++ {
++   deltaMs: 0,
++   frame: {
++     frameSeq: 1,
++     masterTimeMs: 0
++   },
++   toleranceMs: 20.833333333333336
++ }
+- null
+
+ - logicalSlotAlignment: null master clock falls back to epoch, unknown stays unknown: Expected values to be strictly equal:
+
+0 !== 1000
+
+ - Anchor handler: unknown target -> no jump, explicit Missing message (Astra unknownAnchorTarget): target null jumped
+
+true !== false
+

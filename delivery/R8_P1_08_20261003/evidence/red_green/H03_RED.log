@@ -1,0 +1,21 @@
+P1-08 H-03 native generation FAIL
+ - 1 old-open SUCCESS after new-open success: bridge still runs generation 2
+
+null !== 2
+
+ - 2 old-open ERROR after new-open success: Expected values to be strictly equal:
+
+null !== 2
+
+ - 3 close(gen1) arriving late does not kill gen2: gen2 running after late close
+
+false !== true
+
+ - 5 open A -> device switch -> open B: 5: facade active=true/native-avfoundation gen=2 vs bridge active=false gen=null
+
+true !== false
+
+ - 7 backend acknowledgement: bridge silently on another generation -> facade not active for it: 7: facade active=true/native-avfoundation gen=2 vs bridge active=true gen=1
+
+true !== false
+

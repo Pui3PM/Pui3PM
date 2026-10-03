@@ -1,0 +1,53 @@
+P1-08 Astra probes FAIL
+ - core ID-SOURCE: expected 2 got 1
+
+false !== true
+
+ - core ID-GENERATION: expected 2 got 1
+
+false !== true
+
+ - core CLOCK-CHRONOLOGY: expected ["release","follow","recovery"] got ["recovery","release","follow"]
+
+false !== true
+
+ - core NULL-TARGET: expected null got {"frame":{"masterTimeMs":0,"frameSeq":1},"deltaMs":0,"toleranceMs":20.833333333333336}
+
+false !== true
+
+ - core NULL-SLOT: expected 1000 got 0
+
+false !== true
+
+ - core ID-CLONE: expected 1 got 2
+
+false !== true
+
+ - core WORKER-NULL-MAPPING: expected 25 got 1
+
+false !== true
+
+ - production control: no duplicated persisted frame
+
+6 !== 7
+
+ - production mixed-clock: persisted epoch order
+
+false !== true
+
+ - production generation-switch: no duplicated persisted frame
+
+6 !== 7
+
+ - production worker augmentBundle: Expected values to be strictly equal:
+
+1 !== 25
+
+ - native open race: Expected values to be strictly equal:
+
+null !== 2
+
+ - Anchor unknown target: Expected values to be strictly equal:
+
+true !== false
+

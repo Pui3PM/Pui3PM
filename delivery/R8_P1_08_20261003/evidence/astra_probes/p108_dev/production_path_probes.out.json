@@ -1,0 +1,202 @@
+[
+  {
+    "kind": "control",
+    "generationChanged": false,
+    "epochs": [
+      99100,
+      99940,
+      99973,
+      100006,
+      100039,
+      102000
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "sparse-jpeg"
+    ],
+    "generations": [
+      null,
+      1,
+      1,
+      1,
+      1,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": true
+  },
+  {
+    "kind": "mixed-clock",
+    "generationChanged": false,
+    "epochs": [
+      99100,
+      99940,
+      99973,
+      100006,
+      100039,
+      102000
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "sparse-jpeg"
+    ],
+    "generations": [
+      null,
+      1,
+      1,
+      1,
+      1,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": true
+  },
+  {
+    "kind": "generation-switch",
+    "generationChanged": true,
+    "epochs": [
+      99100,
+      99940,
+      99973,
+      100006,
+      100039,
+      102000
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "sparse-jpeg"
+    ],
+    "generations": [
+      null,
+      1,
+      1,
+      1,
+      1,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": true
+  },
+  {
+    "kind": "actual-worker-augmentBundle",
+    "inputFrames": 25,
+    "mergedFrames": 25,
+    "identities": [
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      },
+      {
+        "mediaTime": null,
+        "frameSeq": null
+      }
+    ]
+  }
+]

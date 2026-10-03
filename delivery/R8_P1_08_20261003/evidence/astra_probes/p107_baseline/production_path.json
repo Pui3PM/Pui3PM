@@ -1,0 +1,112 @@
+[
+  {
+    "kind": "control",
+    "generationChanged": false,
+    "epochs": [
+      99100,
+      99100,
+      99940,
+      99973,
+      100006,
+      100039,
+      102000
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "sparse-jpeg"
+    ],
+    "generations": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": true
+  },
+  {
+    "kind": "mixed-clock",
+    "generationChanged": false,
+    "epochs": [
+      99100,
+      102000,
+      99940,
+      99973,
+      100006,
+      100039
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard"
+    ],
+    "generations": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": false
+  },
+  {
+    "kind": "generation-switch",
+    "generationChanged": true,
+    "epochs": [
+      99100,
+      99100,
+      99940,
+      99973,
+      100006,
+      100039,
+      102000
+    ],
+    "sources": [
+      "sparse-jpeg",
+      "sparse-jpeg",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "native-avfoundation-standard",
+      "sparse-jpeg"
+    ],
+    "generations": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "recoveryPreserved": true,
+    "nativeFrameCount": 4,
+    "epochOrderValid": true
+  },
+  {
+    "kind": "actual-worker-augmentBundle",
+    "inputFrames": 25,
+    "mergedFrames": 1,
+    "identities": [
+      {
+        "mediaTime": 0,
+        "frameSeq": 0
+      }
+    ]
+  }
+]

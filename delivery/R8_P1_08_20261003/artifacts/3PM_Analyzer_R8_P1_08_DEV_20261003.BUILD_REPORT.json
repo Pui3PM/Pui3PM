@@ -1,0 +1,61 @@
+{
+  "zip": "/tmp/claude-0/-home-user-Pui3PM/eb832050-65cd-5083-ac98-eda30e151f64/scratchpad/p108/out/3PM_Analyzer_R8_P1_08_DEV_20261003.zip",
+  "zip_sha256": "b7ae1c5e4784052129d6bfb6bae1e815e1cbffe0465ab2254abc1f9d65bd08c3",
+  "zip_bytes": 19812158,
+  "artifact_class": "development_not_release",
+  "changed_count": 50,
+  "claims": {
+    "production_app_static_changed_count": 8,
+    "production_app_static_changed_paths": [
+      "app/static/camera_timeline_core.js",
+      "app/static/evidence_budget_core.js",
+      "app/static/evidence_integrity_repair_layer.js",
+      "app/static/frame_identity_core.js",
+      "app/static/index.html",
+      "app/static/native_capture_layer.js",
+      "app/static/temporal_evidence_core.js",
+      "app/static/temporal_evidence_layer.js"
+    ],
+    "equipment_athlete_session_changed_count": 0,
+    "pose_js_sha256": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02"
+  },
+  "qa_run_at_packaging": {
+    "app/tests/run_regressions.py": {
+      "returncode": 1,
+      "tail": "JS regressions: 110/113 PASS"
+    },
+    "app/tests/phase01/run_phase0_repros.py": {
+      "returncode": 0,
+      "tail": "Phase0 repro statuses: contract_foundation=passed, F01_source_characterization=passed, F02_budget_direct=passed, F02_upstream_temporal=closed, F03_null_clock=closed, F04_stale_writer=passed, F01_dynamic_chromium=passed"
+    },
+    "app/tests/phase01/run_p006_regressions.py": {
+      "returncode": 1,
+      "tail": "Node.js v22.22.0"
+    }
+  },
+  "verification_from_fresh_unzip": {
+    "distribution_contract": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint",
+    "static_integrity": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=development_not_release",
+    "pose_guard": "Phase 0 pose narrow-thaw seam: PASS",
+    "provenance_manifest": "403/403 current_sha256 exact; unlisted only ['SHA256SUMS.txt', 'docs/lineage/R8_P1_08_CLAUDE_CODE_PROVENANCE.json']",
+    "protected_files": "12/12 byte-identical",
+    "pose_js": "fe8cafaea88833c6a5068ebbefad7962b0a32ec826f61cd406d180ec72518f02",
+    "shadow_isolation": "no app/static file references app/shadow",
+    "launchers": [
+      "START_3PM.command"
+    ],
+    "class_marker": "DEV_NOT_RELEASE.txt",
+    "p108_gates_fresh_unzip": {
+      "app/tests/test_p108_h01_chronology.js": "P1-08 H-01 chronology PASS: core probe, mixed native+browser, late Recovery, retry, browser-only, native-only, sparse+dense, trace pattern, media clock reset, DB reload",
+      "app/tests/test_p108_h02_identity.js": "P1-08 H-02 identity PASS: null, source/generation/UID collisions, native-vs-browser, clone, IndexedDB round trip, retry, worker adapter, stale generation, fixed25",
+      "app/tests/test_p108_h03_native_generation.js": "P1-08 H-03 native generation PASS: stale open success/error, late close, rapid reopen, device switch, stale diag, backend ack, session switch",
+      "app/tests/test_p108_m01_fps_scope.js": "P1-08 M-01 FPS scope PASS (integration 25/25 at 30/60/120/240; frozen sampler characterized OPEN): {\"30\":{\"integrationPath\":25,\"frozenInitialSampler\":25},\"60\":{\"integrationPath\":25,\"frozenInitialSampler\":25},\"120\":{\"integrationPath\":25,\"fro",
+      "app/tests/test_p108_m02_alignment_anchor.js": "P1-08 M-02 alignment/Anchor PASS: unknown targets fail closed, numeric zero valid",
+      "app/tests/test_p108_astra_probes.js": "P1-08 Astra probes PASS: core 7/8 invariants GREEN + 1 documented R7-contract conflict (WORKER-NULL-MAPPING; real adapter GREEN), production path 4 runs, native race, Anchor; frozen sampler 240 FPS = 13 (OPEN M-01, characterized)",
+      "app/tests/test_p108_m04_bridge_exposure.js": "P1-08 M-04 bridge exposure CHARACTERIZED (OPEN, not fixed): {\"port_48735\":true,\"listener_no_interface_constraint\":true,\"acao_wildcard\":true,\"private_network_allowed\":true,\"only_content_length_header_read\":true,\"no_origin_check\":true,\"no_aut",
+      "app/tests/test_p108_m05_migration_compat.js": "P1-08 M-05 migration compat PASS: P1-07 stored shapes keep identical frame sets, chronology restored, idempotent",
+      "app/tests/test_p108_m05_launcher_profile.js": "P1-08 M-05 launcher profile PASS: field class isolates the browser profile; dev class and opt-out unchanged",
+      "app/tests/phase01/repro_astra_legacy_gaps.js": "}"
+    }
+  }
+}

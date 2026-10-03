@@ -1,0 +1,20 @@
+{
+  "frozenProductionSampler": {
+    "input": 25,
+    "actual": 13,
+    "expected": 25
+  },
+  "unknownAnchorTarget": {
+    "expectedJump": false,
+    "actualJump": false,
+    "index": 0,
+    "selectedZone": "draw",
+    "messages": [
+      [
+        "Settled Anchor timing is not available for this shot.",
+        "warn",
+        3000
+      ]
+    ]
+  }
+}

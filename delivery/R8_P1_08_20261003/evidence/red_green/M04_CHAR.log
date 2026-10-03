@@ -1,0 +1,26 @@
+P1-08 M-04 bridge exposure CHARACTERIZED (OPEN, not fixed): {"port_48735":true,"listener_no_interface_constraint":true,"acao_wildcard":true,"private_network_allowed":true,"only_content_length_header_read":true,"no_origin_check":true,"no_auth":true,"close_unscoped":true,"start_stops_previous":true,"facade_close_carries_generation":true,"facade_reopen_skips_close":true}
+node:internal/assert/utils:77
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: M-04 fact changed (facade_close_carries_generation): facade /close no longer sends generation -> update test_p108_m04_bridge_exposure.js, KNOWN_LIMITATIONS M-04 and FIELD_TEST_INSTRUCTIONS prerequisite
+    at pin (/home/user/Pui3PM/3PM_Analyzer_R8/app/tests/test_p108_m04_bridge_exposure.js:12:48)
+    at Object.<anonymous> (/home/user/Pui3PM/3PM_Analyzer_R8/app/tests/test_p108_m04_bridge_exposure.js:28:1)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.0
+(expected: P1-07 facade predates H-03 compensation; Swift facts identical)

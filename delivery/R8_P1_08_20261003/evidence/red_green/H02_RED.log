@@ -1,0 +1,35 @@
+P1-08 H-02 identity FAIL
+ - same source+frameSeq across generations stays distinct (Astra ID-GENERATION): Expected values to be strictly equal:
+
+1 !== 2
+
+ - equal mediaTime with different FrameUID/source stays distinct (Astra ID-SOURCE): Expected values to be strictly equal:
+
+1 !== 2
+
+ - native vs browser frames never merge on equal mediaTime: Expected values to be strictly equal:
+
+1 !== 2
+
+ - structuredClone of one frame is one frame (Astra ID-CLONE): Expected values to be strictly equal:
+
+2 !== 1
+
+ - IndexedDB round trip + re-merge keeps identity stable: no duplicates after readback/retry
+
+18 !== 6
+
+ - native writer control: no duplicated sparse frame after late Recovery merge (Astra control): native control: duplicate real frame sparse-jpeg|99100|4
+ - actual worker augmentBundle keeps 25 null-identity frames (Astra WORKER-NULL-MAPPING): 25 unique worker frames persisted
+
+1 !== 25
+
+ - stale native bundle from a previous generation cannot become current evidence: late bundle bound to its origin generation, never relabelled current
+ - fixed 25 with clones/readbacks: only unique real frames, Missing slots for the rest: source count is unique frames, not clone rows
+
+30 !== 10
+
+ - fixed 25 keeps distinct frames that share an epoch (native vs browser, no seq/media): 25 real slots filled from 30 distinct
+
+15 !== 25
+

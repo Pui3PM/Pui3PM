@@ -1,0 +1,16 @@
+{
+  "expectedHardwareGeneration": 2,
+  "actualHardwareGeneration": 2,
+  "facadeGeneration": 2,
+  "facadeActive": true,
+  "log": [
+    {
+      "event": "open",
+      "generation": 1
+    },
+    {
+      "event": "open",
+      "generation": 2
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "frozenProductionSampler": {
+    "input": 25,
+    "actual": 13,
+    "expected": 25
+  },
+  "unknownAnchorTarget": {
+    "expectedJump": false,
+    "actualJump": true,
+    "index": 1,
+    "selectedZone": "release-focus",
+    "messages": []
+  }
+}
