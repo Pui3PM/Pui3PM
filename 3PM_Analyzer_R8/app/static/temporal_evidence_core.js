@@ -1,8 +1,11 @@
 (function(root,factory){
-  const api=factory();
+  // R8 P1-08: identity/chronology rules come from the shared FrameIdentityCore (H-01/H-02).
+  const FI=(typeof module!=="undefined"&&module.exports&&typeof require==="function")?require('./frame_identity_core.js'):root&&root.FrameIdentityCore;
+  if(!FI)throw new Error('TemporalEvidenceCore requires FrameIdentityCore (load frame_identity_core.js first)');
+  const api=factory(FI);
   if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if(root)root.TemporalEvidenceCore=api;
-})(typeof window!=="undefined"?window:globalThis,function(){
+})(typeof window!=="undefined"?window:globalThis,function(FI){
   'use strict';
   // R8C/F02: null, undefined, booleans and empty strings are UNKNOWN, never 0 (INV-001; same rule as evidence_budget_core).
   const finite=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v));
@@ -34,43 +37,16 @@
     return {mediaTime:mt,frameSeq:seq,epochMs:ep};
   }
   function canonicalFrames(frames=[],toleranceMs=8){
-    // BLE4.3.8.9.5.2: a replay is camera chronology, not a merge-order timeline.
-    // Prefer camera mediaTime when it is available. epochMs remains the Release-T0
-    // alignment clock, but must not be allowed to make the picture walk backwards.
-    const rows=(frames||[]).filter(f=>finite(f?.epochMs)&&f?.blob).map((f,i)=>({...f,__i:i}));
-    rows.sort((a,b)=>{
-      const am=num(a.mediaTime),bm=num(b.mediaTime);
-      if(am!==null&&bm!==null&&Math.abs(am-bm)>.0004)return am-bm;
-      const as=num(a.frameSeq),bs=num(b.frameSeq);
-      if(as!==null&&bs!==null&&as!==bs)return as-bs;
-      return Number(a.epochMs)-Number(b.epochMs)||a.__i-b.__i;
-    });
-    const out=[],tagList=f=>[String(f?.evidenceZone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])].filter(Boolean);
-    let lastMedia=null;const lastSeqBySource=new Map();
-    for(const raw of rows){
-      const f={...raw};delete f.__i;
-      const mt=num(f.mediaTime),seq=num(f.frameSeq),last=out.at(-1),lmt=num(last?.mediaTime),src=String(f.source||''),lsrc=String(last?.source||'');
-      const lastSeq=lastSeqBySource.has(src)?lastSeqBySource.get(src):null;
-      // Reject an actual camera-time inversion. This is the failure that makes Frame
-      // playback visibly jump backwards even though epochMs happened to sort forward.
-      if(mt!==null&&lastMedia!==null&&mt<lastMedia-.0004)continue;
-      if(seq!==null&&lastSeq!==null&&seq<lastSeq&&mt===null)continue;
-      const sameMedia=last&&mt!==null&&lmt!==null&&Math.abs(mt-lmt)<.0008;
-      // R8C/F02: frameSeq is a per-source counter; equal numbers from different sources are not one sample.
-      const sameSeq=last&&seq!==null&&num(last?.frameSeq)!==null&&seq===num(last.frameSeq)&&src===lsrc;
-      // R8C/F02: epoch nearness is NOT camera identity. It may only fold a cross-pipeline duplicate
-      // (different source) when the two rows cannot be compared by camera mediaTime. Two known mediaTimes
-      // are decided by sameMedia above; same-source rows are distinct captures (240 FPS = 4.2 ms apart).
-      const sameEpoch=last&&src!==lsrc&&!(mt!==null&&lmt!==null)&&Math.abs(Number(f.epochMs)-Number(last.epochMs))<=toleranceMs;
-      if(last&&(sameMedia||sameSeq||sameEpoch)){
-        const fw=/worker|native-/.test(String(f.source||'')),lw=/worker|native-/.test(String(last.source||''));
-        const tags=[...new Set([...tagList(last),...tagList(f)])];
-        if(fw&&!lw)out[out.length-1]={...f,evidenceTags:tags};else out[out.length-1]={...last,evidenceTags:tags};
-      }else out.push({...f,evidenceTags:[...new Set(tagList(f))]});
-      const kept=out.at(-1),kmt=num(kept?.mediaTime),ks=num(kept?.frameSeq);
-      if(kmt!==null)lastMedia=kmt;if(ks!==null)lastSeqBySource.set(String(kept?.source||''),ks);
-    }
-    return out.map((f,i)=>({...f,replaySeq:i}));
+    // R8 P1-08 H-01/H-02: a replay is camera chronology. mediaTime/frameSeq order a frame only within its own
+    // clock domain (source pipeline + stream generation); domains are merged on the shared capture epoch.
+    // One physical capture is one row: identity rules are FrameIdentityCore.sameFrame. When two rows are one
+    // frame the worker/native representation is kept and evidence tags are unioned. toleranceMs is kept for API
+    // compatibility; the pipeline-duplicate window is FrameIdentityCore.PIPELINE_FOLD_MS (8 ms).
+    const tagList=f=>[String(f?.evidenceZone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])].filter(Boolean);
+    const rank=f=>/worker|native-/.test(String(f?.source||''))?1:0;
+    const rows=(frames||[]).filter(f=>finite(f?.epochMs)&&f?.blob);
+    const out=FI.uniqueFrames(rows,{rank,merge:(keep,f,better)=>{const best=better?f:keep;return {...best,evidenceTags:[...new Set([...tagList(keep),...tagList(f)])]};}});
+    return out.map((f,i)=>({...f,evidenceTags:[...new Set(tagList(f))],replaySeq:i}));
   }
   function dedupeFrames(frames=[],toleranceMs=8){return canonicalFrames(frames,toleranceMs);}
   function mergeEvidence(existing=[],workerFrames=[],releaseEpochMs=null,{preMs=1250,postMs=900,replaceDense=true}={}){
@@ -78,11 +54,13 @@
     let base=(existing||[]).filter(f=>finite(f?.epochMs)&&f?.blob);
     if(replaceDense&&rel!==null&&wf.length){
       const lo=rel-preMs,hi=rel+postMs;
-      const mts=wf.map(f=>num(f.mediaTime)).filter(x=>x!==null),mtLo=mts.length?Math.min(...mts):null,mtHi=mts.length?Math.max(...mts):null;
+      // mediaTime ranges are compared only inside the SAME clock domain (H-01): a browser frame whose local
+      // video time happens to fall inside a native PTS range is a different clock, not a replaced frame.
+      const ranges=new Map();for(const f of wf){const mt=num(f.mediaTime);if(mt===null)continue;const d=FI.clockDomain(f),r=ranges.get(d)||[mt,mt];ranges.set(d,[Math.min(r[0],mt),Math.max(r[1],mt)]);}
       base=base.filter(f=>{
-        if(String(f.evidenceZone||'')==='recovery-end')return true;
+        if(String(f.evidenceZone||'')==='recovery-end'||(Array.isArray(f.evidenceTags)&&f.evidenceTags.includes('recovery-end')))return true;
         if(Number(f.epochMs)>=lo&&Number(f.epochMs)<=hi)return false;
-        const mt=num(f.mediaTime);if(mt!==null&&mtLo!==null&&mt>=mtLo-.001&&mt<=mtHi+.001)return false;
+        const mt=num(f.mediaTime),r=ranges.get(FI.clockDomain(f));if(mt!==null&&r&&mt>=r[0]-.001&&mt<=r[1]+.001)return false;
         return true;
       });
     }

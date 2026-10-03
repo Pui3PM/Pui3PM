@@ -1,6 +1,6 @@
 // 3PM HV3 Cross-Platform Camera Timeline Core
 // Pure shared logic: no OS APIs, no shot authority, no DOM.
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.CameraTimelineCore=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+(function(root,factory){const FI=(typeof module==='object'&&module.exports&&typeof require==='function')?require('./frame_identity_core.js'):root&&root.FrameIdentityCore;if(!FI)throw new Error('CameraTimelineCore requires FrameIdentityCore (load frame_identity_core.js first)');const api=factory(FI);if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.CameraTimelineCore=api;})(typeof globalThis!=='undefined'?globalThis:this,function(FI){
 'use strict';
 const VERSION='HV3-camera-timeline-v1';
 const ROLES=Object.freeze(['side','overhead','rear']);
@@ -18,29 +18,24 @@ function frameTimeMs(f){
   return null;
 }
 function chronologyKey(f,index=0){return{timeMs:frameTimeMs(f),mediaTimeMs:known(f?.mediaTimeMs,known(f?.mediaTime)!==null?known(f.mediaTime)*1000:null),frameSeq:known(f?.frameSeq),index};}
+// R8 P1-08 H-01/H-02: mediaTime/frameSeq order and identify frames only inside one clock domain (source pipeline +
+// generation); domains are merged on the shared capture time. A frame of another source is never dropped because
+// its local sequence/media clock is lower. Frames without any time or sequence cannot be placed and are skipped.
+const FI_ACCESS={epoch:f=>frameTimeMs(f),media:f=>{const m=chronologyKey(f).mediaTimeMs;return m===null?null:m/1000;},seq:f=>known(f?.frameSeq)};
 function canonicalFrames(frames=[]){
-  const rows=(frames||[]).map((f,i)=>({f:{...f},k:chronologyKey(f,i)})).filter(x=>x.k.timeMs!==null||x.k.frameSeq!==null);
-  rows.sort((a,b)=>{
-    if(a.k.mediaTimeMs!==null&&b.k.mediaTimeMs!==null&&Math.abs(a.k.mediaTimeMs-b.k.mediaTimeMs)>.05)return a.k.mediaTimeMs-b.k.mediaTimeMs;
-    if(a.k.frameSeq!==null&&b.k.frameSeq!==null&&a.k.frameSeq!==b.k.frameSeq)return a.k.frameSeq-b.k.frameSeq;
-    if(a.k.timeMs!==null&&b.k.timeMs!==null&&a.k.timeMs!==b.k.timeMs)return a.k.timeMs-b.k.timeMs;
-    return a.k.index-b.k.index;
-  });
-  const out=[];let lastSeq=null,lastMedia=null;
-  for(const x of rows){
-    const seq=x.k.frameSeq,mt=x.k.mediaTimeMs;
-    if(seq!==null&&lastSeq!==null&&seq<=lastSeq)continue;
-    if(mt!==null&&lastMedia!==null&&mt<lastMedia-.05)continue;
-    out.push(x.f);if(seq!==null)lastSeq=seq;if(mt!==null)lastMedia=mt;
-  }
-  return out;
+  const rows=(frames||[]).map(f=>({...f}));
+  const timed=rows.filter(f=>frameTimeMs(f)!==null),untimed=rows.filter(f=>frameTimeMs(f)===null&&known(f?.frameSeq)!==null);
+  const ordered=FI.uniqueFrames(timed,FI_ACCESS);
+  // Sequence-only frames (no clock at all) keep their own per-domain sequence order after timed frames.
+  const bySeq=FI.uniqueFrames(untimed.map(f=>({...f,__seqEpoch:known(f.frameSeq)})),{epoch:f=>f.__seqEpoch,media:()=>null,seq:f=>known(f?.frameSeq)}).map(({__seqEpoch,...f})=>f);
+  return [...ordered,...bySeq];
 }
 function adaptiveToleranceMs(fps,jitterMs=0){
   const f=Math.max(1,num(fps,30)),j=Math.max(0,num(jitterMs,0));
   return Math.max(2,Math.min(50,(500/f)+(j*1.5)));
 }
 function nearestFrame(frames,targetMs,{fps=30,jitterMs=0,maxMultiplier=1.25}={}){
-  const t=num(targetMs);if(t===null)return null;const rows=canonicalFrames(frames);let best=null,delta=Infinity;
+  const t=known(targetMs);if(t===null)return null;const rows=canonicalFrames(frames);/* M-02: unknown target never matches */let best=null,delta=Infinity;
   for(const f of rows){const ft=frameTimeMs(f);if(ft===null)continue;const d=Math.abs(ft-t);if(d<delta){delta=d;best=f;}}
   const tolerance=adaptiveToleranceMs(fps,jitterMs)*Math.max(1,num(maxMultiplier,1.25));
   return best&&delta<=tolerance?{frame:best,deltaMs:delta,toleranceMs:tolerance}:null;
@@ -70,7 +65,7 @@ function capabilities(activeRoles=[]){
   });
 }
 function logicalSlotAlignment(slots=[],framesByRole={},diagByRole={}){
-  return (slots||[]).map((slot,index)=>{const target=num(slot?.masterTimeMs,num(slot?.epochMs));return{index,slot:{...slot},targetMs:target,views:target===null?Object.fromEntries(ROLES.map(r=>[r,null])):alignAt(target,framesByRole,diagByRole)};});
+  return (slots||[]).map((slot,index)=>{const target=known(slot?.masterTimeMs,known(slot?.epochMs));/* M-02: null master falls back to epoch, never 0 */return{index,slot:{...slot},targetMs:target,views:target===null?Object.fromEntries(ROLES.map(r=>[r,null])):alignAt(target,framesByRole,diagByRole)};});
 }
 return{VERSION,ROLES,role,frameTimeMs,chronologyKey,canonicalFrames,adaptiveToleranceMs,nearestFrame,alignAt,capabilities,logicalSlotAlignment};
 });

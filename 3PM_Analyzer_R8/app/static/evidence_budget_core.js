@@ -1,51 +1,35 @@
 (function(root,factory){
-  const api=factory();
+  // R8 P1-08: identity/chronology rules come from the shared FrameIdentityCore (H-01/H-02).
+  const FI=(typeof module!=="undefined"&&module.exports&&typeof require==="function")?require('./frame_identity_core.js'):root&&root.FrameIdentityCore;
+  if(!FI)throw new Error('EvidenceBudgetCore requires FrameIdentityCore (load frame_identity_core.js first)');
+  const api=factory(FI);
   if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if(root)root.EvidenceBudgetCore=api;
-})(typeof window!=="undefined"?window:globalThis,function(){
+})(typeof window!=="undefined"?window:globalThis,function(FI){
   'use strict';
-  const VERSION='R8-merge-fixed25-camera-witnesses-v1';
+  const VERSION='R8-P1-08-fixed25-domain-chronology-durable-identity-v2';
   const TARGET=25;
   const finite=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v));
   const num=v=>finite(v)?Number(v):null;
   const tags=f=>[String(f?.evidenceZone||''),...(Array.isArray(f?.evidenceTags)?f.evidenceTags.map(String):[])].filter(Boolean);
   const sourceRank=s=>/native-avfoundation/.test(String(s||''))?5:/worker/.test(String(s||''))?4:/native30|main-track/.test(String(s||''))?3:/sparse/.test(String(s||''))?2:1;
 
+  // Deprecated pairwise comparator, kept for API compatibility. It is only meaningful WITHIN one clock domain;
+  // ordering across domains must use FI.physicalOrder (a pairwise rule across domains is not transitive).
   function cameraCompare(a,b){
-    const am=num(a?.mediaTime),bm=num(b?.mediaTime);
-    if(am!==null&&bm!==null&&Math.abs(am-bm)>.0004)return am-bm;
-    const as=num(a?.frameSeq),bs=num(b?.frameSeq);
-    if(as!==null&&bs!==null&&as!==bs)return as-bs;
+    if(FI.mediaComparable(a,b)&&Math.abs(num(a.mediaTime)-num(b.mediaTime))>.0004)return num(a.mediaTime)-num(b.mediaTime);
+    if(FI.clockDomain(a)===FI.clockDomain(b)){const as=num(a?.frameSeq),bs=num(b?.frameSeq);if(as!==null&&bs!==null&&as!==bs)return as-bs;}
     return Number(a?.epochMs)-Number(b?.epochMs);
   }
+  const order=frames=>FI.physicalOrder(frames);
 
   function canonicalUnique(frames=[]){
-    // Remove repeated references introduced when the same source frame belongs to multiple phase buckets.
-    // This is not temporal dedup: distinct frame objects remain distinct even at the same epoch.
-    const uniqueRefs=[...new Set(frames||[])];
-    const rows=uniqueRefs
-      .filter(f=>f&&finite(f.epochMs)&&f.blob)
-      .map((f,i)=>({...f,__i:i}))
-      .sort((a,b)=>cameraCompare(a,b)||sourceRank(b.source)-sourceRank(a.source)||a.__i-b.__i);
-    const out=[];
-    for(const raw of rows){
-      const f={...raw};delete f.__i;
-      const prev=out.at(-1);
-      const mt=num(f.mediaTime),pmt=num(prev?.mediaTime),seq=num(f.frameSeq),pseq=num(prev?.frameSeq);
-      const sameMedia=prev&&mt!==null&&pmt!==null&&Math.abs(mt-pmt)<.0008;
-      const sameSeq=prev&&seq!==null&&pseq!==null&&seq===pseq&&String(f.source||'')===String(prev.source||'');
-      const sameBlobRef=prev&&f.blob===prev.blob;
-      // Epoch proximity is deliberately NOT an identity rule: it drops real high-FPS frames.
-      // Exact object/blob reuse is safe to collapse because it is the same in-memory artifact.
-      if(prev&&(sameBlobRef||sameMedia||sameSeq)){
-        const mergedTags=[...new Set([...tags(prev),...tags(f)])];
-        const best=sourceRank(f.source)>sourceRank(prev.source)?f:prev;
-        out[out.length-1]={...best,evidenceTags:mergedTags};
-        continue;
-      }
-      out.push({...f,evidenceTags:[...new Set(tags(f))]});
-    }
-    return out.map((f,i)=>({...f,replaySeq:i}));
+    // One logical real frame per physical capture (H-02): durable FrameUID, generation fencing, same-domain camera
+    // identity, exact persisted copies (survive IndexedDB/structuredClone) and same-track pipeline duplicates fold;
+    // distinct sources/generations/devices never fold. Output is clock-domain-safe physical order (H-01).
+    const rows=[...new Set(frames||[])].filter(f=>f&&finite(f.epochMs)&&f.blob);
+    const out=FI.uniqueFrames(rows,{rank:f=>sourceRank(f.source),merge:(keep,f,better)=>{const best=better?f:keep;return {...best,evidenceTags:[...new Set([...tags(keep),...tags(f)])]};}});
+    return out.map((f,i)=>({...f,evidenceTags:[...new Set(tags(f))],replaySeq:i}));
   }
 
   function zoneHas(f,needles=[]){
@@ -63,7 +47,7 @@
     return [];
   }
   function evenly(frames,n){
-    const a=[...frames].sort(cameraCompare);
+    const a=order(frames);
     if(n<=0||!a.length)return[];
     if(a.length<=n)return a;
     if(n===1)return[a[Math.round((a.length-1)/2)]];
@@ -76,11 +60,9 @@
     }
     return out;
   }
-  function key(f){
-    if(finite(f?.frameSeq))return `seq:${String(f.source||'')}:${Number(f.frameSeq)}`;
-    if(finite(f?.mediaTime))return `media:${Number(f.mediaTime).toFixed(6)}`;
-    return `epoch:${Number(f.epochMs)}`;
-  }
+  // Selection key = durable identity key of an already-unique frame (never epoch-only: distinct frames may share
+  // an epoch across devices; never media-only: mediaTime is local to one clock domain).
+  function key(f){return FI.idKey(f);}
   function fillMaxGap(all,selected,target){
     const chosen=new Map(selected.map(f=>[key(f),f]));
     while(chosen.size<target){
@@ -96,7 +78,7 @@
       }
       if(!best)break;chosen.set(key(best),best);
     }
-    return [...chosen.values()].sort(cameraCompare);
+    return order([...chosen.values()]);
   }
 
   function selectFixedBudget(frames=[],releaseEpochMs=null,target=TARGET,reservedEpochs=[]){
@@ -110,9 +92,9 @@
     // Preserve R7 contract witnesses before filling aesthetic/density quotas.
     const reservedKeys=new Set(reserved.map(key));
     const rest=out.filter(f=>!reservedKeys.has(key(f)));
-    out=[...reserved,...evenly(rest,Math.max(0,target-reserved.length))].sort(cameraCompare);
+    out=order([...reserved,...evenly(rest,Math.max(0,target-reserved.length))]);
     if(out.length<target)out=fillMaxGap(all,out,target);
-    out=out.slice(0,target).sort(cameraCompare);
+    out=order(out.slice(0,target));
     return out.map((f,i)=>({...f,offsetMs:release===null?(finite(f.offsetMs)?Number(f.offsetMs):null):Number(f.epochMs)-release,replaySeq:i}));
   }
 
@@ -131,10 +113,11 @@
     }catch{}
     const frames=selectFixedBudget(record.frames,release,target,reservedEpochs),missing=Math.max(0,target-frames.length);
     const reviewSlots=Array.from({length:target},(_,i)=>frames[i]?{slot:i+1,epochMs:Number(frames[i].epochMs),offsetMs:finite(frames[i].offsetMs)?Number(frames[i].offsetMs):null,missing:false}:{slot:i+1,epochMs:null,offsetMs:null,missing:true});
-    const budget={version:VERSION,targetSlots:target,actualFrames:frames.length,missingSlots:missing,sourceFrames:sourceCount,trimmed:Math.max(0,sourceCount-frames.length),deterministic:true,chronology:'camera-mediaTime-frameSeq-epoch-fallback',noFabrication:true};
+    const budget={version:VERSION,targetSlots:target,actualFrames:frames.length,missingSlots:missing,sourceFrames:sourceCount,trimmed:Math.max(0,sourceCount-frames.length),deterministic:true,chronology:'per-clock-domain-camera-order-merged-by-capture-epoch',identity:FI.VERSION,noFabrication:true};
     const epochs=frames.map(f=>Number(f.epochMs)).filter(Number.isFinite);
     return {...record,frames,startEpochMs:epochs.length?Math.min(...epochs):record.startEpochMs,endEpochMs:epochs.length?Math.max(...epochs):record.endEpochMs,evidenceBudget:budget,reviewSlots,captureKind:String(record.captureKind||'phase-weighted').includes('fixed25')?record.captureKind:`${record.captureKind||'phase-weighted'}+fixed25`};
   }
-  function isStrictChronology(frames=[]){for(let i=1;i<(frames||[]).length;i++)if(cameraCompare(frames[i-1],frames[i])>=0)return false;return true;}
+  // Strict = in clock-domain-safe physical order and no logical frame repeated.
+  function isStrictChronology(frames=[]){const a=frames||[];if(!FI.isPhysicalOrder(a))return false;for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++)if(FI.sameFrame(a[i],a[j]))return false;return true;}
   return{VERSION,TARGET,cameraCompare,canonicalUnique,bucketFrames,selectFixedBudget,normalizeRecord,isStrictChronology};
 });

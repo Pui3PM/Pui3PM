@@ -62,6 +62,7 @@
     "app/static/evidence_timeline_baseline_layer.js",
     "app/static/field_polish_layer.js",
     "app/static/foundation_guard_core.js",
+    "app/static/frame_identity_core.js",
     "app/static/foundation_guard_layer.js",
     "app/static/index.html",
     "app/static/models/pose_landmarker_lite.task",
