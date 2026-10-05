@@ -1,0 +1,172 @@
+{
+ "status": "MAC BENCH CANDIDATE; software gates green on Linux; Mac/Swift/camera NOT RUN",
+ "decision": "D-R2-01 = option 1 (owner authorization 2026-10-05; docs/architecture/DECISION_LOG.md)",
+ "measured_on": "candidate ZIPs built from the R3 working tree; app/, internal/ and test bytes identical to the delivered R3 ZIPs (only docs differ). Final ZIP hashes + final fresh-unzip run: external 3PM_POST_P108_R3_SHA256SUMS.txt and 3PM_POST_P108_R3_VERIFICATION.json.",
+ "environment": {
+  "os": "Linux container",
+  "node": "v22.22.0",
+  "python": "3.11.15",
+  "chromium": "Chromium 141.0.7390.37 headless (Playwright 1.56.1)",
+  "backend": "stub_backend.cjs test double",
+  "frames": "synthetic canvas/Blob fixtures"
+ },
+ "not_run": [
+  "Mac launch",
+  "Swift compile (macOS SDK)",
+  "macOS runtime and Mac browser",
+  "camera permission/device switching",
+  "BLE",
+  "Windows",
+  "real archer",
+  "labeled release/let-down data"
+ ],
+ "packages": [
+  {
+   "zip": "3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005.zip",
+   "artifact_class": "field_test_not_production",
+   "candidate_zip_sha256": "eea7afdbd0dc1bcb355b3d3b9758f6831ee9ef73efd7d636bdd4b3893f36aaa5",
+   "js_regressions": {
+    "pass": 117,
+    "total": 117,
+    "failed": []
+   },
+   "phase01": {
+    "pass": 15,
+    "total": 15,
+    "failed": []
+   },
+   "checks": {
+    "zip_member_modes": {
+     "returncode": 0,
+     "summary": "launcher/runtimes executable=True; internal scripts non-executable=True"
+    },
+    "distribution_contract": {
+     "returncode": 0,
+     "summary": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint"
+    },
+    "static_integrity": {
+     "returncode": 0,
+     "summary": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=field_test_not_production"
+    },
+    "mac_preflight": {
+     "returncode": 0,
+     "summary": "Mac launcher preflight executed: PASS (native runtime not executed)"
+    },
+    "js_regressions": {
+     "returncode": 0,
+     "summary": "JS regressions: 117/117 PASS"
+    },
+    "browser_fullapp_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_post_p108_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_r2_identity_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_identity_parity": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_f01": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_shadow_bundle": {
+     "returncode": 0,
+     "summary": "Shadow bundle Chromium gate: PASS (10 checks)"
+    },
+    "browser_anchor_single_owner": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_fullpage_liveness": {
+     "returncode": 0,
+     "summary": "}"
+    }
+   }
+  },
+  {
+   "zip": "3PM_Analyzer_R8_POST_P108_R3_DEV_20261005.zip",
+   "artifact_class": "development_not_release",
+   "candidate_zip_sha256": "065920f0516328102a37dd72fbfb3ddbc5eae1589a5bb49009242bcfa9897c0d",
+   "js_regressions": {
+    "pass": 114,
+    "total": 117,
+    "failed": [
+     "app/tests/test_field_resilience_ble43894.js",
+     "app/tests/test_multicamera_skeleton_ble4362.js",
+     "app/tests/test_multiview_corroboration_integration_ble43895.js"
+    ]
+   },
+   "phase01": {
+    "pass": 15,
+    "total": 15,
+    "failed": []
+   },
+   "checks": {
+    "zip_member_modes": {
+     "returncode": 0,
+     "summary": "launcher/runtimes executable=True; internal scripts non-executable=True"
+    },
+    "distribution_contract": {
+     "returncode": 0,
+     "summary": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint"
+    },
+    "static_integrity": {
+     "returncode": 0,
+     "summary": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=development_not_release"
+    },
+    "mac_preflight": {
+     "returncode": 0,
+     "summary": "Mac launcher preflight executed: PASS (native runtime not executed)"
+    },
+    "js_regressions": {
+     "returncode": 1,
+     "summary": "JS regressions: 114/117 PASS"
+    },
+    "browser_fullapp_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_post_p108_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_r2_identity_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_identity_parity": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_f01": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_shadow_bundle": {
+     "returncode": 0,
+     "summary": "Shadow bundle Chromium gate: PASS (10 checks)"
+    },
+    "browser_anchor_single_owner": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_fullpage_liveness": {
+     "returncode": 0,
+     "summary": "}"
+    }
+   }
+  }
+ ],
+ "history": {
+  "delivered_post_p108": "106/116 (clean unzip)",
+  "r2": "field 112/117, red = D-R2-01 only (docs/post_p108_r2/TEST_RESULTS.json)",
+  "r3": "field 117/117"
+ }
+}

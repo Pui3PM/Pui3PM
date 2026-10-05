@@ -52,12 +52,14 @@ check('P1-07 sparse-only record already in order stays byte-identical in frame o
 check('P1-07 collapsed worker-null record (single 0/0 frame) stays single, not dropped',()=>{
   const rec=stored([{...p107Worker(0),mediaTime:0,frameSeq:0}]);assertCompat('worker-null',rec);
 });
-// Characterization (not a defect introduced by P1-08): two P1-07 worker frames that both carry the manufactured 0/0
-// clock in one source domain are indistinguishable from one re-delivered frame under the R7 contract (equal media in
-// one domain = same frame). P1-07 itself collapsed them identically, so no P1-07 record can contain this pair.
-check('characterization: legacy 0/0 pair collapses exactly as under P1-07',()=>{
+// Characterization history: P1-08 pinned that two P1-07 worker rows carrying the manufactured 0/0 clock in one SOURCE-only domain
+// collapse to 1 (R7: equal media in one domain = same frame). Original check, kept for history:
+//   check('characterization: legacy 0/0 pair collapses exactly as under P1-07',()=>{ ...; assert.strictEqual(B.canonicalUnique(rec.frames).length,1); });
+// D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md): a domain needs source AND generation; these rows have no generation, so the manufactured 0/0 is not identity and both real
+// rows are kept (the physical truth; the old value was a P1-07 data-loss artefact). Flipped like D-108-05.
+check('characterization (flipped by D-R2-01): legacy 0/0 pair keeps both real rows; migration keeps the frame set',()=>{
   const rec=stored([{...p107Worker(0),mediaTime:0,frameSeq:0},{...p107Worker(1),mediaTime:0,frameSeq:0}]);
-  assert.strictEqual(B.canonicalUnique(rec.frames).length,1);
+  assert.strictEqual(B.canonicalUnique(rec.frames).length,2);assertCompat('worker-null pair',rec);
 });
 if(failures.length){console.error('P1-08 M-05 migration compat FAIL\n - '+failures.join('\n - '));process.exit(1);}
 console.log('P1-08 M-05 migration compat PASS: P1-07 stored shapes keep identical frame sets, chronology restored, idempotent');

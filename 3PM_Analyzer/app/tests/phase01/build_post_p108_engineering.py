@@ -19,18 +19,19 @@ def main():
  ap.add_argument('--name',default='3PM_Analyzer_R8_POST_P108');ap.add_argument('--date',default='20261005')
  ap.add_argument('--branch',default='codex/3pm-r8-post-p108-20261005');ap.add_argument('--base',default='0f3ee6d08ab59a1cca98611762d2d7947b012bb5')
  ap.add_argument('--status',default='UNPROMOTED; mandatory regression gate FAIL');ap.add_argument('--status-doc',default='docs/post_p108/DELIVERY_REPORT.md')
+ ap.add_argument('--field-label',default='MAC_BENCH_UNPROMOTED');ap.add_argument('--field-status-line',default='UNPROMOTED ENGINEERING PACKAGE — MANDATORY REGRESSION GATE BLOCKED (owner policy decision pending)')
  a=ap.parse_args()
  out=Path(a.out).resolve();out.mkdir(exist_ok=True,parents=True)
  if out==SRC or SRC in out.parents:raise SystemExit('Output must be outside source')
  if not (SRC/a.status_doc).is_file():raise SystemExit(f'status document missing: {a.status_doc}')
- for cls,label in [('development_not_release','DEV'),('field_test_not_production','MAC_BENCH_UNPROMOTED')]:
+ for cls,label in [('development_not_release','DEV'),('field_test_not_production',a.field_label)]:
   root=out/f'{a.name}_{label}'
   if root.exists():shutil.rmtree(root)
   shutil.copytree(SRC,root,ignore=shutil.ignore_patterns('__pycache__','*.pyc','.git','node_modules'))
   contract=json.loads((root/'PACKAGE_CONTRACT.json').read_text());contract['artifact_class']=cls;(root/'PACKAGE_CONTRACT.json').write_text(json.dumps(contract,indent=2)+'\n')
   if cls=='field_test_not_production':
    temp=out/'pose-frozen.intermediate';subprocess.run(['node',str(root/'app/tests/phase01/strip_pose_trace_seam.cjs'),str(root/'app/static/pose.js'),str(temp)],check=True);shutil.move(temp,root/'app/static/pose.js')
-   (root/'DEV_NOT_RELEASE.txt').unlink();(root/'FIELD_TEST_NOT_PRODUCTION.txt').write_text(f'FIELD TEST BUILD — NOT PRODUCTION\nUNPROMOTED ENGINEERING PACKAGE — MANDATORY REGRESSION GATE BLOCKED (owner policy decision pending)\nNo live shooting. Mac/Swift/camera NOT RUN. Read {a.status_doc}.\n')
+   (root/'DEV_NOT_RELEASE.txt').unlink();(root/'FIELD_TEST_NOT_PRODUCTION.txt').write_text(f'FIELD TEST BUILD — NOT PRODUCTION\n{a.field_status_line}\nNo live shooting. Mac/Swift/camera NOT RUN. Read {a.status_doc}.\n')
   (root/'PACKAGE_ID.txt').write_text(f'{root.name}_{a.date}\n')
   source_files={str(p.relative_to(SRC)):sha(p) for p in SRC.rglob('*') if p.is_file() and p.name!='SHA256SUMS.txt' and '.git' not in p.relative_to(SRC).parts}
   proof={'base_commit':a.base,'source_commit':a.commit,'branch':a.branch,'status':a.status,'lineage':'EL18 -> R7 TransactionRepair -> selective HV3 merge -> R8','source_files':source_files,'packaged_files':{str(p.relative_to(root)):sha(p) for p in root.rglob('*') if p.is_file() and p.name!='SHA256SUMS.txt'}}
@@ -40,5 +41,5 @@ def main():
    for p in sorted(root.rglob('*')):
     if p.is_file():
      i=zipfile.ZipInfo(str(Path(root.name)/p.relative_to(root)),date_time=(int(a.date[:4]),int(a.date[4:6]),int(a.date[6:8]),0,0,0));i.compress_type=zipfile.ZIP_DEFLATED;i.external_attr=(stat.S_IFREG|(p.stat().st_mode&0o777))<<16;z.writestr(i,p.read_bytes())
-  print(json.dumps({'artifact':str(target),'sha256':sha(target),'size_bytes':target.stat().st_size,'status':'UNPROMOTED'}))
+  print(json.dumps({'artifact':str(target),'sha256':sha(target),'size_bytes':target.stat().st_size,'status':a.status}))
 if __name__=='__main__':main()

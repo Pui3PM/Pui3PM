@@ -1,8 +1,14 @@
-CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. Post-P108 duplicate-frame/chronology defects repaired; mandatory regression gate blocked ONLY by owner policy decision D-R2-01 (docs/post_p108_r2/OWNER_DECISION_REQUIRED.md); Mac/Swift compile/camera NOT RUN. Do not use for live shooting. Read docs/post_p108_r2/DELIVERY_REPORT.md. Older readiness text below (incl. Post-P108 docs/post_p108/) is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R3 (Claude Code): MAC BENCH CANDIDATE — all software gates green on Linux (field class 117/117, phase01 15/15, 8 Chromium gates). D-R2-01 decided by the owner (option 1). NOT field-validated: Mac launch, Swift compile, camera, archer NOT RUN. No live shooting until docs/FIELD_TEST_INSTRUCTIONS.md §0–§1 pass on the Mac. Read docs/post_p108_r3/DELIVERY_REPORT.md. Older readiness text below (incl. docs/post_p108_r2, docs/post_p108) is HISTORICAL.
 
 # 3PM Analyzer — R8 Project State
 
-## CURRENT — 2026-10-05 Post-P108 R2 (Claude Code)
+## CURRENT — 2026-10-05 Post-P108 R3 (Claude Code)
+**Status: MAC BENCH CANDIDATE — software gates green on Linux; NOT field-validated; NOT production.**
+- D-R2-01 decided by the owner (option 1). 8 legacy identity assertions converted to the Post-P108 H02 rule; originals kept in comments; intents re-asserted on production-shaped data (DECISION_LOG D-R2-01).
+- Fresh unzip: field class 117/117, DEV 114/117 (3 pose-policy sentinels by design), phase01 15/15, contract/static/preflight/ZIP modes PASS, 8 Chromium 141 gates PASS.
+- NOT RUN: Mac launch, Swift compile, camera, BLE, Windows, archer, labeled data. M-01, M-04 OPEN. Next gate: `docs/FIELD_TEST_INSTRUCTIONS.md` §0–§1 on the Mac.
+
+## HISTORICAL — 2026-10-05 Post-P108 R2 (Claude Code, superseded by R3)
 **Status: UNPROMOTED engineering package — NOT a field candidate, NOT production.**
 - Input: delivered Post-P108 build (Codex `42a24800`), clean-unzip regressions 106/116.
 - Repaired real Post-P108 defects R2-01..R2-04 (repeated frame in fixed-25; device-id requirement broke camera order/identity; random FrameUID per object duplicated re-encodes/readbacks; historical rows multiplied) and R2-05 Swift `CaptureManager` dictionary race (source only).

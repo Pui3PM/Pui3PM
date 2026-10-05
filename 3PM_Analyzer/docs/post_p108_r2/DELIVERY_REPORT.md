@@ -1,3 +1,5 @@
+HISTORICAL — superseded by `docs/post_p108_r3/DELIVERY_REPORT.md` (D-R2-01 decided, option 1).
+
 # 3PM R8 Post-P108 R2 delivery — 2026-10-05 (Claude Code)
 
 **Status: UNPROMOTED engineering package. Mandatory regression gate: 5 files red, all of them the owner policy

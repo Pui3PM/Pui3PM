@@ -53,4 +53,10 @@ const protectedEpochs=[many[3].epochMs,many[17].epochMs,many[79].epochMs];
 const selected=B.selectFixedBudget(many,rel,25,protectedEpochs);
 assert.equal(selected.length,25);for(const t of protectedEpochs)assert(selected.some(f=>f.epochMs===t),'contract witness must survive density quotas');
 assert.equal(B.canonicalUnique([{epochMs:1,mediaTime:null,blob:{}},{epochMs:100,mediaTime:null,blob:{}}]).length,2);
-assert.equal(B.canonicalUnique([{epochMs:1,mediaTime:1,blob:{}},{epochMs:100,mediaTime:1,blob:{}}]).length,1,'same real media frame must not count twice');
+// D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md).
+// Original R7 assertion, kept for history:
+//   assert.equal(B.canonicalUnique([{epochMs:1,mediaTime:1,blob:{}},{epochMs:100,mediaTime:1,blob:{}}]).length,1,'same real media frame must not count twice');
+// Rows without a known source AND generation have no clock domain: equal mediaTime is not identity proof, both rows stay.
+assert.equal(B.canonicalUnique([{epochMs:1,mediaTime:1,blob:{}},{epochMs:100,mediaTime:1,blob:{}}]).length,2,'D-R2-01: mediaTime without source+generation is not identity');
+// The R7 intent holds inside an explicit clock domain (source + generation).
+assert.equal(B.canonicalUnique([{epochMs:1,mediaTime:1,source:'native-avfoundation-standard',generation:1,blob:{}},{epochMs:100,mediaTime:1,source:'native-avfoundation-standard',generation:1,blob:{}}]).length,1,'same real media frame must not count twice');

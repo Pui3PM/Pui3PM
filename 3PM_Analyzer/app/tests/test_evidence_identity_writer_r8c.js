@@ -40,9 +40,19 @@ check('F02 false/empty-string are unknown, not 0',()=>{
   assert.equal(T.num(null),null);assert.equal(T.num(false),null);assert.equal(T.num(''),null);assert.equal(T.num(0),0);
 });
 // Behaviour that must be preserved.
-check('preserve: cross-pipeline duplicate (sparse w/o identity vs worker) still merges, worker kept, tags union',()=>{
+// D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md).
+// Original check, kept for history: 'preserve: cross-pipeline duplicate (sparse w/o identity vs worker) still merges, worker kept, tags union'
+//   const out=T.canonicalFrames([sparse@1000 (no identity), worker@1005]); assert.equal(out.length,1); worker kept; tags unioned.
+check('D-R2-01: sparse vs worker rows 5 ms apart are not merged by epoch proximity (both real rows kept)',()=>{
   const out=T.canonicalFrames([{epochMs:1000,blob:blob(1),source:'sparse-jpeg',evidenceZone:'anchor-pin'},{epochMs:1005,mediaTime:3.2,frameSeq:7,blob:blob(2),source:'worker-track-processor-60',evidenceZone:'release-focus'}]);
-  assert.equal(out.length,1);assert(/worker/.test(out[0].source));assert(out[0].evidenceTags.includes('anchor-pin')&&out[0].evidenceTags.includes('release-focus'));
+  assert.equal(out.length,2);
+});
+check('D-R2-01 intent: a healthy worker window replaces the sparse row of the same instant; worker and Recovery kept',()=>{
+  const sparse=[{epochMs:1000,blob:blob(1),source:'sparse-jpeg',evidenceZone:'anchor-pin'},{epochMs:4000,blob:blob(3),source:'sparse-jpeg',evidenceZone:'recovery-end'}];
+  const worker=[{epochMs:1005,mediaTime:3.2,frameSeq:7,generation:0,blob:blob(2),source:'worker-track-processor-60',evidenceZone:'release-focus'}];
+  const out=T.mergeEvidence(sparse,worker,1000,{preMs:1250,postMs:900,replaceDense:true});
+  assert.equal(out.filter(f=>f.source==='sparse-jpeg'&&f.epochMs===1000).length,0,'sparse row inside the dense window replaced');
+  assert(out.some(f=>/worker/.test(f.source)),'worker row kept');assert(out.some(f=>f.evidenceZone==='recovery-end'),'Recovery kept');
 });
 check('preserve: same decoded frame (same mediaTime) from two paths merges',()=>{
   const b=blob(9);const d=T.dedupeFrames([{epochMs:1000,mediaTime:1.25,blob:b,evidenceZone:'anchor-pin'},{epochMs:1032,mediaTime:1.25,blob:b,evidenceZone:'hold-pin'}]);

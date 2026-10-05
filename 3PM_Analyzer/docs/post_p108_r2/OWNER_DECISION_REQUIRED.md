@@ -1,6 +1,8 @@
 # Owner decision required — D-R2-01: which identity rule governs 8 legacy assertions (5 test files)
 
-Status: **OPEN — not decided by any AI.** AGENTS.md (Post-P108): "Do not remove original red identity assertions or
+Status: **DECIDED 2026-10-05 — option 1** (owner authorization in chat; applied in Post-P108 R3, see `docs/architecture/DECISION_LOG.md` D-R2-01 and `docs/post_p108_r3/`). Text below is the analysis as presented before the decision.
+
+Previous status: OPEN — not decided by any AI. AGENTS.md (Post-P108): "Do not remove original red identity assertions or
 claim a green release gate." These assertions were therefore NOT edited. Until the owner decides, the mandatory
 regression gate cannot be green and the package stays UNPROMOTED.
 

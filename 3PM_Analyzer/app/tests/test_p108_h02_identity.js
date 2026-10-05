@@ -35,10 +35,17 @@ function assertUniqueContent(frames,label){const s=new Set();for(const f of fram
     assert.strictEqual(B.canonicalUnique(rows).length,2);assert.strictEqual(T.canonicalFrames(rows).length,2);
   });
   // ---- the same frame stays one ----
-  await check('structuredClone of one frame is one frame (Astra ID-CLONE)',()=>{
-    const original={epochMs:1000,mediaTime:null,frameSeq:null,blob:new Blob(['same original frame']),source:'sparse-jpeg'};
-    const cloned=structuredClone(original);
-    assert.strictEqual(B.canonicalUnique([original,cloned]).length,1);assert.strictEqual(T.canonicalFrames([original,cloned]).length,1);
+  // D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md).
+  // Original check, kept for history: 'structuredClone of one frame is one frame (Astra ID-CLONE)' fed a row WITHOUT FrameUID and
+  // its clone (equal epoch + size) and expected 1. Under H02 equal time/size is not identity; stored rows carry FrameUID instead.
+  await check('structuredClone of a STORED frame is one frame (Astra ID-CLONE intent; the shipped writer stamps FrameUID)',async()=>{
+    const ep=rel-300,original={epochMs:ep,mediaTime:null,frameSeq:null,blob:new Blob(['same original frame']),source:'sparse-jpeg',offsetMs:ep-rel}; // inside the frozen queue's release window
+    const e=H.env(root);e.seed({key:KEY,sessionId:sid,shotId,role:'side',releaseEpochMs:rel,frames:[]});
+    await e.merge({key:KEY,sessionId:sid,shotId,role:'side',releaseEpochMs:rel,frames:[original]});
+    const stored=e.get(sid,shotId).frames.find(f=>f.epochMs===ep);assert(stored&&typeof stored.frameUID==='string','stored row carries FrameUID');
+    const cloned=structuredClone(stored);
+    assert.strictEqual(B.canonicalUnique([stored,cloned]).length,1);assert.strictEqual(T.canonicalFrames([stored,cloned]).length,1);
+    assert.strictEqual(B.canonicalUnique([original,structuredClone(original)]).length,2,'D-R2-01: without FrameUID equal epoch+size is not identity');
   });
   await check('IndexedDB round trip + re-merge keeps identity stable',async()=>{
     const e=H.env(root);const frames=Array.from({length:6},(_,i)=>fr({epochMs:rel-500+i*100,offsetMs:-500+i*100,mediaTime:null,source:'sparse-jpeg',evidenceZone:'release-focus',tag:'r'+i}));
@@ -85,8 +92,14 @@ function assertUniqueContent(frames,label){const s=new Set();for(const f of fram
     assert(/generation/i.test(String(e2.N.states.side.error||'')),'explicit stale-generation error');
   });
   // ---- fixed 25 = unique real frames only ----
+  // D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md).
+  // Original fixture, kept for history: the 10 base rows had NO FrameUID, so their clones could only be matched by equal epoch+size.
+  // Production rows are stamped by the shipped writer before storage; the base rows are stamped the same way here. Expectations unchanged.
   await check('fixed 25 with clones/readbacks: only unique real frames, Missing slots for the rest',()=>{
-    const base=Array.from({length:10},(_,i)=>fr({epochMs:rel-450+i*100,offsetMs:-450+i*100,mediaTime:null,source:'sparse-jpeg',evidenceZone:'release-focus',tag:'u'+i}));
+    const L=H.env(root).ctx.window.EvidenceIdentityPersistenceLayer;assert(L&&L.stamp,'shipped writer adapter');
+    const raw=Array.from({length:10},(_,i)=>fr({epochMs:rel-450+i*100,offsetMs:-450+i*100,mediaTime:null,source:'sparse-jpeg',evidenceZone:'release-focus',tag:'u'+i}));
+    assert.strictEqual(B.canonicalUnique([...raw,...structuredClone(raw)]).length,20,'D-R2-01: UID-less clone rows are not collapsed by equal epoch+size');
+    const base=raw.map(L.stamp);
     const out=B.normalizeRecord({releaseEpochMs:rel,frames:[...base,...structuredClone(base),...structuredClone(base)]});
     assert.strictEqual(out.frames.length,10);assert.strictEqual(out.evidenceBudget.missingSlots,15);assert.strictEqual(out.reviewSlots.filter(s=>s.missing).length,15);
     assertUniqueContent(out.frames,'fixed25');
@@ -98,9 +111,12 @@ function assertUniqueContent(frames,label){const s=new Set();for(const f of fram
     const out=B.normalizeRecord({releaseEpochMs:rel,frames:rows});
     assert.strictEqual(out.evidenceBudget.sourceFrames,30,'30 distinct real frames');assert.strictEqual(out.frames.length,25,'25 real slots filled from 30 distinct');assertUniqueContent(out.frames,'equal-epoch');
   });
-  await check('preserved: browser pipeline duplicate (sparse w/o identity vs worker <=8 ms) still folds, worker kept',()=>{
+  // D-R2-01 (owner decision 2026-10-05, option 1: the Post-P108 H02 identity rule is authoritative; docs/post_p108_r2/OWNER_DECISION_REQUIRED.md).
+  // Original check, kept for history: 'preserved: browser pipeline duplicate (sparse w/o identity vs worker <=8 ms) still folds, worker kept'
+  //   expected 1 row. Under H02 epoch proximity is not identity; a healthy worker window replaces the sparse row instead (R8C test).
+  await check('D-R2-01: browser pipeline rows <=8 ms apart (sparse w/o identity vs worker) are both kept',()=>{
     const out=T.canonicalFrames([{epochMs:1000,blob:H.blob(1),source:'sparse-jpeg',evidenceZone:'anchor-pin'},{epochMs:1005,mediaTime:3.2,frameSeq:7,blob:H.blob(2),source:'worker-track-processor-60',evidenceZone:'release-focus'}]);
-    assert.strictEqual(out.length,1);assert(/worker/.test(out[0].source));
+    assert.strictEqual(out.length,2);
   });
   if(failures.length){console.error('P1-08 H-02 identity FAIL\n - '+failures.join('\n - '));process.exit(1);}
   console.log('P1-08 H-02 identity PASS: null, source/generation/UID collisions, native-vs-browser, clone, IndexedDB round trip, retry, worker adapter, stale generation, fixed25');

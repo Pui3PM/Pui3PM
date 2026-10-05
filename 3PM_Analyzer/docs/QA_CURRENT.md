@@ -1,6 +1,12 @@
-CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. Post-P108 duplicate-frame/chronology defects repaired; mandatory regression gate blocked ONLY by owner policy decision D-R2-01 (docs/post_p108_r2/OWNER_DECISION_REQUIRED.md); Mac/Swift compile/camera NOT RUN. Do not use for live shooting. Read docs/post_p108_r2/DELIVERY_REPORT.md. Older readiness text below (incl. Post-P108 docs/post_p108/) is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R3 (Claude Code): MAC BENCH CANDIDATE — all software gates green on Linux (field class 117/117, phase01 15/15, 8 Chromium gates). D-R2-01 decided by the owner (option 1). NOT field-validated: Mac launch, Swift compile, camera, archer NOT RUN. No live shooting until docs/FIELD_TEST_INSTRUCTIONS.md §0–§1 pass on the Mac. Read docs/post_p108_r3/DELIVERY_REPORT.md. Older readiness text below (incl. docs/post_p108_r2, docs/post_p108) is HISTORICAL.
 
-**CURRENT 2026-10-05: Post-P108 R2 — UNPROMOTED.**
+**CURRENT 2026-10-05: Post-P108 R3 — MAC BENCH CANDIDATE (software gates green on Linux; Mac NOT RUN).**
+- D-R2-01 decided (option 1). Fresh unzip: field class 117/117, DEV 114/117 (3 pose-policy sentinels), phase01 15/15; contract, static integrity, Mac preflight, ZIP modes PASS; Chromium 141: full-app 25/25, Post-P108 7/7, R2 identity 12/12, identity parity, F01, shadow bundle, Anchor SINGLE_OWNER, full-page LOADED.
+- NOT RUN: Swift compile, macOS runtime, camera, BLE, Windows, archer, labeled data. Details: `post_p108_r3/TEST_RESULTS.json`.
+
+---
+
+**HISTORICAL 2026-10-05: Post-P108 R2 — UNPROMOTED.**
 - Fresh unzip (Linux, Node 22, Chromium 141): field class 112/117, DEV 109/117 (+3 pose-policy sentinels); red files = D-R2-01 only. Phase01 15/15. Distribution contract, static integrity, executable Mac preflight, ZIP modes PASS.
 - Chromium: full-app 25/25, Post-P108 7/7, R2 identity 12/12, identity parity, F01, shadow bundle, Anchor SINGLE_OWNER, full-page LOADED.
 - R2 identity gate on the delivered Post-P108 bytes: FAIL (re-persist 19 -> 25 rows with 19 distinct images; historical record 19 rows / 7 distinct images). On R2: 19 -> 19; 7 / 7.
