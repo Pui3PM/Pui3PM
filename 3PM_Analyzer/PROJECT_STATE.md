@@ -6,7 +6,7 @@ CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. P
 **Status: UNPROMOTED engineering package — NOT a field candidate, NOT production.**
 - Input: delivered Post-P108 build (Codex `42a24800`), clean-unzip regressions 106/116.
 - Repaired real Post-P108 defects R2-01..R2-04 (repeated frame in fixed-25; device-id requirement broke camera order/identity; random FrameUID per object duplicated re-encodes/readbacks; historical rows multiplied) and R2-05 Swift `CaptureManager` dictionary race (source only).
-- Fresh unzip, field class: regressions 112/117 — the 5 red files are exactly owner decision **D-R2-01** (7 legacy identity assertions vs the Post-P108 H02 rule); phase01 15/15; contract/static/preflight PASS; 8 Chromium 141 gates PASS (incl. new R2 identity gate).
+- Fresh unzip, field class: regressions 112/117 — the 5 red files are exactly owner decision **D-R2-01** (8 legacy identity assertions in 5 files vs the Post-P108 H02 rule); phase01 15/15; contract/static/preflight PASS; 8 Chromium 141 gates PASS (incl. new R2 identity gate).
 - NOT RUN: Swift compile, macOS runtime/browser, camera, BLE, Windows, archer, labeled data. M-01 and M-04 OPEN.
 - Source: GitHub `Pui3PM/Pui3PM` branch `claude/magical-rubin-bovhje` folder `3PM_Analyzer/`. Read `docs/post_p108_r2/` first.
 

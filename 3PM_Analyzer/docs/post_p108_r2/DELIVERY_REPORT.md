@@ -66,7 +66,7 @@ let-down, scoring or Legacy Shot Decision change. No original assertion edited o
 | Swift compile, Mac runtime, camera, BLE, Windows, archer, labeled data | NOT RUN | NOT RUN |
 
 ## 4. Open
-- **D-R2-01 owner decision** (7 legacy identity assertions vs the Post-P108 H02 rule). See `OWNER_DECISION_REQUIRED.md`.
+- **D-R2-01 owner decision** (8 legacy identity assertions in 5 files vs the Post-P108 H02 rule). See `OWNER_DECISION_REQUIRED.md`.
 - Swift lifecycle/race fixes are source-level; compile + runtime on macOS NOT RUN.
 - M-01 frozen high-FPS sampler OPEN (30 FPS only). M-04: loopback + Origin allow-list in source, no authentication.
 - Synthetic canvas frames and a backend test double are not camera or backend acceptance.

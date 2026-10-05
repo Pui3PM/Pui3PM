@@ -1,6 +1,6 @@
 # Post-P108 R2 known limitations
 
-- **D-R2-01 open:** 5 regression files (7 assertions) encode the pre-Post-P108 identity rule and stay red by owner
+- **D-R2-01 open:** 5 regression files (8 assertions) encode the pre-Post-P108 identity rule and stay red by owner
   rule. The package is UNPROMOTED until the owner decides (`OWNER_DECISION_REQUIRED.md`).
 - **Not executed here:** Swift compile (both helpers), macOS runtime, Mac browser, camera permission/device switching,
   BLE, Windows, real archer, labeled release/let-down data. Linux/Chromium results with synthetic canvas frames and a

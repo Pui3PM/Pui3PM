@@ -1,0 +1,241 @@
+{
+ "status": "UNPROMOTED; mandatory gate blocked only by owner decision D-R2-01",
+ "measured_on": "candidate ZIPs built from commit 56cfc385024f2ed05369ed67d58c2e293cb146d0 (app/, internal/ and test bytes identical to the delivered R2 ZIPs; later commits changed docs only). Final ZIP hashes + final fresh-unzip run: external 3PM_POST_P108_R2_SHA256SUMS.txt and 3PM_POST_P108_R2_VERIFICATION.json.",
+ "environment": {
+  "os": "Linux container",
+  "node": "v22.22.0",
+  "python": "3.11.15",
+  "chromium": "Chromium 141.0.7390.37 headless (Playwright 1.56.1)",
+  "backend": "stub_backend.cjs test double",
+  "frames": "synthetic canvas/Blob fixtures"
+ },
+ "not_run": [
+  "Swift compile (macOS SDK)",
+  "macOS runtime and Mac browser",
+  "camera permission/device switching",
+  "BLE",
+  "Windows",
+  "real archer",
+  "labeled release/let-down data"
+ ],
+ "packages": [
+  {
+   "zip": "3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005.zip",
+   "artifact_class": "field_test_not_production",
+   "package_id": "3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005",
+   "candidate_zip_sha256": "02612e5eadeedc1b615336082a7d0e172e299aeb830609a958ed4933340d1661",
+   "js_regressions": {
+    "pass": 112,
+    "total": 117,
+    "failed": [
+     "app/tests/test_evidence_identity_writer_r8c.js",
+     "app/tests/test_p108_astra_probes.js",
+     "app/tests/test_p108_h02_identity.js",
+     "app/tests/test_p108_m05_migration_compat.js",
+     "app/tests/test_transaction_r7.js"
+    ]
+   },
+   "phase01": {
+    "pass": 15,
+    "total": 15,
+    "failed": []
+   },
+   "checks": {
+    "zip_member_modes": {
+     "returncode": 0,
+     "summary": "launcher/runtimes executable=True; internal scripts non-executable=True"
+    },
+    "distribution_contract": {
+     "returncode": 0,
+     "summary": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint"
+    },
+    "static_integrity": {
+     "returncode": 0,
+     "summary": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=field_test_not_production"
+    },
+    "mac_preflight": {
+     "returncode": 0,
+     "summary": "Mac launcher preflight executed: PASS (native runtime not executed)"
+    },
+    "js_regressions": {
+     "returncode": 1,
+     "summary": "JS regressions: 112/117 PASS"
+    },
+    "browser_fullapp_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_post_p108_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_r2_identity_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_identity_parity": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_f01": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_shadow_bundle": {
+     "returncode": 0,
+     "summary": "Shadow bundle Chromium gate: PASS (10 checks)"
+    },
+    "browser_anchor_single_owner": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_fullpage_liveness": {
+     "returncode": 0,
+     "summary": "}"
+    }
+   }
+  },
+  {
+   "zip": "3PM_Analyzer_R8_POST_P108_R2_DEV_20261005.zip",
+   "artifact_class": "development_not_release",
+   "package_id": "3PM_Analyzer_R8_POST_P108_R2_DEV_20261005",
+   "candidate_zip_sha256": "74288b2bc36d58062aa5ad44e7a673904a1f30d1a92b7a17df3ee51814c3e9a5",
+   "js_regressions": {
+    "pass": 109,
+    "total": 117,
+    "failed": [
+     "app/tests/test_evidence_identity_writer_r8c.js",
+     "app/tests/test_field_resilience_ble43894.js",
+     "app/tests/test_multicamera_skeleton_ble4362.js",
+     "app/tests/test_multiview_corroboration_integration_ble43895.js",
+     "app/tests/test_p108_astra_probes.js",
+     "app/tests/test_p108_h02_identity.js",
+     "app/tests/test_p108_m05_migration_compat.js",
+     "app/tests/test_transaction_r7.js"
+    ]
+   },
+   "phase01": {
+    "pass": 15,
+    "total": 15,
+    "failed": []
+   },
+   "checks": {
+    "zip_member_modes": {
+     "returncode": 0,
+     "summary": "launcher/runtimes executable=True; internal scripts non-executable=True"
+    },
+    "distribution_contract": {
+     "returncode": 0,
+     "summary": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint"
+    },
+    "static_integrity": {
+     "returncode": 0,
+     "summary": "X2.8.2 static/launch integrity: PASS · frozen Dev4 JS hashes exact · runtime binary SHA baseline pinned · artifact_class=development_not_release"
+    },
+    "mac_preflight": {
+     "returncode": 0,
+     "summary": "Mac launcher preflight executed: PASS (native runtime not executed)"
+    },
+    "js_regressions": {
+     "returncode": 1,
+     "summary": "JS regressions: 109/117 PASS"
+    },
+    "browser_fullapp_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_post_p108_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_r2_identity_gate": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_identity_parity": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_f01": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_shadow_bundle": {
+     "returncode": 0,
+     "summary": "Shadow bundle Chromium gate: PASS (10 checks)"
+    },
+    "browser_anchor_single_owner": {
+     "returncode": 0,
+     "summary": "}"
+    },
+    "browser_fullpage_liveness": {
+     "returncode": 0,
+     "summary": "}"
+    }
+   }
+  }
+ ],
+ "delivered_post_p108_baseline": {
+  "clean_unzip_regressions": "106/116 (reproduced; matches Codex report)",
+  "r2_chromium_gate_on_delivered_mac_zip": {
+   "status": "FAIL",
+   "failed_checks": [
+    "rePersistAddsNoRow",
+    "rePersistNoDuplicateBytes",
+    "rePersistStableUIDs",
+    "historicalReadStampDeterministic",
+    "historicalSnapshotMergeAddsOnlyNewFrame",
+    "historicalNoDuplicateBytes",
+    "historicalRowsNowDurable"
+   ],
+   "persist": {
+    "first": {
+     "n": 19,
+     "uniqueUIDs": 19,
+     "uniqueBytes": 19,
+     "native30": 14,
+     "sparse": 5
+    },
+    "second": {
+     "n": 25,
+     "uniqueUIDs": 25,
+     "uniqueBytes": 19,
+     "native30": 20,
+     "sparse": 5
+    }
+   },
+   "historical": {
+    "stamped": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "after": {
+     "n": 19,
+     "uniqueBytes": 7,
+     "uniqueUIDs": 14
+    }
+   }
+  },
+  "r2_node_test_on_delivered_static_failed": [
+   "R2-01 fixed-25 never repeats a real frame (30 distinct UID-less rows, 15 equal-epoch pairs)",
+   "R2-02 native source+generation without device id keeps camera order under epoch jitter",
+   "R2-02 re-delivery of one frame inside an explicit domain (source+generation) is one frame",
+   "R2-03 JPEG re-encodes of one buffered dense frame share one FrameUID",
+   "R2-04 historical stored rows get deterministic, distinct read stamps; clone pairs are retained",
+   "R2-04 historical record + native raw snapshot + Recovery"
+  ]
+ },
+ "swift_syntax": "tree-sitter-swift 0.7.1: 3PMNativeCaptureBridge.swift and 3PMBLEBridge.swift 0 ERROR/MISSING nodes (syntax only; detector verified on 3 injected errors)",
+ "d_r2_01_red_assertions": 8,
+ "d_r2_01_red_files": [
+  "app/tests/test_transaction_r7.js",
+  "app/tests/test_evidence_identity_writer_r8c.js",
+  "app/tests/test_p108_h02_identity.js",
+  "app/tests/test_p108_astra_probes.js",
+  "app/tests/test_p108_m05_migration_compat.js"
+ ]
+}
