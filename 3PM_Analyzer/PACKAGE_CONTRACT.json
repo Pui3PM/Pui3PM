@@ -132,6 +132,7 @@
     "app/tests/test_equipment_catalog_el11.js",
     "app/tests/test_equipment_catalog_el15.js",
     "app/tests/test_equipment_catalog_el17.js",
+    "app/tests/test_equipment_catalog_el19.js",
     "app/tests/test_equipment_catalog_el5.js",
     "app/tests/test_equipment_catalog_el6.js",
     "app/tests/test_equipment_catalog_el7.js",
@@ -140,6 +141,7 @@
     "app/tests/test_equipment_form_el15.js",
     "app/tests/test_equipment_form_el17.js",
     "app/tests/test_equipment_form_el18.js",
+    "app/tests/test_equipment_form_el19.js",
     "app/tests/test_equipment_lab_ble438952.js",
     "app/tests/test_equipment_lab_el4.js",
     "app/tests/test_evidence_budget_layer_r3.js",
@@ -205,7 +207,8 @@
     "app/tests/test_visual_match_ble432.js",
     "app/static/evidence_identity_persistence_layer.js",
     "app/tests/test_post_p108_r2_identity.js",
-    "app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs"
+    "app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs",
+    "app/tests/p108_browser/run_equipment_form_el19_chromium.cjs"
   ],
   "artifact_class": "development_not_release",
   "pose_policy": {

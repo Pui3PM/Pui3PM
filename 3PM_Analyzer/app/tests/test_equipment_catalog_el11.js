@@ -1,6 +1,6 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const src=fs.readFileSync('static/equipment_catalog.js','utf8');const sandbox={window:{}};vm.createContext(sandbox);vm.runInContext(src,sandbox);const C=sandbox.window.EquipmentCatalog;
-assert(C.version.startsWith('EL11') || C.version.startsWith('EL15') || (C.version.startsWith('EL17') || C.version.startsWith('EL18')));
+assert(C.version.startsWith('EL11') || C.version.startsWith('EL15') || (C.version.startsWith('EL17') || C.version.startsWith('EL18') || C.version.startsWith('EL19')));
 for(const b of ['Hoyt','WNS','NIKA','Bicaster','Kinetic','Akusta','CD Archery']) assert(C.records.some(r=>r.brand===b),`missing ${b}`);
 for(const cat of ['riser','limbs','sight','plunger','rest','clicker','long_rod','side_rod','extender','vbar','damper','stabilizer_weight','finger_tab','arrow']) assert(C.records.some(r=>r.category===cat),`missing ${cat}`);
 assert(C.records.some(r=>r.brand==='NIKA'&&r.model==='X1'&&Array.isArray(r.weight_options_lb)&&r.weight_options_lb.includes(40)));

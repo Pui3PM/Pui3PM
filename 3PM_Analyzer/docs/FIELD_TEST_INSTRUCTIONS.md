@@ -1,4 +1,4 @@
-# FIELD TEST INSTRUCTIONS — 3PM Analyzer R8 Post-P108 R3 MAC BENCH (NOT PRODUCTION)
+# FIELD TEST INSTRUCTIONS — 3PM Analyzer R8 Post-P108 R4 MAC BENCH (NOT PRODUCTION)
 
 สถานะปัจจุบัน (2026-10-05): **MAC BENCH CANDIDATE** — software gates บน Linux ผ่านครบ (field class 117/117) · ใช้ได้เฉพาะ *engineering bench* บน Mac ด้วยข้อมูลทดสอบที่ทิ้งได้ **ห้ามยิงจริง/ห้ามใช้ข้อมูลนักกีฬาจริง** จนกว่า §0–§1 ผ่านบน Mac จริง
 ผ่าน software gates บน Linux/Chromium แล้ว แต่ **ยังไม่เคยรันบน Mac, ยังไม่เคย compile Swift, ยังไม่เคยใช้กล้องจริงหรือนักยิงจริง** · ไม่มีการอ้างความแม่นยำ · Legacy Shot Decision เป็นผู้ตัดสินช็อตเพียงตัวเดียว
@@ -7,13 +7,13 @@
 **ห้าม:** Windows · 60/120/240 FPS · หลายกล้อง · ข้อมูลนักกีฬาจริง
 
 ## 0. Prerequisites (ต้องผ่านทุกข้อก่อนยิง — ถ้าไม่ผ่าน ให้หยุดและส่งผลกลับ)
-1. แตก ZIP เป็นโฟลเดอร์ใหม่ใน path ที่มีช่องว่าง เช่น `~/Desktop/3PM Bench R3/` — **อย่าลบ/ทับ R7, P1-08 หรือ Post-P108 เดิม** และอย่าลบ sessions เดิม
-2. ตรวจ SHA-256: `shasum -a 256 3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005.zip` ต้องตรงกับ `3PM_POST_P108_R3_SHA256SUMS.txt`
+1. แตก ZIP เป็นโฟลเดอร์ใหม่ใน path ที่มีช่องว่าง เช่น `~/Desktop/3PM Bench R4/` — **อย่าลบ/ทับ R7, P1-08 หรือ Post-P108 เดิม** และอย่าลบ sessions เดิม
+2. ตรวจ SHA-256: `shasum -a 256 3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005.zip` ต้องตรงกับ `3PM_POST_P108_R4_SHA256SUMS.txt`
 3. **สำรองข้อมูล backend ก่อนเปิดครั้งแรก:** ปิดแอป 3PM ทุกตัว แล้วคัดลอกโฟลเดอร์ข้อมูลของ runtime ที่ R7 ใช้อยู่ (ดู path ได้ในหน้า Settings → Storage ของ R7 หรือหาด้วย `mdfind -name 3PM_FormAnalyzer_Data`) ไปเก็บเป็นสำเนา เช่น `cp -R "<โฟลเดอร์ข้อมูล>" ~/Desktop/3PM_Data_BACKUP_$(date +%Y%m%d)`
    - เมื่อเปิด field build แล้ว ให้ดู Settings → Storage (ช่อง path): ต้องเป็นโฟลเดอร์ของแอปตัวนี้ (app folder) **ไม่ใช่** โฟลเดอร์/ไดรฟ์ภายนอกที่ R7 ใช้เก็บข้อมูลจริง ถ้าชี้ไปที่ของ R7 ให้กด app folder (internal) ก่อนสร้างข้อมูลใด ๆ และจดไว้
 4. **Browser profile แยก (M-05):** ดับเบิลคลิก `START_3PM.command` แล้วดูใน Terminal ต้องมีบรรทัด
-   `3PM UI browser: Google Chrome (isolated field-test profile: ~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005)`
-   และ banner ต้องแสดง `3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005 [field_test_not_production]`
+   `3PM UI browser: Google Chrome (isolated field-test profile: ~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005)`
+   และ banner ต้องแสดง `3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005 [field_test_not_production]`
    - Chrome ที่เปิดขึ้นต้องเป็นหน้าต่างใหม่ที่ไม่มี bookmark/บัญชีเดิม (โปรไฟล์ใหม่) — ถ้าเปิดในโปรไฟล์เดิม ให้หยุดและส่งผลกลับ
    - ถ้าไม่มี Chrome/Edge แอปจะ **ไม่เปิด browser เอง** (ตั้งใจ) ให้ติดตั้ง Chrome ก่อน อย่าใช้ `THREEPM_USE_DEFAULT_PROFILE=1` ในรอบนี้
 5. **ตรวจ native helper และ bridge exposure (M-04)** ขณะแอปเปิดอยู่ ใน Terminal ใหม่:
@@ -27,7 +27,7 @@
    ```
    และจาก **เครื่องอื่นในเครือข่ายเดียวกัน**: `curl -s -m 3 http://<IP ของ Mac>:48735/health` — ที่ต้องการคือ **ต่อไม่ได้**
    - bridge ยังไม่มีการยืนยันตัวตน (M-04 OPEN): โปรแกรมอื่นบนเครื่องเดียวกันยังสั่งได้ — ระหว่างทดสอบอย่าเปิดเว็บไซต์อื่นใน browser profile นี้
-6. **ทดสอบ Export/Restore บนข้อมูลทิ้งได้ก่อน:** สร้าง athlete/session ทดสอบ → ยิงทดสอบ 1–2 ช็อต → Settings → *Export Backup* และ Data Export → *Download JSON* → ปิดแอป → ลบโฟลเดอร์โปรไฟล์ทดสอบ `~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005` → เปิดใหม่ → *Import Backup* → ตรวจว่า session/ช็อต/ข้อมูลที่ export กลับมาตรง (จดสิ่งที่กลับมาและสิ่งที่ไม่กลับมา เช่นภาพ evidence ใน browser) — ถ้าคืนค่าไม่ได้ ห้ามใช้ข้อมูลจริง
+6. **ทดสอบ Export/Restore บนข้อมูลทิ้งได้ก่อน:** สร้าง athlete/session ทดสอบ → ยิงทดสอบ 1–2 ช็อต → Settings → *Export Backup* และ Data Export → *Download JSON* → ปิดแอป → ลบโฟลเดอร์โปรไฟล์ทดสอบ `~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005` → เปิดใหม่ → *Import Backup* → ตรวจว่า session/ช็อต/ข้อมูลที่ export กลับมาตรง (จดสิ่งที่กลับมาและสิ่งที่ไม่กลับมา เช่นภาพ evidence ใน browser) — ถ้าคืนค่าไม่ได้ ห้ามใช้ข้อมูลจริง
 7. ตั้งกล้อง Side ที่ **30 FPS** และจดรุ่น/ความละเอียด
 
 ## 1. Launcher และกล้อง Side (native)
@@ -62,7 +62,7 @@ node app/tests/p108_browser/run_fullapp_gate_chromium.cjs "$CHROMIUM_PATH"      
 node app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs "$CHROMIUM_PATH"   # PASS (ไม่มีภาพซ้ำเมื่อบันทึกซ้ำ / record เก่า)
 node app/tests/phase01/run_f01_chromium_r8c.cjs "$CHROMIUM_PATH"                      # PASS
 node app/tests/phase01/run_shadow_bundle_chromium.cjs "$CHROMIUM_PATH"                # PASS
-python3 app/tests/run_regressions.py                                                  # R3 field build: ต้องได้ 117/117
+python3 app/tests/run_regressions.py                                                  # R4 field build: ต้องได้ 119/119
 ```
 เก็บ output ทั้งหมด (ถ้าไม่มี Node ให้เขียน NOT RUN)
 

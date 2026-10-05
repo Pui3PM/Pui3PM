@@ -1,7 +1,8 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const code=fs.readFileSync('static/equipment_catalog.js','utf8');const ctx={window:{}};vm.createContext(ctx);vm.runInContext(code,ctx);const C=ctx.window.EquipmentCatalog;
-assert.strictEqual(C.version,'EL18-FORM-UX-2026-09-30-R1');
-assert.strictEqual(C.records.length,683);assert.strictEqual(C.recordCount,683);
+// EL19 (2026-10-05): catalog version/count metadata follow the intentional EL19 merge; EL18 record retention is proven in test_equipment_catalog_el19.js.
+assert(C.version==='EL18-FORM-UX-2026-09-30-R1'||C.version.startsWith('EL19-'),C.version);
+assert(C.records.length>=683);assert.strictEqual(C.recordCount,C.records.length);
 const ids=new Set(),sem=new Set();
 for(const r of C.records){assert(r.id);assert(!ids.has(r.id),'duplicate id '+r.id);ids.add(r.id);const k=[r.category,r.brand,r.model,r.variant||'',r.spine??'',r.size??'',r.length_in??''].join('|').toLowerCase();assert(!sem.has(k),'duplicate semantic '+k);sem.add(k)}
 const ram=C.records.filter(r=>r.brand==='RamRods');assert(ram.length>=39,'RamRods normalized coverage regressed');

@@ -1,0 +1,115 @@
+{
+ "status": "MAC BENCH CANDIDATE (as R3) + Equipment EL19; software gates run on Linux; Mac/Swift/camera NOT RUN",
+ "decision": "D-EL19-01 (owner request 2026-10-05; docs/architecture/DECISION_LOG.md)",
+ "measured_on": "R4 source tree before packaging. Fresh-unzip results of the delivered ZIPs: external 3PM_POST_P108_R4_VERIFICATION.json (a package cannot contain its own verification).",
+ "environment": {
+  "os": "Linux container",
+  "node": "v22.22.0",
+  "python": "3.11.15",
+  "chromium": "Chromium 141.0.7390.37 headless (Playwright 1.56.1)",
+  "backend": "stub_backend.cjs test double",
+  "frames": "synthetic fixtures"
+ },
+ "not_run": [
+  "Mac launch",
+  "Swift compile (macOS SDK)",
+  "macOS runtime and Mac browser",
+  "camera permission/device switching",
+  "BLE",
+  "Windows",
+  "real archer",
+  "labeled release/let-down data",
+  "manufacturer verification of the 205 owner-list records"
+ ],
+ "source_tree": {
+  "js_regressions_dev": {
+   "pass": 116,
+   "total": 119,
+   "failed": [
+    "app/tests/test_field_resilience_ble43894.js",
+    "app/tests/test_multicamera_skeleton_ble4362.js",
+    "app/tests/test_multiview_corroboration_integration_ble43895.js"
+   ],
+   "note": "the 3 pose-policy sentinels fail in the DEV class by design (DEV ships the approved trace seam); same set as R3"
+  },
+  "phase01": {
+   "pass": 15,
+   "total": 15
+  },
+  "distribution_contract": "PASS",
+  "static_integrity_x282": "PASS",
+  "equipment_tests": {
+   "pass": 16,
+   "total": 16
+  },
+  "chromium_equipment_el19_gate": {
+   "pass": 18,
+   "total": 18,
+   "checks": [
+    "version_label_honest",
+    "riser_meta_dx_once",
+    "long_rod_vanquish_once",
+    "limb_models_no_core_duplicates",
+    "limb_core_choice_once",
+    "limb_size_separate",
+    "owner_brand_labelled",
+    "owner_models_labelled",
+    "owner_riser_status_text",
+    "owner_long_rod_no_mass",
+    "owner_damper_no_mass",
+    "owner_point_no_weight",
+    "owner_point_labelled",
+    "verified_damper_still_fills",
+    "restore_el18_saved_names",
+    "owner_vane_picker_no_weight",
+    "owner_nock_picker_no_weight",
+    "no_page_errors"
+   ]
+  }
+ },
+ "red_first_evidence": {
+  "restore_pre_el19_names": {
+   "el18_layer_failures": "22/22",
+   "el19_layer_failures": "0/22"
+  },
+  "chromium_gate_with_pre_fix_restore_order": {
+   "pass": 17,
+   "total": 18,
+   "failed": [
+    "restore_el18_saved_names"
+   ]
+  },
+  "mutations_caught": {
+   "caught": 6,
+   "total": 6,
+   "mutations": [
+    "EL18-style limb options (flatMap)",
+    "alias restore removed",
+    "owner mass gate removed",
+    "owner limb locks construction",
+    "verified Arcos mass overwritten by owner value",
+    "owner record given mass_g"
+   ]
+  },
+  "cache_key_assertion": "fails with el18-formux-r1, passes with el19-owner-r1",
+  "mutation_found_test_gap": "owner mass gate was not exercised by catalog data alone; synthetic owner record with mass_g added to test_equipment_form_el19.js"
+ },
+ "equipment_el19": {
+  "records": 879,
+  "verified": 674,
+  "owner_unverified": 205,
+  "el18_baseline": 683,
+  "folds": 9,
+  "renames": 13,
+  "owner_rows": 303,
+  "decisions": {
+   "add": 201,
+   "match": 90,
+   "hold": 12
+  },
+  "conflicts_verified_kept": 8,
+  "anomaly_records": 32,
+  "el18_canonical_sha256": "40eb1a466f9f0d5f5db08d22b44791676aaf40022ae18d8b90803ef9ca4f4344",
+  "builder_idempotent": "re-run produces identical bytes"
+ }
+}

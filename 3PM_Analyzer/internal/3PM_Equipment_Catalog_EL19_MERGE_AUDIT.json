@@ -1,0 +1,3922 @@
+{
+ "schema_version": "3PM-equipment-merge-audit-1.0",
+ "catalog_version": "EL19-OWNER-LIST-2026-10-05-R1",
+ "baseline_catalog": "EL18-FORM-UX-2026-09-30-R1",
+ "baseline_count": 683,
+ "record_count": 879,
+ "records_added_owner_unverified": 205,
+ "records_folded": 9,
+ "records_renamed": 13,
+ "owner_rows_total": 303,
+ "owner_row_decisions": {
+  "add": 201,
+  "match": 90,
+  "hold": 12
+ },
+ "catalog_sha256": "aa94190a44203e48239987241e44400f1742aab90e6f6e86f335901dc201b8a7",
+ "owner_input_sha256": "81ecc0b046241d54a313b744a4d292a4067e0ca93eb92026b8557b26b75c02be",
+ "policy": "Build Equipment Catalog EL19 from EL18 + the owner-supplied list of 2026-10-05 (reproducible, monotonic).\n\nRules (AGENTS.md / HANDOFF items 4-9):\n- Every EL18 verified record keeps its id and data. Only evidence-backed supersessions are applied, each written into the\n  audit: (a) model spelling normalised to the manufacturer spelling (old spelling kept in model_aliases), (b) records that\n  repeat an existing product with no additional facts are folded into it (id kept in merged_ids, source kept in\n  additional_sources) so a product appears once in the Equipment Form.\n- Owner rows have no per-row source. They are added ONLY when the product is not already in the catalog, as\n  source_type 'owner_supplied_unverified' with their values stored as reported_* fields (never mass_g / gpi / inside\n  diameter, which the form auto-fills or locks). Owner rows that name an existing product are matched, never overwrite\n  verified data, and any disagreement is reported as a conflict. Ambiguous names are held for owner confirmation.\nUsage: python3 app/tests/phase01/build_equipment_catalog_el19.py   (cwd = package root). Writes the EL19 canonical JSON,\nthe merge audit and app/static/equipment_catalog.js.",
+ "renames": [
+  {
+   "id": "wiawis_win_win_meta_dx_riser",
+   "from": {
+    "model": "Meta DX",
+    "variant": null
+   },
+   "to": {
+    "model": "META DX",
+    "variant": null
+   },
+   "why": "case variant of the manufacturer spelling (WIAWIS 2025 catalog: META DX); both appeared as two models"
+  },
+  {
+   "id": "wiawis_win_win_winex_riser",
+   "from": {
+    "model": "Winex",
+    "variant": null
+   },
+   "to": {
+    "model": "WINEX",
+    "variant": null
+   },
+   "why": "case variant of the manufacturer spelling (WIAWIS 2025 catalog: WINEX)"
+  },
+  {
+   "id": "wiawis_win_win_winex_limbs",
+   "from": {
+    "model": "Winex",
+    "variant": null
+   },
+   "to": {
+    "model": "WINEX",
+    "variant": null
+   },
+   "why": "case variant of the manufacturer spelling (WIAWIS 2025 catalog: WINEX)"
+  },
+  {
+   "id": "wiawis_win_win_ns_g2_foam_limbs",
+   "from": {
+    "model": "NS-G2 Foam",
+    "variant": null
+   },
+   "to": {
+    "model": "NS-G2",
+    "variant": "Foam Core"
+   },
+   "why": "core moved from model name to variant, as in the WIAWIS 2025 catalog pattern (MXT-XT / Foam Core)"
+  },
+  {
+   "id": "wiawis_win_win_ns_g2_wood_limbs",
+   "from": {
+    "model": "NS-G2 Wood",
+    "variant": null
+   },
+   "to": {
+    "model": "NS-G2",
+    "variant": "Wood Core"
+   },
+   "why": "core moved from model name to variant, as in the WIAWIS 2025 catalog pattern"
+  },
+  {
+   "id": "fivics_vellator_v3_foam_limbs",
+   "from": {
+    "model": "Vellator V3 Foam",
+    "variant": null
+   },
+   "to": {
+    "model": "Vellator V3",
+    "variant": "Foam Core"
+   },
+   "why": "core moved from model name to variant (one limb model, core chosen once)"
+  },
+  {
+   "id": "fivics_vellator_v3_wood_limbs",
+   "from": {
+    "model": "Vellator V3 Wood",
+    "variant": null
+   },
+   "to": {
+    "model": "Vellator V3",
+    "variant": "Wood Core"
+   },
+   "why": "core moved from model name to variant"
+  },
+  {
+   "id": "fivics_2020_argon_x_wood_core",
+   "from": {
+    "model": "ARGON X Wood Core",
+    "variant": null
+   },
+   "to": {
+    "model": "ARGON X",
+    "variant": "Wood Core"
+   },
+   "why": "core moved from model name to variant (FIVICS 2020 guide family ARGON X)"
+  },
+  {
+   "id": "fivics_2020_argon_x_foam_core",
+   "from": {
+    "model": "ARGON X Foam Core",
+    "variant": null
+   },
+   "to": {
+    "model": "ARGON X",
+    "variant": "Foam Core"
+   },
+   "why": "core moved from model name to variant"
+  },
+  {
+   "id": "fivics_2020_titan_ex_wood_core",
+   "from": {
+    "model": "TITAN EX Wood Core",
+    "variant": null
+   },
+   "to": {
+    "model": "TITAN EX",
+    "variant": "Wood Core"
+   },
+   "why": "core moved from model name to variant (FIVICS 2020 guide family TITAN EX)"
+  },
+  {
+   "id": "fivics_2020_titan_ex_foam_core",
+   "from": {
+    "model": "TITAN EX Foam Core",
+    "variant": null
+   },
+   "to": {
+    "model": "TITAN EX",
+    "variant": "Foam Core"
+   },
+   "why": "core moved from model name to variant"
+  },
+  {
+   "id": "fivics_2020_vellator_wood_core",
+   "from": {
+    "model": "VELLATOR Wood Core",
+    "variant": null
+   },
+   "to": {
+    "model": "VELLATOR",
+    "variant": "Wood Core"
+   },
+   "why": "core moved from model name to variant (FIVICS 2020 guide family VELLATOR)"
+  },
+  {
+   "id": "fivics_2020_vellator_foam_core",
+   "from": {
+    "model": "VELLATOR Foam Core",
+    "variant": null
+   },
+   "to": {
+    "model": "VELLATOR",
+    "variant": "Foam Core"
+   },
+   "why": "core moved from model name to variant"
+  }
+ ],
+ "folds": [
+  {
+   "removed_id": "shibuya_vanquish_long_rod",
+   "kept_id": "shibuya_vanquish_long_rod_long_rod",
+   "removed_record": {
+    "id": "shibuya_vanquish_long_rod",
+    "category": "long_rod",
+    "brand": "Shibuya",
+    "model": "Vanquish Long Rod",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery market listing; numeric specs not asserted"
+   },
+   "why": "same Shibuya Vanquish long rod; market listing asserted no specs; Shibuya official record kept"
+  },
+  {
+   "removed_id": "wiawis_win_win_wiawis_acs_lx_long_rod",
+   "kept_id": "wiawis_win_win_acs_lx_long_rod",
+   "removed_record": {
+    "id": "wiawis_win_win_wiawis_acs_lx_long_rod",
+    "category": "long_rod",
+    "brand": "WIAWIS / Win&Win",
+    "model": "WIAWIS ACS-LX Long Rod",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery market listing; numeric specs not asserted"
+   },
+   "why": "same WIAWIS ACS-LX long rod (brand prefix + category suffix only); listing asserted no specs"
+  },
+  {
+   "removed_id": "wns_svt_long_rod",
+   "kept_id": "el10_wns_long_svt",
+   "removed_record": {
+    "id": "wns_svt_long_rod",
+    "category": "long_rod",
+    "brand": "WNS",
+    "model": "SVT Long Rod",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery market listing; numeric specs not asserted"
+   },
+   "why": "same WNS SVT long rod (category suffix only); listing asserted no specs; manufacturer record kept"
+  },
+  {
+   "removed_id": "wiawis_win_win_mxt_xt_foam_limbs",
+   "kept_id": "wiawis_win_win_mxt_xt_foam_core",
+   "removed_record": {
+    "id": "wiawis_win_win_mxt_xt_foam_limbs",
+    "category": "limbs",
+    "brand": "WIAWIS / Win&Win",
+    "model": "MXT-XT Foam",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "WIAWIS/retailer current product listings; numeric mass not asserted"
+   },
+   "why": "retailer \"MXT-XT Foam\" = WIAWIS 2025 catalog MXT-XT / Foam Core; retailer asserted no specs"
+  },
+  {
+   "removed_id": "wiawis_win_win_mxt_xt_wood_limbs",
+   "kept_id": "wiawis_win_win_mxt_xt_wood_core",
+   "removed_record": {
+    "id": "wiawis_win_win_mxt_xt_wood_limbs",
+    "category": "limbs",
+    "brand": "WIAWIS / Win&Win",
+    "model": "MXT-XT Wood",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "WIAWIS/retailer current product listings; numeric mass not asserted"
+   },
+   "why": "retailer \"MXT-XT Wood\" = WIAWIS 2025 catalog MXT-XT / Wood Core"
+  },
+  {
+   "removed_id": "wiawis_win_win_cx7_foam_limbs",
+   "kept_id": "wiawis_win_win_cx7_foam_core",
+   "removed_record": {
+    "id": "wiawis_win_win_cx7_foam_limbs",
+    "category": "limbs",
+    "brand": "WIAWIS / Win&Win",
+    "model": "CX7 Foam",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "WIAWIS/retailer current product listings; numeric mass not asserted"
+   },
+   "why": "retailer \"CX7 Foam\" = WIAWIS 2025 catalog CX7 / Foam Core"
+  },
+  {
+   "removed_id": "wiawis_mxt_xp_foam_limbs",
+   "kept_id": "wiawis_win_win_mxt_xp_foam_core",
+   "removed_record": {
+    "id": "wiawis_mxt_xp_foam_limbs",
+    "category": "limbs",
+    "brand": "WIAWIS / Win&Win",
+    "model": "MXT-XP Foam",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery W&W ILF current listing"
+   },
+   "why": "retailer \"MXT-XP Foam\" = WIAWIS 2025 catalog MXT-XP / Foam Core"
+  },
+  {
+   "removed_id": "wiawis_ns_g_foam_limbs",
+   "kept_id": "wiawis_win_win_ns_g_foam_core",
+   "removed_record": {
+    "id": "wiawis_ns_g_foam_limbs",
+    "category": "limbs",
+    "brand": "WIAWIS / Win&Win",
+    "model": "NS-G Foam",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery W&W ILF current listing"
+   },
+   "why": "retailer \"NS-G Foam\" = WIAWIS 2025 catalog NS-G / Foam Core"
+  },
+  {
+   "removed_id": "fivics_argon_x_foam_limbs",
+   "kept_id": "fivics_2020_argon_x_foam_core",
+   "removed_record": {
+    "id": "fivics_argon_x_foam_limbs",
+    "category": "limbs",
+    "brand": "Fivics",
+    "model": "Argon X Foam",
+    "mass_g": null,
+    "source_type": "verified_database",
+    "source": "Alternative Archery Fivics ILF current listing"
+   },
+   "why": "retailer \"Argon X Foam\" = FIVICS ARGON X / Foam Core; retailer listing asserted no specs (kept as additional source)"
+  }
+ ],
+ "owner_rows": [
+  {
+   "line": 2,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Gold Medalist (TD4)",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_gold_medalist_td4_riser"
+   ]
+  },
+  {
+   "line": 3,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Avalon Plus",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_avalon_plus_riser"
+   ]
+  },
+  {
+   "line": 4,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Elan",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_elan_riser"
+   ]
+  },
+  {
+   "line": 5,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Matrix",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_matrix_riser"
+   ]
+  },
+  {
+   "line": 6,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Aerotec",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_aerotec_riser"
+   ]
+  },
+  {
+   "line": 7,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Eclipse",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_eclipse_riser"
+   ]
+  },
+  {
+   "line": 8,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Helix",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_helix_riser"
+   ]
+  },
+  {
+   "line": 9,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Nexus",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_nexus_riser"
+   ]
+  },
+  {
+   "line": 10,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Excel",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_excel_riser"
+   ]
+  },
+  {
+   "line": 11,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "GMX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_gmx_riser"
+   ]
+  },
+  {
+   "line": 12,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Horizon",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_horizon_riser"
+   ]
+  },
+  {
+   "line": 13,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Formula RX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_formula_rx_riser"
+   ]
+  },
+  {
+   "line": 14,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Formula Excel",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_formula_excel_riser"
+   ]
+  },
+  {
+   "line": 15,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Horizon Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_horizon_pro_riser"
+   ]
+  },
+  {
+   "line": 16,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "HPX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_hpx_riser"
+   ]
+  },
+  {
+   "line": 17,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Formula Excel Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_formula_excel_pro_riser"
+   ]
+  },
+  {
+   "line": 18,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Ion-X",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_ion_x_riser"
+   ]
+  },
+  {
+   "line": 19,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Prodigy / XT",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_prodigy_xt_riser"
+   ]
+  },
+  {
+   "line": 20,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Epik",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_epik_riser"
+   ]
+  },
+  {
+   "line": 21,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Faktor",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_faktor_riser"
+   ]
+  },
+  {
+   "line": 22,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Alero",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_alero_riser"
+   ]
+  },
+  {
+   "line": 23,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Xceed",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_xceed_riser"
+   ]
+  },
+  {
+   "line": 24,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Arcos",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_arcos_25"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 25,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Xact",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_xact_riser"
+   ]
+  },
+  {
+   "line": 26,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Formula XD",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_seed_hoyt_formula_xd"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 27,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "GMX 3 Series",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_gmx3_25"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 28,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Xceed 2",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_xceed2_25",
+    "hoyt_xceed2_27"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 29,
+   "category": "Riser",
+   "brand": "Hoyt",
+   "model": "Formula SR",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_formula_sr_25"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 30,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "FX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_fx_limbs"
+   ]
+  },
+  {
+   "line": 31,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Vector",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_vector_limbs"
+   ]
+  },
+  {
+   "line": 32,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Epic",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_epic_limbs"
+   ]
+  },
+  {
+   "line": 33,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "G3",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_g3_limbs"
+   ]
+  },
+  {
+   "line": 34,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "ZR330",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_zr330_limbs"
+   ]
+  },
+  {
+   "line": 35,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "M1",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_m1_limbs"
+   ]
+  },
+  {
+   "line": 36,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "900CX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_900cx_limbs"
+   ]
+  },
+  {
+   "line": 37,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "990TX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_990tx_limbs"
+   ]
+  },
+  {
+   "line": 38,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Excel",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_excel_limbs"
+   ]
+  },
+  {
+   "line": 39,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "F2 / F3 / F4",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_f2_f3_f4_limbs"
+   ]
+  },
+  {
+   "line": 40,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "F7",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_f7_limbs"
+   ]
+  },
+  {
+   "line": 41,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Quattro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_quattro_limbs"
+   ]
+  },
+  {
+   "line": 42,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Carbon 720",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_carbon_720_limbs"
+   ]
+  },
+  {
+   "line": 43,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "X-Tour",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_x_tour_limbs"
+   ]
+  },
+  {
+   "line": 44,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Carbon 814",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_carbon_814_limbs"
+   ]
+  },
+  {
+   "line": 45,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Velos",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_carbon_velos_grand_prix",
+    "hoyt_carbon_velos_formula"
+   ],
+   "note": "Hoyt markets these limbs as Carbon Velos"
+  },
+  {
+   "line": 46,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Carbon Integra",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_carbon_integra_limbs"
+   ]
+  },
+  {
+   "line": 47,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Xact",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_xact_limbs"
+   ]
+  },
+  {
+   "line": 48,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Axia",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_seed_hoyt_axia_resin_core",
+    "el13r_seed_hoyt_axia_syntactic_foam_core"
+   ],
+   "note": "core-specific verified records"
+  },
+  {
+   "line": 49,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Metrix",
+   "decision": "match",
+   "matched_ids": [
+    "hoyt_metrix_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 50,
+   "category": "Limbs",
+   "brand": "Hoyt",
+   "model": "Artex",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_hoyt_artex_limbs"
+   ]
+  },
+  {
+   "line": 51,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "NX Xpert",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_nx_xpert_riser"
+   ]
+  },
+  {
+   "line": 52,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "Inno Carbon",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_carbon_riser"
+   ]
+  },
+  {
+   "line": 53,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "Inno CXT",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_inno_cxt_23_in",
+    "wiawis_win_win_inno_cxt_25_in",
+    "wiawis_win_win_inno_cxt_27_in"
+   ]
+  },
+  {
+   "line": 54,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "Inno AL1",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_al1_riser"
+   ]
+  },
+  {
+   "line": 55,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "Inno Max",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_max_riser"
+   ]
+  },
+  {
+   "line": 56,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "Nano MAX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_nano_max_riser"
+   ]
+  },
+  {
+   "line": 57,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "TFT",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_tft_riser"
+   ]
+  },
+  {
+   "line": 58,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "ATF",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_atf_riser"
+   ]
+  },
+  {
+   "line": 59,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "TFT-G",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_tft_g_riser"
+   ]
+  },
+  {
+   "line": 60,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "Radical Pro",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_radical_pro_25_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 61,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "ATF-X",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_atf_x_25_in",
+    "wiawis_win_win_atf_x_27_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 62,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "Meta DX",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_meta_dx_riser",
+    "wiawis_win_win_meta_dx_25_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 63,
+   "category": "Riser",
+   "brand": "Win&Win",
+   "model": "ATF-DX",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_atf_dx_riser",
+    "wiawis_atfdx25_riser",
+    "wiawis_atfdx27_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 64,
+   "category": "Riser",
+   "brand": "Wiawis",
+   "model": "CX7",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_cx7_25_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 65,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Everest Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_everest_pro_limbs"
+   ]
+  },
+  {
+   "line": 66,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Synerzy",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_synerzy_limbs"
+   ]
+  },
+  {
+   "line": 67,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Winex",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_winex_limbs",
+    "wiawis_win_win_winex_foam_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 68,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Pro-Accent",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_pro_accent_limbs"
+   ]
+  },
+  {
+   "line": 69,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Inno Power",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_power_limbs"
+   ]
+  },
+  {
+   "line": 70,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Inno EX Prime",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_ex_prime_limbs"
+   ]
+  },
+  {
+   "line": 71,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Inno EX Power",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_inno_ex_power_limbs"
+   ]
+  },
+  {
+   "line": 72,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "RCX-100",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_rcx_100_limbs"
+   ]
+  },
+  {
+   "line": 73,
+   "category": "Limbs",
+   "brand": "Win&Win",
+   "model": "Rapido",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_rapido_limbs"
+   ]
+  },
+  {
+   "line": 74,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "One",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_one_limbs"
+   ]
+  },
+  {
+   "line": 75,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "NS",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_ns_limbs"
+   ]
+  },
+  {
+   "line": 76,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "MXT-10",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_mxt_10_limbs"
+   ]
+  },
+  {
+   "line": 77,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "NS-G",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_ns_g_foam_core",
+    "wiawis_win_win_ns_g_wood_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 78,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "CX7",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_cx7_foam_core",
+    "wiawis_win_win_cx7_wood_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 79,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "MXT-XP",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_mxt_xp_foam_core",
+    "wiawis_win_win_mxt_xp_wood_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 80,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "NS-XP",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_ns_xp_foam_core",
+    "wiawis_win_win_ns_xp_wood_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 81,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "MXT-XT",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_mxt_xt_foam_core",
+    "wiawis_win_win_mxt_xt_wood_core"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 82,
+   "category": "Limbs",
+   "brand": "Wiawis",
+   "model": "NS-G2",
+   "decision": "match",
+   "matched_ids": [
+    "wiawis_win_win_ns_g2_foam_limbs",
+    "wiawis_win_win_ns_g2_wood_limbs"
+   ]
+  },
+  {
+   "line": 83,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Motive FX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_motive_fx_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 84,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Delta LX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_delta_lx_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 85,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Explore DX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_explore_dx_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 86,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Vantage AX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_vantage_ax_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 87,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Vantage CX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_vantage_cx_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 88,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "Elnath FX",
+   "decision": "match",
+   "matched_ids": [
+    "wns_elnath_fx_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 89,
+   "category": "Riser",
+   "brand": "WNS",
+   "model": "SPR-100",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_spr_100_riser"
+   ]
+  },
+  {
+   "line": 90,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Explore W1",
+   "decision": "match",
+   "matched_ids": [
+    "wns_explore_w1_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 91,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Explore CW",
+   "decision": "match",
+   "matched_ids": [
+    "wns_explore_cw1_limbs"
+   ],
+   "note": "WNS model code is CW1"
+  },
+  {
+   "line": 92,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Delta F2",
+   "decision": "match",
+   "matched_ids": [
+    "wns_delta_f2_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 93,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Delta F3",
+   "decision": "match",
+   "matched_ids": [
+    "wns_delta_f3_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 94,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Motive F5",
+   "decision": "match",
+   "matched_ids": [
+    "wns_motive_f5_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 95,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Motive C5",
+   "decision": "match",
+   "matched_ids": [
+    "el10_wns_l_motive_c5"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 96,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Vantage G7",
+   "decision": "match",
+   "matched_ids": [
+    "el10_wns_l_vantage_g7"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 97,
+   "category": "Limbs",
+   "brand": "WNS",
+   "model": "Vantage C8",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_vantage_c8_limbs"
+   ]
+  },
+  {
+   "line": 98,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Platina",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fivics_platina_riser"
+   ]
+  },
+  {
+   "line": 99,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Titan EX",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_2020_titan_ex_25_in",
+    "fivics_2020_titan_ex_27_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 100,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Vellator",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_2020_vellator_25_in",
+    "fivics_2020_vellator_23_in"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 101,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Vellator V2",
+   "decision": "hold",
+   "reason": "catalog has VELLATOR and Vellator 2026 risers; which generation \"V2\" is cannot be confirmed from the list"
+  },
+  {
+   "line": 102,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Argon X",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_argon_x"
+   ]
+  },
+  {
+   "line": 103,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Xenia",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_xenia"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 104,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Titan NX",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_titan_nxt"
+   ],
+   "note": "FIVICS catalog spelling TITAN-NXT"
+  },
+  {
+   "line": 105,
+   "category": "Limbs",
+   "brand": "Fivics",
+   "model": "Titan EX",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_2020_titan_ex_wood_core",
+    "fivics_2020_titan_ex_foam_core"
+   ]
+  },
+  {
+   "line": 106,
+   "category": "Limbs",
+   "brand": "Fivics",
+   "model": "Vellator",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_2020_vellator_wood_core",
+    "fivics_2020_vellator_foam_core"
+   ]
+  },
+  {
+   "line": 107,
+   "category": "Limbs",
+   "brand": "Fivics",
+   "model": "Argon X",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_2020_argon_x_wood_core",
+    "fivics_2020_argon_x_foam_core"
+   ]
+  },
+  {
+   "line": 108,
+   "category": "Limbs",
+   "brand": "Fivics",
+   "model": "Xenia",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_xenia_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 109,
+   "category": "Riser",
+   "brand": "MK Korea",
+   "model": "MKX 10",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_mk_korea_mkx_10_riser"
+   ]
+  },
+  {
+   "line": 110,
+   "category": "Riser",
+   "brand": "MK Korea",
+   "model": "L3",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_mk_korea_l3_riser"
+   ]
+  },
+  {
+   "line": 111,
+   "category": "Riser",
+   "brand": "MK Korea",
+   "model": "Z-Series",
+   "decision": "hold",
+   "reason": "catalog has MK Korea ZX; \"Z-Series\" may be the same riser"
+  },
+  {
+   "line": 112,
+   "category": "Limbs",
+   "brand": "MK Korea",
+   "model": "Mach 3",
+   "decision": "hold",
+   "reason": "catalog has MK Korea Mach X; \"Mach 3\" may be a different or misnamed model"
+  },
+  {
+   "line": 113,
+   "category": "Limbs",
+   "brand": "MK Korea",
+   "model": "X-Core",
+   "decision": "match",
+   "matched_ids": [
+    "mk_korea_x_core_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 114,
+   "category": "Riser",
+   "brand": "Uukha",
+   "model": "Upro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_uukha_upro_riser"
+   ]
+  },
+  {
+   "line": 115,
+   "category": "Riser",
+   "brand": "Uukha",
+   "model": "Xpro2",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_uukha_xpro2_riser"
+   ]
+  },
+  {
+   "line": 116,
+   "category": "Limbs",
+   "brand": "Uukha",
+   "model": "Sx50",
+   "decision": "match",
+   "matched_ids": [
+    "uukha_sx50_limbs"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 117,
+   "category": "Limbs",
+   "brand": "Uukha",
+   "model": "Altai",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_uukha_altai_limbs"
+   ]
+  },
+  {
+   "line": 118,
+   "category": "Riser",
+   "brand": "Gillo",
+   "model": "G1",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_g1_riser"
+   ]
+  },
+  {
+   "line": 119,
+   "category": "Riser",
+   "brand": "Gillo",
+   "model": "GT",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_gt_riser"
+   ]
+  },
+  {
+   "line": 120,
+   "category": "Riser",
+   "brand": "Gillo",
+   "model": "GF",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_gf_riser"
+   ]
+  },
+  {
+   "line": 121,
+   "category": "Riser",
+   "brand": "Kinetic",
+   "model": "Arios",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_kinetic_arios_riser"
+   ]
+  },
+  {
+   "line": 122,
+   "category": "Riser",
+   "brand": "Kinetic",
+   "model": "Vygo",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_kinetic_vygo_riser"
+   ]
+  },
+  {
+   "line": 123,
+   "category": "Riser",
+   "brand": "Kinetic",
+   "model": "Sovren",
+   "decision": "match",
+   "matched_ids": [
+    "kinetic_sovren_riser"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 124,
+   "category": "Limbs",
+   "brand": "Kinetic",
+   "model": "Finity",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_kinetic_finity_limbs"
+   ]
+  },
+  {
+   "line": 125,
+   "category": "Riser",
+   "brand": "Sanlida",
+   "model": "Miracle X10",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sanlida_miracle_x10_riser"
+   ]
+  },
+  {
+   "line": 126,
+   "category": "Limbs",
+   "brand": "Sanlida",
+   "model": "Miracle X10",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sanlida_miracle_x10_limbs"
+   ]
+  },
+  {
+   "line": 127,
+   "category": "Riser",
+   "brand": "Sebastien Flute",
+   "model": "Ascent",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sebastien_flute_ascent_riser"
+   ]
+  },
+  {
+   "line": 128,
+   "category": "Riser",
+   "brand": "Sebastien Flute",
+   "model": "Iso Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sebastien_flute_iso_pro_riser"
+   ]
+  },
+  {
+   "line": 129,
+   "category": "Limbs",
+   "brand": "Sebastien Flute",
+   "model": "Ascent",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sebastien_flute_ascent_limbs"
+   ]
+  },
+  {
+   "line": 130,
+   "category": "Riser",
+   "brand": "Samick",
+   "model": "Masters",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_samick_masters_riser"
+   ]
+  },
+  {
+   "line": 131,
+   "category": "Riser",
+   "brand": "Samick",
+   "model": "Avante",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_samick_avante_riser"
+   ]
+  },
+  {
+   "line": 132,
+   "category": "Limbs",
+   "brand": "Samick",
+   "model": "Masters",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_samick_masters_limbs"
+   ]
+  },
+  {
+   "line": 133,
+   "category": "Riser",
+   "brand": "Mybo",
+   "model": "Elite",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_mybo_elite_riser"
+   ]
+  },
+  {
+   "line": 134,
+   "category": "Riser",
+   "brand": "Spigarelli",
+   "model": "Revolution",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_spigarelli_revolution_riser"
+   ]
+  },
+  {
+   "line": 135,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Ultra v1 / v2",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_ultra_v1_v2_long_rod",
+    "owner_el19_ramrods_ultra_v1_v2_side_rod"
+   ]
+  },
+  {
+   "line": 136,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "K2",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_k2_long_rod",
+    "owner_el19_ramrods_k2_side_rod"
+   ]
+  },
+  {
+   "line": 137,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Ultra v3",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_ultra_v3_long",
+    "ramrods_ultra_v3_side"
+   ]
+  },
+  {
+   "line": 138,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "K2 v2",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_k2_2_27",
+    "ramrods_k2_2_30",
+    "ramrods_k2_2_33",
+    "ramrods_k2_2_12",
+    "ramrods_k2_2_13_5",
+    "ramrods_k2_2_15"
+   ],
+   "note": "RamRods current name is \"K2 2\""
+  },
+  {
+   "line": 139,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Vektor",
+   "decision": "hold",
+   "reason": "catalog has Vektor V1.1 (verified); original Vektor vs V1.1 cannot be separated from the list"
+  },
+  {
+   "line": 140,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Ultra v4",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_ultra_v4_long",
+    "ramrods_ultra_v4_side"
+   ],
+   "note": "RamRods current name is \"Ultra 4\" (EL17 rule: no \"Ultra V4\" alias in the selector)"
+  },
+  {
+   "line": 141,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Ultra v4 S",
+   "decision": "hold",
+   "reason": "\"Super Stiff\" may be a variant of Ultra 4 rather than a separate model; RamRods Priority 1 needs a source"
+  },
+  {
+   "line": 142,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "XP",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_xp_long_rod",
+    "owner_el19_ramrods_xp_side_rod"
+   ]
+  },
+  {
+   "line": 143,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Beast",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_beast_long_rod",
+    "owner_el19_ramrods_beast_side_rod"
+   ]
+  },
+  {
+   "line": 144,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "K2 v2.1",
+   "decision": "hold",
+   "reason": "may be a revision of K2 2 (verified); needs RamRods source before it becomes a separate selector entry"
+  },
+  {
+   "line": 145,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Vektor 2",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_vektor_2_long",
+    "ramrods_vektor_2_side"
+   ]
+  },
+  {
+   "line": 146,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "Macrolite",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_macrolite_vbar"
+   ]
+  },
+  {
+   "line": 147,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "Microlite",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_microlite_vbar"
+   ]
+  },
+  {
+   "line": 148,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "EDGE G3 / EDGE",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_edge_fixed_vbar_45_0",
+    "ramrods_edge_fixed_vbar_40_0",
+    "ramrods_edge_fixed_vbar_40_5",
+    "ramrods_edge_fixed_vbar_40_15"
+   ]
+  },
+  {
+   "line": 149,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "EDGE Adjustable",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_edge_adjustable_vbar"
+   ]
+  },
+  {
+   "line": 150,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "EDGE Offset Mount",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_edge_adjustable_offset_mount"
+   ]
+  },
+  {
+   "line": 151,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "EDGE Quick Disconnect",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_edge_qdc_small",
+    "ramrods_edge_qd_large"
+   ]
+  },
+  {
+   "line": 152,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "EDGE Carbon Ext.",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_edge_carbon_extension_3",
+    "ramrods_edge_carbon_extension_4",
+    "ramrods_edge_carbon_extension_5"
+   ]
+  },
+  {
+   "line": 153,
+   "category": "Mount",
+   "brand": "RamRods",
+   "model": "Aluminum Ext. v2",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_aluminum_extension_2"
+   ]
+  },
+  {
+   "line": 154,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Standard Weights",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_ss_weight_collection",
+    "ramrods_ss_large_4oz"
+   ]
+  },
+  {
+   "line": 155,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Weight Stack Kit",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_weight_stack_kit_stabilizer_weight"
+   ]
+  },
+  {
+   "line": 156,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Blender Weight",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_blender_weight_stabilizer_weight"
+   ]
+  },
+  {
+   "line": 157,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Cap Weight",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_cap_weight_stabilizer_weight"
+   ]
+  },
+  {
+   "line": 158,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Tungsten Weights",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_tungsten_weight"
+   ]
+  },
+  {
+   "line": 159,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Barebow HEX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_barebow_hex_stabilizer_weight"
+   ]
+  },
+  {
+   "line": 160,
+   "category": "Weight",
+   "brand": "RamRods",
+   "model": "Tungsten Damping Weights",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_tungsten_damping_weight"
+   ]
+  },
+  {
+   "line": 161,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "Vero Damper",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ramrods_vero_damper_damper"
+   ]
+  },
+  {
+   "line": 162,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Cylinder Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_cylinder_125_30",
+    "ramrods_eq_cylinder_125_40",
+    "ramrods_eq_cylinder_125_50"
+   ]
+  },
+  {
+   "line": 163,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Cylinder Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_cylinder_125_30",
+    "ramrods_eq_cylinder_125_40",
+    "ramrods_eq_cylinder_125_50"
+   ]
+  },
+  {
+   "line": 164,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Cylinder Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_cylinder_125_30",
+    "ramrods_eq_cylinder_125_40",
+    "ramrods_eq_cylinder_125_50"
+   ]
+  },
+  {
+   "line": 165,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Taper Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_taper_damper"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 166,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Barrel Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_barrel_damper"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 167,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Barrel Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_barrel_damper"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 168,
+   "category": "Damper",
+   "brand": "RamRods",
+   "model": "EQ Bow Damper",
+   "decision": "match",
+   "matched_ids": [
+    "ramrods_eq_bow_damper_075"
+   ]
+  },
+  {
+   "line": 169,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Saker 1",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_saker1_tab"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 170,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Saker 2",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_saker2_tab"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 171,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Saker 3",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_saker3_tab"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 172,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Saker Plus",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fivics_saker_plus_finger_tab"
+   ]
+  },
+  {
+   "line": 173,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Polite 3",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fivics_polite_3_finger_tab"
+   ]
+  },
+  {
+   "line": 174,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Tenfix 6D",
+   "decision": "hold",
+   "reason": "catalog has Fivics Tenfix; \"6D\" may describe the same tab"
+  },
+  {
+   "line": 175,
+   "category": "Tab",
+   "brand": "AAE",
+   "model": "Cavalier Elite",
+   "decision": "hold",
+   "reason": "catalog has AAE Cavalier; \"Elite\" may be the same tab"
+  },
+  {
+   "line": 176,
+   "category": "Tab",
+   "brand": "AAE",
+   "model": "KSL Gold Brass",
+   "decision": "match",
+   "matched_ids": [
+    "ksl_gold_tab"
+   ],
+   "note": "KSL Gold tab is catalogued under brand KSL"
+  },
+  {
+   "line": 177,
+   "category": "Tab",
+   "brand": "AAE",
+   "model": "KSL Aluminum",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ksl_aluminum_finger_tab"
+   ]
+  },
+  {
+   "line": 178,
+   "category": "Tab",
+   "brand": "Fairweather",
+   "model": "Mod Tab",
+   "decision": "hold",
+   "reason": "catalog has Fairweather MODULUS Olympic; \"Mod Tab\" may be the same tab"
+  },
+  {
+   "line": 179,
+   "category": "Tab",
+   "brand": "Fairweather",
+   "model": "Barebow Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fairweather_barebow_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 180,
+   "category": "Tab",
+   "brand": "Shibuya",
+   "model": "Apex",
+   "decision": "match",
+   "matched_ids": [
+    "shibuya_apex_tab"
+   ]
+  },
+  {
+   "line": 181,
+   "category": "Tab",
+   "brand": "Shibuya",
+   "model": "Chung-Tae Kim",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_shibuya_chung_tae_kim_finger_tab"
+   ]
+  },
+  {
+   "line": 182,
+   "category": "Tab",
+   "brand": "Axcel",
+   "model": "Contour",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_axcel_contour_finger_tab"
+   ]
+  },
+  {
+   "line": 183,
+   "category": "Tab",
+   "brand": "Axcel",
+   "model": "Contour Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_axcel_contour_pro_finger_tab"
+   ]
+  },
+  {
+   "line": 184,
+   "category": "Tab",
+   "brand": "Win&Win",
+   "model": "EZ Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_ez_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 185,
+   "category": "Tab",
+   "brand": "Win&Win",
+   "model": "EZR Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_ezr_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 186,
+   "category": "Tab",
+   "brand": "Win&Win",
+   "model": "360 Cordovan",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_360_cordovan_finger_tab"
+   ]
+  },
+  {
+   "line": 187,
+   "category": "Tab",
+   "brand": "WNS",
+   "model": "SF-200",
+   "decision": "match",
+   "matched_ids": [
+    "el10_wns_tab_sf_200"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 188,
+   "category": "Tab",
+   "brand": "WNS",
+   "model": "SF-100",
+   "decision": "match",
+   "matched_ids": [
+    "el10_wns_tab_sf_100"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 189,
+   "category": "Tab",
+   "brand": "Avalon",
+   "model": "Tec One",
+   "decision": "hold",
+   "reason": "catalog has Avalon Tec One Prime Tab; \"Tec One\" may be the same tab"
+  },
+  {
+   "line": 190,
+   "category": "Tab",
+   "brand": "Avalon",
+   "model": "Classic",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_classic_finger_tab"
+   ]
+  },
+  {
+   "line": 191,
+   "category": "Tab",
+   "brand": "Decut",
+   "model": "Rugbii",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_decut_rugbii_finger_tab"
+   ]
+  },
+  {
+   "line": 192,
+   "category": "Tab",
+   "brand": "Decut",
+   "model": "Mix",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_decut_mix_finger_tab"
+   ]
+  },
+  {
+   "line": 193,
+   "category": "Tab",
+   "brand": "Spigarelli",
+   "model": "BB Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_spigarelli_bb_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 194,
+   "category": "Tab",
+   "brand": "Yost",
+   "model": "Barebow Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_yost_barebow_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 195,
+   "category": "Tab",
+   "brand": "Bicaster",
+   "model": "Barebow Tab",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bicaster_barebow_tab_finger_tab"
+   ]
+  },
+  {
+   "line": 196,
+   "category": "Tab",
+   "brand": "Angel",
+   "model": "Majesta",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_angel_majesta_finger_tab"
+   ]
+  },
+  {
+   "line": 197,
+   "category": "Tab",
+   "brand": "Angel",
+   "model": "Standard Cordovan",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_angel_standard_cordovan_finger_tab"
+   ]
+  },
+  {
+   "line": 198,
+   "category": "Tab",
+   "brand": "Gillo",
+   "model": "GTL-88",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_gtl_88_finger_tab"
+   ]
+  },
+  {
+   "line": 199,
+   "category": "Tab",
+   "brand": "Gillo",
+   "model": "GTL-59",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_gtl_59_finger_tab"
+   ]
+  },
+  {
+   "line": 200,
+   "category": "Tab",
+   "brand": "Gillo",
+   "model": "Ghost",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gillo_ghost_finger_tab"
+   ]
+  },
+  {
+   "line": 201,
+   "category": "Tab",
+   "brand": "Wiawis",
+   "model": "Multi",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wiawis_win_win_multi_finger_tab"
+   ]
+  },
+  {
+   "line": 202,
+   "category": "Tab",
+   "brand": "Soma",
+   "model": "Saker (Original)",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_soma_saker_original_finger_tab"
+   ]
+  },
+  {
+   "line": 203,
+   "category": "Tab",
+   "brand": "Cartel",
+   "model": "Smart",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_cartel_smart_finger_tab"
+   ]
+  },
+  {
+   "line": 204,
+   "category": "Tab",
+   "brand": "Cartel",
+   "model": "Elite",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_cartel_elite_finger_tab"
+   ]
+  },
+  {
+   "line": 205,
+   "category": "Tab",
+   "brand": "Cartel",
+   "model": "Pro-I",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_cartel_pro_i_finger_tab"
+   ]
+  },
+  {
+   "line": 206,
+   "category": "Tab",
+   "brand": "Epic",
+   "model": "Fusion EX",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_epic_archery_fusion_ex_finger_tab"
+   ]
+  },
+  {
+   "line": 207,
+   "category": "Tab",
+   "brand": "Krossen",
+   "model": "X-Treme",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_krossen_x_treme_finger_tab"
+   ]
+  },
+  {
+   "line": 208,
+   "category": "Tab",
+   "brand": "Infitec",
+   "model": "Nexus",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_infitec_nexus_finger_tab"
+   ]
+  },
+  {
+   "line": 209,
+   "category": "Tab",
+   "brand": "Infitec",
+   "model": "Challenger",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_infitec_challenger_finger_tab"
+   ]
+  },
+  {
+   "line": 210,
+   "category": "Tab",
+   "brand": "Decut",
+   "model": "Hockii",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_decut_hockii_finger_tab"
+   ]
+  },
+  {
+   "line": 211,
+   "category": "Tab",
+   "brand": "Decut",
+   "model": "Prominent",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_decut_prominent_finger_tab"
+   ]
+  },
+  {
+   "line": 212,
+   "category": "Tab",
+   "brand": "Decut",
+   "model": "Barbi",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_decut_barbi_finger_tab"
+   ]
+  },
+  {
+   "line": 213,
+   "category": "Tab",
+   "brand": "Avalon",
+   "model": "Tyro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_tyro_finger_tab"
+   ]
+  },
+  {
+   "line": 214,
+   "category": "Tab",
+   "brand": "Avalon",
+   "model": "Tec One Barebow",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_tec_one_barebow_finger_tab"
+   ]
+  },
+  {
+   "line": 215,
+   "category": "Tab",
+   "brand": "Sanlida",
+   "model": "X10 Target",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sanlida_x10_target_finger_tab"
+   ]
+  },
+  {
+   "line": 216,
+   "category": "Tab",
+   "brand": "Sanlida",
+   "model": "Miracle",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_sanlida_miracle_finger_tab"
+   ]
+  },
+  {
+   "line": 217,
+   "category": "Tab",
+   "brand": "A&F",
+   "model": "Platform",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_a_f_platform_finger_tab"
+   ]
+  },
+  {
+   "line": 218,
+   "category": "Tab",
+   "brand": "A&F",
+   "model": "Barebow",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_a_f_barebow_finger_tab"
+   ]
+  },
+  {
+   "line": 219,
+   "category": "Tab",
+   "brand": "Gompy",
+   "model": "PT-2",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gompy_pt_2_finger_tab"
+   ]
+  },
+  {
+   "line": 220,
+   "category": "Tab",
+   "brand": "Gompy",
+   "model": "TB-2",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gompy_tb_2_finger_tab"
+   ]
+  },
+  {
+   "line": 221,
+   "category": "Tab",
+   "brand": "Bicaster",
+   "model": "ASA",
+   "decision": "match",
+   "matched_ids": [
+    "bicaster_asa_tab"
+   ]
+  },
+  {
+   "line": 222,
+   "category": "Tab",
+   "brand": "Bicaster",
+   "model": "ASG",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bicaster_asg_finger_tab"
+   ]
+  },
+  {
+   "line": 223,
+   "category": "Tab",
+   "brand": "WNS",
+   "model": "SPR-100",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_spr_100_finger_tab"
+   ]
+  },
+  {
+   "line": 224,
+   "category": "Tab",
+   "brand": "WNS",
+   "model": "SMC",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_smc_finger_tab"
+   ]
+  },
+  {
+   "line": 225,
+   "category": "Tab",
+   "brand": "Black Mamba",
+   "model": "Venom",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_black_mamba_venom_finger_tab"
+   ]
+  },
+  {
+   "line": 226,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "X10",
+   "decision": "match",
+   "matched_ids": [
+    "easton_x10_arrow",
+    "easton_x10_spine_325",
+    "easton_x10_spine_350",
+    "easton_x10_spine_380",
+    "easton_x10_spine_410",
+    "easton_x10_spine_450",
+    "easton_x10_spine_500",
+    "easton_x10_spine_550",
+    "easton_x10_spine_600",
+    "easton_x10_spine_650",
+    "easton_x10_spine_700",
+    "easton_x10_spine_750",
+    "easton_x10_spine_830",
+    "easton_x10_spine_900",
+    "easton_x10_spine_1000"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 227,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "X10 Protour",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_x10_protour_arrow"
+   ]
+  },
+  {
+   "line": 228,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "A/C/E",
+   "decision": "match",
+   "matched_ids": [
+    "easton_a_c_e_arrow",
+    "easton_a_c_e_spine_370",
+    "easton_a_c_e_spine_400",
+    "easton_a_c_e_spine_430",
+    "easton_a_c_e_spine_470",
+    "easton_a_c_e_spine_520",
+    "easton_a_c_e_spine_570",
+    "easton_a_c_e_spine_620",
+    "easton_a_c_e_spine_670",
+    "easton_a_c_e_spine_720",
+    "easton_a_c_e_spine_780",
+    "easton_a_c_e_spine_850",
+    "easton_a_c_e_spine_920",
+    "easton_a_c_e_spine_1000",
+    "easton_a_c_e_spine_1100",
+    "easton_a_c_e_spine_1250"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 229,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "Avance",
+   "decision": "match",
+   "matched_ids": [
+    "easton_avance_arrow",
+    "easton_avance_spine_340",
+    "easton_avance_spine_400",
+    "easton_avance_spine_450",
+    "easton_avance_spine_500",
+    "easton_avance_spine_550",
+    "easton_avance_spine_600",
+    "easton_avance_spine_660",
+    "easton_avance_spine_730",
+    "easton_avance_spine_810",
+    "easton_avance_spine_900",
+    "easton_avance_spine_1000",
+    "easton_avance_spine_1150",
+    "easton_avance_spine_1400",
+    "easton_avance_spine_1600",
+    "easton_avance_spine_1800",
+    "easton_avance_spine_2000"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 230,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "Avance Sport",
+   "decision": "match",
+   "matched_ids": [
+    "easton_avance_sport_arrow",
+    "easton_avance_sport_spine_340",
+    "easton_avance_sport_spine_400",
+    "easton_avance_sport_spine_450",
+    "easton_avance_sport_spine_500",
+    "easton_avance_sport_spine_550",
+    "easton_avance_sport_spine_600",
+    "easton_avance_sport_spine_660",
+    "easton_avance_sport_spine_730",
+    "easton_avance_sport_spine_810",
+    "easton_avance_sport_spine_900",
+    "easton_avance_sport_spine_1000",
+    "easton_avance_sport_spine_1150",
+    "easton_avance_sport_spine_1400",
+    "easton_avance_sport_spine_1600",
+    "easton_avance_sport_spine_1800",
+    "easton_avance_sport_spine_2000"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 231,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "5.0 Match Grade",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_5_0_match_grade_arrow"
+   ]
+  },
+  {
+   "line": 232,
+   "category": "Arrow Shaft",
+   "brand": "Easton",
+   "model": "RX-7",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_rx_7_arrow"
+   ]
+  },
+  {
+   "line": 233,
+   "category": "Arrow Shaft",
+   "brand": "Pandarus",
+   "model": "Elite CA320",
+   "decision": "hold",
+   "reason": "catalog has separate Pandarus Elite and CA320 shafts; the list joins the names"
+  },
+  {
+   "line": 234,
+   "category": "Arrow Shaft",
+   "brand": "Pandarus",
+   "model": "Champion",
+   "decision": "match",
+   "matched_ids": [
+    "pandarus_champion_arrow",
+    "pandarus_champion_300_spine",
+    "pandarus_champion_350_spine",
+    "pandarus_champion_400_spine",
+    "pandarus_champion_450_spine",
+    "pandarus_champion_500_spine",
+    "pandarus_champion_550_spine",
+    "pandarus_champion_600_spine",
+    "pandarus_champion_650_spine",
+    "pandarus_champion_700_spine",
+    "pandarus_champion_750_spine",
+    "pandarus_champion_800_spine"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 235,
+   "category": "Arrow Shaft",
+   "brand": "Pandarus",
+   "model": "Versus V23",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_pandarus_versus_v23_arrow"
+   ]
+  },
+  {
+   "line": 236,
+   "category": "Arrow Shaft",
+   "brand": "Skylon",
+   "model": "Paragon",
+   "decision": "match",
+   "matched_ids": [
+    "skylon_paragon_arrow"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 237,
+   "category": "Arrow Shaft",
+   "brand": "Skylon",
+   "model": "Precium",
+   "decision": "match",
+   "matched_ids": [
+    "skylon_precium_arrow"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 238,
+   "category": "Arrow Shaft",
+   "brand": "Skylon",
+   "model": "Brixxon",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_skylon_brixxon_arrow"
+   ]
+  },
+  {
+   "line": 239,
+   "category": "Arrow Shaft",
+   "brand": "Skylon",
+   "model": "Bentwood",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_skylon_bentwood_arrow"
+   ]
+  },
+  {
+   "line": 240,
+   "category": "Arrow Shaft",
+   "brand": "Victory",
+   "model": "VAP Target",
+   "decision": "match",
+   "matched_ids": [
+    "victory_vap_target_arrow"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 241,
+   "category": "Arrow Shaft",
+   "brand": "Victory",
+   "model": "VXT",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_victory_vxt_arrow"
+   ]
+  },
+  {
+   "line": 242,
+   "category": "Arrow Shaft",
+   "brand": "Victory",
+   "model": "VForce Gamer",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_victory_vforce_gamer_arrow"
+   ]
+  },
+  {
+   "line": 243,
+   "category": "Arrow Shaft",
+   "brand": "Fivics",
+   "model": "Five-X",
+   "decision": "match",
+   "matched_ids": [
+    "fivics_five_x",
+    "fivics_2020_five_x_350_spine",
+    "fivics_2020_five_x_400_spine",
+    "fivics_2020_five_x_450_spine",
+    "fivics_2020_five_x_500_spine",
+    "fivics_2020_five_x_550_spine",
+    "fivics_2020_five_x_600_spine",
+    "fivics_2020_five_x_650_spine",
+    "fivics_2020_five_x_700_spine",
+    "fivics_2020_five_x_750_spine",
+    "fivics_2020_five_x_800_spine",
+    "fivics_2020_five_x_850_spine",
+    "fivics_2020_five_x_900_spine",
+    "fivics_2020_five_x_1000_spine"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 244,
+   "category": "Arrow Shaft",
+   "brand": "Fivics",
+   "model": "Ten-X",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fivics_ten_x_arrow"
+   ]
+  },
+  {
+   "line": 245,
+   "category": "Arrow Shaft",
+   "brand": "Black Eagle",
+   "model": "X-Impact",
+   "decision": "match",
+   "matched_ids": [
+    "black_eagle_x_impact_arrow"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 246,
+   "category": "Arrow Shaft",
+   "brand": "Carbon Express",
+   "model": "Nano Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_nano_pro_arrow"
+   ]
+  },
+  {
+   "line": 247,
+   "category": "Arrow Shaft",
+   "brand": "Carbon Express",
+   "model": "Nano SST",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_nano_sst_arrow"
+   ]
+  },
+  {
+   "line": 248,
+   "category": "Arrow Shaft",
+   "brand": "Carbon Express",
+   "model": "Nano XT",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_nano_xt_arrow"
+   ]
+  },
+  {
+   "line": 249,
+   "category": "Arrow Shaft",
+   "brand": "Carbon Express",
+   "model": "Medallion-XR",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_medallion_xr_arrow"
+   ]
+  },
+  {
+   "line": 250,
+   "category": "Arrow Shaft",
+   "brand": "Black Eagle",
+   "model": "Revelation",
+   "decision": "match",
+   "matched_ids": [
+    "black_eagle_revelation_arrow"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 251,
+   "category": "Arrow Shaft",
+   "brand": "Black Eagle",
+   "model": "Deep Impact",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_black_eagle_deep_impact_arrow"
+   ]
+  },
+  {
+   "line": 252,
+   "category": "Arrow Shaft",
+   "brand": "Gold Tip",
+   "model": "Pierce Tour",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gold_tip_pierce_tour_arrow"
+   ]
+  },
+  {
+   "line": 253,
+   "category": "Arrow Shaft",
+   "brand": "Gold Tip",
+   "model": "Velocity",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gold_tip_velocity_arrow"
+   ]
+  },
+  {
+   "line": 254,
+   "category": "Arrow Shaft",
+   "brand": "Gold Tip",
+   "model": "Nine.3 Max Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gold_tip_nine_3_max_pro_arrow"
+   ]
+  },
+  {
+   "line": 255,
+   "category": "Arrow Shaft",
+   "brand": "Gold Tip",
+   "model": "X-Cutter Pro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gold_tip_x_cutter_pro_arrow"
+   ]
+  },
+  {
+   "line": 256,
+   "category": "Arrow Shaft",
+   "brand": "Beman",
+   "model": "Carbon Flash",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_beman_carbon_flash_arrow"
+   ]
+  },
+  {
+   "line": 257,
+   "category": "Arrow Shaft",
+   "brand": "Beman",
+   "model": "Diva",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_beman_diva_arrow"
+   ]
+  },
+  {
+   "line": 258,
+   "category": "Arrow Shaft",
+   "brand": "Avalon",
+   "model": "Tec One",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_tec_one_arrow"
+   ]
+  },
+  {
+   "line": 259,
+   "category": "Arrow Shaft",
+   "brand": "Avalon",
+   "model": "Classic",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_classic_arrow"
+   ]
+  },
+  {
+   "line": 260,
+   "category": "Arrow Shaft",
+   "brand": "Avalon",
+   "model": "Tyro",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_tyro_arrow"
+   ]
+  },
+  {
+   "line": 261,
+   "category": "Arrow Shaft",
+   "brand": "WNS",
+   "model": "S-Carbon",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_s_carbon_arrow"
+   ]
+  },
+  {
+   "line": 262,
+   "category": "Arrow Shaft",
+   "brand": "WNS",
+   "model": "SAT (Spine Arrow Target)",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_wns_sat_spine_arrow_target_arrow"
+   ]
+  },
+  {
+   "line": 263,
+   "category": "Arrow Shaft",
+   "brand": "Skylon",
+   "model": "Novice",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_skylon_novice_arrow"
+   ]
+  },
+  {
+   "line": 264,
+   "category": "Arrow Shaft",
+   "brand": "Cross-X",
+   "model": "Ambition",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_cross_x_ambition_arrow"
+   ]
+  },
+  {
+   "line": 265,
+   "category": "Point",
+   "brand": "Easton",
+   "model": "X10 Tungsten",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_x10_tungsten_point"
+   ]
+  },
+  {
+   "line": 266,
+   "category": "Point",
+   "brand": "Easton",
+   "model": "X10 Stainless",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_easton_x10_ss_point"
+   ]
+  },
+  {
+   "line": 267,
+   "category": "Point",
+   "brand": "Easton",
+   "model": "Avance Point",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_avance_point_point"
+   ]
+  },
+  {
+   "line": 268,
+   "category": "Point",
+   "brand": "Pandarus",
+   "model": "CA320 / Champion",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_pandarus_ca320_champion_point"
+   ]
+  },
+  {
+   "line": 269,
+   "category": "Point",
+   "brand": "Skylon",
+   "model": "Paragon Bulge",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_skylon_paragon_bulge_point"
+   ]
+  },
+  {
+   "line": 270,
+   "category": "Point",
+   "brand": "Carbon Express",
+   "model": "Nano Pro Tool Steel",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_nano_pro_tool_steel_point"
+   ]
+  },
+  {
+   "line": 271,
+   "category": "Point",
+   "brand": "Black Eagle",
+   "model": "Revelation Tungsten",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_black_eagle_revelation_tungsten_point"
+   ]
+  },
+  {
+   "line": 272,
+   "category": "Point",
+   "brand": "Black Eagle",
+   "model": "Stainless Break-off",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_black_eagle_stainless_break_off_point"
+   ]
+  },
+  {
+   "line": 273,
+   "category": "Point",
+   "brand": "Gold Tip",
+   "model": "Pierce Point",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gold_tip_pierce_point_point"
+   ]
+  },
+  {
+   "line": 274,
+   "category": "Point",
+   "brand": "TopHat",
+   "model": "Tungsten Break-off",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_tophat_tungsten_break_off_point"
+   ]
+  },
+  {
+   "line": 275,
+   "category": "Point",
+   "brand": "TopHat",
+   "model": "Stainless Bullet",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_tophat_stainless_bullet_point"
+   ]
+  },
+  {
+   "line": 276,
+   "category": "Pin Adapter",
+   "brand": "Easton",
+   "model": "X10 Pin",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_easton_x10_pin_bushing"
+   ]
+  },
+  {
+   "line": 277,
+   "category": "Pin Adapter",
+   "brand": "Skylon",
+   "model": "ID 3.2 Pin",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_skylon_id_3_2_pin_bushing"
+   ]
+  },
+  {
+   "line": 278,
+   "category": "Pin Adapter",
+   "brand": "Carbon Express",
+   "model": "Nano Pin",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_nano_pin_bushing"
+   ]
+  },
+  {
+   "line": 279,
+   "category": "Pin Adapter",
+   "brand": "Black Eagle",
+   "model": "Revelation Pin",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_black_eagle_revelation_pin_bushing"
+   ]
+  },
+  {
+   "line": 280,
+   "category": "Pin Adapter",
+   "brand": "TopHat",
+   "model": "Pin Adapter",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_tophat_pin_adapter_bushing"
+   ]
+  },
+  {
+   "line": 281,
+   "category": "Nock",
+   "brand": "Beiter",
+   "model": "Insert Nock (12/1 & 12/2)",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_beiter_insert_nock"
+   ]
+  },
+  {
+   "line": 282,
+   "category": "Nock",
+   "brand": "Beiter",
+   "model": "Pin Nock",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_beiter_pin_nock"
+   ]
+  },
+  {
+   "line": 283,
+   "category": "Nock",
+   "brand": "Easton",
+   "model": "Pin Nock",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_easton_pin_nock_small",
+    "el13r_easton_pin_nock_large"
+   ],
+   "note": "same model name (spelling/case)"
+  },
+  {
+   "line": 284,
+   "category": "Nock",
+   "brand": "Easton",
+   "model": "G-Nock",
+   "decision": "hold",
+   "reason": "catalog has Easton 4MM G Nock; the list says ID 4.2 G-Nock (possibly the same)"
+  },
+  {
+   "line": 285,
+   "category": "Nock",
+   "brand": "Fivics",
+   "model": "Pin Nock",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_fivics_pin_nock_nock"
+   ]
+  },
+  {
+   "line": 286,
+   "category": "Nock",
+   "brand": "Bohning",
+   "model": "Smooth Release Pin Nock",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bohning_smooth_release_pin_nock_nock"
+   ]
+  },
+  {
+   "line": 287,
+   "category": "Nock",
+   "brand": "Bohning",
+   "model": "Blazer Nock",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bohning_blazer_nock_nock"
+   ]
+  },
+  {
+   "line": 288,
+   "category": "Nock",
+   "brand": "Carbon Express",
+   "model": "Pin Nock",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_carbon_express_pin_nock_nock"
+   ]
+  },
+  {
+   "line": 289,
+   "category": "Nock",
+   "brand": "Avalon",
+   "model": "Pin Nock",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_avalon_pin_nock_nock"
+   ]
+  },
+  {
+   "line": 290,
+   "category": "Vane",
+   "brand": "Spider Vanes",
+   "model": "Original",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_spider_vanes_original_vane"
+   ]
+  },
+  {
+   "line": 291,
+   "category": "Vane",
+   "brand": "KSL",
+   "model": "Jet6",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_ksl_jet6_vane"
+   ]
+  },
+  {
+   "line": 292,
+   "category": "Vane",
+   "brand": "Spin-Wing",
+   "model": "Original",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_spin_wing_original_vane"
+   ]
+  },
+  {
+   "line": 293,
+   "category": "Vane",
+   "brand": "Gas Pro",
+   "model": "Olympic Spin",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gas_pro_olympic_spin_vane"
+   ]
+  },
+  {
+   "line": 294,
+   "category": "Vane",
+   "brand": "Bicaster",
+   "model": "Spin Vanes Twist",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bicaster_spin_vanes_twist_vane"
+   ]
+  },
+  {
+   "line": 295,
+   "category": "Vane",
+   "brand": "AAE",
+   "model": "WAV",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_aae_wav_vane"
+   ]
+  },
+  {
+   "line": 296,
+   "category": "Vane",
+   "brand": "Bohning",
+   "model": "Ice",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bohning_ice_vane"
+   ]
+  },
+  {
+   "line": 297,
+   "category": "Vane",
+   "brand": "XS Wings",
+   "model": "Target Profile",
+   "decision": "match",
+   "matched_ids": [
+    "el13r_xswings_40mm",
+    "el13r_xswings_50mm_low",
+    "el13r_xswings_50mm_high"
+   ]
+  },
+  {
+   "line": 298,
+   "category": "Vane",
+   "brand": "EliVanes",
+   "model": "S3 / P3",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_elivanes_s3_p3_vane"
+   ]
+  },
+  {
+   "line": 299,
+   "category": "Vane",
+   "brand": "Kurly Vanes",
+   "model": "Original",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_kurly_vanes_original_vane"
+   ]
+  },
+  {
+   "line": 300,
+   "category": "Vane",
+   "brand": "Flex Fletch",
+   "model": "FHP-200",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_flex_fletch_fhp_200_vane"
+   ]
+  },
+  {
+   "line": 301,
+   "category": "Vane",
+   "brand": "Bohning",
+   "model": "Zen",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bohning_zen_vane"
+   ]
+  },
+  {
+   "line": 302,
+   "category": "Vane",
+   "brand": "Bohning",
+   "model": "Air",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_bohning_air_vane"
+   ]
+  },
+  {
+   "line": 303,
+   "category": "Vane",
+   "brand": "Gateway",
+   "model": "Parabolic Feathers",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_gateway_parabolic_feathers_vane"
+   ]
+  },
+  {
+   "line": 304,
+   "category": "Vane",
+   "brand": "Trueflight",
+   "model": "Shield Cut Feathers",
+   "decision": "add",
+   "added_ids": [
+    "owner_el19_trueflight_shield_cut_feathers_vane"
+   ]
+  }
+ ],
+ "conflicts": [
+  {
+   "line": 24,
+   "owner": 1338.0,
+   "field": "mass_g @ 25 in",
+   "verified": 1225,
+   "verified_id": "hoyt_arcos_25",
+   "verified_source": "Hoyt 2022 Target Product Guide",
+   "kept": "verified"
+  },
+  {
+   "line": 27,
+   "owner": [
+    25,
+    27
+   ],
+   "field": "length options (in)",
+   "verified": [
+    25.0
+   ],
+   "kept": "verified"
+  },
+  {
+   "line": 28,
+   "owner": [
+    25
+   ],
+   "field": "length options (in)",
+   "verified": [
+    25.0,
+    27.0
+   ],
+   "kept": "verified"
+  },
+  {
+   "line": 61,
+   "owner": 1300.0,
+   "field": "mass_g @ 25 in",
+   "verified": 1280,
+   "verified_id": "wiawis_win_win_atf_x_25_in",
+   "verified_source": "WIAWIS 2025 Archery Product Catalog",
+   "kept": "verified"
+  },
+  {
+   "line": 62,
+   "owner": 1300.0,
+   "field": "mass_g @ 25 in",
+   "verified": 1380,
+   "verified_id": "wiawis_win_win_meta_dx_25_in",
+   "verified_source": "WIAWIS 2025 Archery Product Catalog",
+   "kept": "verified"
+  },
+  {
+   "line": 64,
+   "owner": 1250.0,
+   "field": "mass_g @ 25 in",
+   "verified": 1280,
+   "verified_id": "wiawis_win_win_cx7_25_in",
+   "verified_source": "WIAWIS 2025 Archery Product Catalog",
+   "kept": "verified"
+  },
+  {
+   "line": 100,
+   "owner": [
+    25
+   ],
+   "field": "length options (in)",
+   "verified": [
+    23.0,
+    25.0
+   ],
+   "kept": "verified"
+  },
+  {
+   "line": 234,
+   "owner": 3.2,
+   "field": "inside diameter (mm)",
+   "verified": [
+    4.2
+   ],
+   "verified_ids": [
+    "pandarus_champion_300_spine",
+    "pandarus_champion_350_spine",
+    "pandarus_champion_400_spine"
+   ],
+   "kept": "verified"
+  }
+ ],
+ "anomalies": [
+  {
+   "line": 2,
+   "id": "owner_el19_hoyt_gold_medalist_td4_riser",
+   "flags": [
+    "Gold Medalist TD4 predates 2000 by most accounts; year doubtful"
+   ]
+  },
+  {
+   "line": 4,
+   "id": "owner_el19_hoyt_elan_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 5,
+   "id": "owner_el19_hoyt_matrix_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 6,
+   "id": "owner_el19_hoyt_aerotec_riser",
+   "flags": [
+    "same mass 1315g listed for 4 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 7,
+   "id": "owner_el19_hoyt_eclipse_riser",
+   "flags": [
+    "same mass 1133g listed for 3 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 8,
+   "id": "owner_el19_hoyt_helix_riser",
+   "flags": [
+    "same mass 1315g listed for 4 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 9,
+   "id": "owner_el19_hoyt_nexus_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 13,
+   "id": "owner_el19_hoyt_formula_rx_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 14,
+   "id": "owner_el19_hoyt_formula_excel_riser",
+   "flags": [
+    "same mass 1133g listed for 3 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 16,
+   "id": "owner_el19_hoyt_hpx_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 17,
+   "id": "owner_el19_hoyt_formula_excel_pro_riser",
+   "flags": [
+    "same mass 1133g listed for 3 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 18,
+   "id": "owner_el19_hoyt_ion_x_riser",
+   "flags": [
+    "same mass 1224g listed for 6 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 19,
+   "id": "owner_el19_hoyt_prodigy_xt_riser",
+   "flags": [
+    "several model names in one row (Prodigy / XT); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 20,
+   "id": "owner_el19_hoyt_epik_riser",
+   "flags": [
+    "same mass 1315g listed for 4 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 22,
+   "id": "owner_el19_hoyt_alero_riser",
+   "flags": [
+    "same mass 1315g listed for 4 Hoyt risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 39,
+   "id": "owner_el19_hoyt_f2_f3_f4_limbs",
+   "flags": [
+    "several model names in one row (F2 / F3 / F4); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 55,
+   "id": "owner_el19_wiawis_win_win_inno_max_riser",
+   "flags": [
+    "same mass 1300g listed for 3 Win&Win risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 58,
+   "id": "owner_el19_wiawis_win_win_atf_riser",
+   "flags": [
+    "same mass 1300g listed for 3 Win&Win risers (possible placeholder value)"
+   ]
+  },
+  {
+   "line": 135,
+   "id": "owner_el19_ramrods_ultra_v1_v2_long_rod",
+   "flags": [
+    "several model names in one row (Ultra v1 / v2); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 135,
+   "id": "owner_el19_ramrods_ultra_v1_v2_side_rod",
+   "flags": [
+    "several model names in one row (Ultra v1 / v2); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 217,
+   "id": "owner_el19_a_f_platform_finger_tab",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 218,
+   "id": "owner_el19_a_f_barebow_finger_tab",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 219,
+   "id": "owner_el19_gompy_pt_2_finger_tab",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 220,
+   "id": "owner_el19_gompy_tb_2_finger_tab",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 232,
+   "id": "owner_el19_easton_rx_7_arrow",
+   "flags": [
+    "aluminum shafts are sized by diameter/wall code, not a carbon insert-ID class; ID value doubtful"
+   ]
+  },
+  {
+   "line": 256,
+   "id": "owner_el19_beman_carbon_flash_arrow",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 268,
+   "id": "owner_el19_pandarus_ca320_champion_point",
+   "flags": [
+    "several model names in one row (CA320 / Champion); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 292,
+   "id": "owner_el19_spin_wing_original_vane",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 298,
+   "id": "owner_el19_elivanes_s3_p3_vane",
+   "flags": [
+    "several model names in one row (S3 / P3); kept as one selector entry exactly as listed - confirm whether they are separate products"
+   ]
+  },
+  {
+   "line": 299,
+   "id": "owner_el19_kurly_vanes_original_vane",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 303,
+   "id": "owner_el19_gateway_parabolic_feathers_vane",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  },
+  {
+   "line": 304,
+   "id": "owner_el19_trueflight_shield_cut_feathers_vane",
+   "flags": [
+    "release year given only as a decade"
+   ]
+  }
+ ],
+ "holds": [
+  {
+   "line": 101,
+   "category": "Riser",
+   "brand": "Fivics",
+   "model": "Vellator V2",
+   "decision": "hold",
+   "reason": "catalog has VELLATOR and Vellator 2026 risers; which generation \"V2\" is cannot be confirmed from the list"
+  },
+  {
+   "line": 111,
+   "category": "Riser",
+   "brand": "MK Korea",
+   "model": "Z-Series",
+   "decision": "hold",
+   "reason": "catalog has MK Korea ZX; \"Z-Series\" may be the same riser"
+  },
+  {
+   "line": 112,
+   "category": "Limbs",
+   "brand": "MK Korea",
+   "model": "Mach 3",
+   "decision": "hold",
+   "reason": "catalog has MK Korea Mach X; \"Mach 3\" may be a different or misnamed model"
+  },
+  {
+   "line": 139,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Vektor",
+   "decision": "hold",
+   "reason": "catalog has Vektor V1.1 (verified); original Vektor vs V1.1 cannot be separated from the list"
+  },
+  {
+   "line": 141,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "Ultra v4 S",
+   "decision": "hold",
+   "reason": "\"Super Stiff\" may be a variant of Ultra 4 rather than a separate model; RamRods Priority 1 needs a source"
+  },
+  {
+   "line": 144,
+   "category": "Stabilizer",
+   "brand": "RamRods",
+   "model": "K2 v2.1",
+   "decision": "hold",
+   "reason": "may be a revision of K2 2 (verified); needs RamRods source before it becomes a separate selector entry"
+  },
+  {
+   "line": 174,
+   "category": "Tab",
+   "brand": "Fivics",
+   "model": "Tenfix 6D",
+   "decision": "hold",
+   "reason": "catalog has Fivics Tenfix; \"6D\" may describe the same tab"
+  },
+  {
+   "line": 175,
+   "category": "Tab",
+   "brand": "AAE",
+   "model": "Cavalier Elite",
+   "decision": "hold",
+   "reason": "catalog has AAE Cavalier; \"Elite\" may be the same tab"
+  },
+  {
+   "line": 178,
+   "category": "Tab",
+   "brand": "Fairweather",
+   "model": "Mod Tab",
+   "decision": "hold",
+   "reason": "catalog has Fairweather MODULUS Olympic; \"Mod Tab\" may be the same tab"
+  },
+  {
+   "line": 189,
+   "category": "Tab",
+   "brand": "Avalon",
+   "model": "Tec One",
+   "decision": "hold",
+   "reason": "catalog has Avalon Tec One Prime Tab; \"Tec One\" may be the same tab"
+  },
+  {
+   "line": 233,
+   "category": "Arrow Shaft",
+   "brand": "Pandarus",
+   "model": "Elite CA320",
+   "decision": "hold",
+   "reason": "catalog has separate Pandarus Elite and CA320 shafts; the list joins the names"
+  },
+  {
+   "line": 284,
+   "category": "Nock",
+   "brand": "Easton",
+   "model": "G-Nock",
+   "decision": "hold",
+   "reason": "catalog has Easton 4MM G Nock; the list says ID 4.2 G-Nock (possibly the same)"
+  }
+ ]
+}

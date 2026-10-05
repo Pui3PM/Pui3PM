@@ -48,7 +48,7 @@ const lengthRecords=[{id:'r27',length_in:27,mass_oz:4.8},{id:'r30',length_in:30,
 
 // Canonical catalog keeps prior data and adds real model-specific limb choices.
 const cctx={window:{}};vm.createContext(cctx);vm.runInContext(catalogCode,cctx);const C=cctx.window.EquipmentCatalog;
-assert.strictEqual(C.version,'EL18-FORM-UX-2026-09-30-R1');assert(C.records.length>=683);
+assert(C.version==='EL18-FORM-UX-2026-09-30-R1'||C.version.startsWith('EL19-'),C.version);assert(C.records.length>=683);
 const velos=C.records.filter(r=>r.brand==='Hoyt'&&r.model==='Carbon Velos');assert.strictEqual(velos.length,2);for(const r of velos){assert.deepStrictEqual([...r.sizes],['Short','Medium','Long']);assert.deepStrictEqual([...r.marked_weight_options_lb],[22,24,26,28,30,32,34,36,38,40,42,44,46,48,50]);}
 const pandarus=C.records.filter(r=>r.brand==='Pandarus'&&r.model==='Champion'&&Number.isFinite(r.spine));assert.deepStrictEqual([...pandarus.map(r=>r.spine)].sort((a,b)=>a-b),[300,350,400,450,500,550,600,650,700,750,800]);
 console.log('PASS Equipment Form EL18 one-fact-once behavior');

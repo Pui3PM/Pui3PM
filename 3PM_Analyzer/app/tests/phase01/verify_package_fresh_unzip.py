@@ -68,6 +68,7 @@ def verify(zip_path, chromium, work):
             'browser_fullapp_gate': ['node', 'app/tests/p108_browser/run_fullapp_gate_chromium.cjs', chromium, stat],
             'browser_post_p108_gate': ['node', 'app/tests/p108_browser/run_post_p108_browser.cjs', chromium, stat],
             'browser_r2_identity_gate': ['node', 'app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs', chromium, stat],
+            'browser_equipment_el19_gate': ['node', 'app/tests/p108_browser/run_equipment_form_el19_chromium.cjs', chromium, stat],
             'browser_identity_parity': ['node', 'app/tests/phase01/run_identity_parity_chromium_r8c.cjs', chromium],
             'browser_f01': ['node', 'app/tests/phase01/run_f01_chromium_r8c.cjs', chromium],
             'browser_shadow_bundle': ['node', 'app/tests/phase01/run_shadow_bundle_chromium.cjs', chromium],

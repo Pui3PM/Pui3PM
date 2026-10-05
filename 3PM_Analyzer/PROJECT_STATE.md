@@ -1,8 +1,15 @@
-CURRENT 2026-10-05 POST-P108 R3 (Claude Code): MAC BENCH CANDIDATE — all software gates green on Linux (field class 117/117, phase01 15/15, 8 Chromium gates). D-R2-01 decided by the owner (option 1). NOT field-validated: Mac launch, Swift compile, camera, archer NOT RUN. No live shooting until docs/FIELD_TEST_INSTRUCTIONS.md §0–§1 pass on the Mac. Read docs/post_p108_r3/DELIVERY_REPORT.md. Older readiness text below (incl. docs/post_p108_r2, docs/post_p108) is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R4 (Claude Code): MAC BENCH CANDIDATE (as R3) + Equipment EL19 — owner equipment list merged (879 records: 674 verified + 205 owner-list UNVERIFIED; EL18 kept, 9 duplicates folded with aliases), Equipment Form duplicate/restore/core fixes (D-EL19-01). Source tree: DEV 116/119 (3 pose-policy sentinels by design), phase01 15/15, contract/static PASS, Chromium EL19 equipment gate 18/18; fresh-unzip results of the delivered ZIPs are in the external 3PM_POST_P108_R4_VERIFICATION.json. NOT field-validated: Mac launch, Swift compile, camera, archer NOT RUN. No live shooting until docs/FIELD_TEST_INSTRUCTIONS.md §0–§1 pass on the Mac. Read docs/post_p108_r4/DELIVERY_REPORT.md. Older readiness text below (incl. docs/post_p108_r3, docs/post_p108_r2, docs/post_p108) is HISTORICAL.
 
 # 3PM Analyzer — R8 Project State
 
-## CURRENT — 2026-10-05 Post-P108 R3 (Claude Code)
+## CURRENT — 2026-10-05 Post-P108 R4 (Claude Code)
+**Status: MAC BENCH CANDIDATE (capture/identity unchanged from R3) + Equipment EL19. NOT field-validated; NOT production.**
+- Owner equipment list (303 rows) merged: EL19 = 879 records (674 verified + 205 `owner_supplied_unverified`); 201 add / 90 match / 12 hold; 8 conflicts keep the verified value; 32 doubtful owner records flagged. EL18 canonical JSON byte-identical; 9 EL18 duplicates folded and 13 renamed with aliases (DECISION_LOG D-EL19-01; `docs/post_p108_r4/EQUIPMENT_EL19_REVIEW.md`).
+- Equipment Form: one selector entry per product; pre-EL19 saved names restore (22/22); limb core once per variant; unverified records never auto-fill/lock; cache keys bumped.
+- Source tree: DEV 116/119 (3 pose-policy sentinels by design), phase01 15/15, contract/static PASS, Chromium EL19 gate 18/18. Fresh-unzip: external `3PM_POST_P108_R4_VERIFICATION.json`.
+- NOT RUN: Mac launch, Swift compile, camera, BLE, Windows, archer, labeled data. M-01, M-04 OPEN. Next gates: owner confirmation of EL19 holds/conflicts; Mac bench `docs/FIELD_TEST_INSTRUCTIONS.md` §0–§1.
+
+## HISTORICAL — 2026-10-05 Post-P108 R3 (Claude Code, superseded by R4)
 **Status: MAC BENCH CANDIDATE — software gates green on Linux; NOT field-validated; NOT production.**
 - D-R2-01 decided by the owner (option 1). 8 legacy identity assertions converted to the Post-P108 H02 rule; originals kept in comments; intents re-asserted on production-shaped data (DECISION_LOG D-R2-01).
 - Fresh unzip: field class 117/117, DEV 114/117 (3 pose-policy sentinels by design), phase01 15/15, contract/static/preflight/ZIP modes PASS, 8 Chromium 141 gates PASS.
@@ -81,7 +88,7 @@ These modules are isolated under `app/shadow/`; they are not imported by product
 - Known legacy characterization still reproduces temporal 25->1 / 25->13, null master->0 and cross-source identity collapse. Do not call F01-F12 closed.
 - No macOS/Windows live camera, browser live shadow, or real-archer acceptance has been run for this candidate.
 
-Equipment source of truth remains EL18, 683 records; do not regress catalog lineage.
+Equipment source of truth: EL19 (`internal/3PM_Equipment_Catalog_CANONICAL_EL19_OWNER_LIST_2026_10_05_R1.json`, 879 records = EL18 683 − 9 audited folds + 205 owner-list unverified). Do not regress catalog lineage; EL18 stays the verified baseline (byte-identical) and every EL18 id must stay resolvable (`byId` follows `merged_ids`).
 
 ## HISTORICAL — 2026-10-01 P1-06 pure/offline repair after Astra red-team
 Astra RT-01..RT-08 repair work has been applied only to `app/shadow/**` and Phase0/P1 development tests/docs. Shared Node/WebCrypto validation, strict replay metadata, hard-bounded ring/lease behavior, worker-dispatch scheduler boundary, scoped immutable event/writer semantics, stricter logical25 selection, Review validation and Archive validation are now covered by direct regression tests. This is a **repair checkpoint, not P1-06 completion**.

@@ -26,10 +26,13 @@ PROTECTED = {
     'app/static/core_runtime.js': '89d637ce861466460a6c3889a08c45d70401d71ee904e6a4e6d6fd8dd9f9b3bf',
     'app/3PM_Form_Analyzer_arm64': 'babd2ba02406a6a42a9f62f1df77dc84056fc890b3556a86d4d1a50b76a5913b',
     'app/3PM_Form_Analyzer_x64': '5c41ebf790ef47ea59c2be76b4febb5ef3ee9c977166dc2065fc5f523e3eddf4',
-    'app/static/equipment_catalog.js': 'd5eaf099b7823674ac884c9e210fda85496549c0fac5fdf85d41577bafadaa0a',
+    # EL19 explicit thaw (DECISION_LOG D-EL19-01, owner request 2026-10-05; rollback in that entry). Previous pins in THAWED below.
+    'app/static/equipment_catalog.js': '0f9ac58a70fbd9517decddc0acb6314365e3acfb93aebd9b0354341083afc239',
     'app/static/equipment_lab_core.js': 'cdff4cc13fef13d7bccedc24a79c2eb5523ceb8967fa7061b5f6fe4332e47b61',
-    'app/static/equipment_lab_layer.js': 'dd425979d5e9b656ca870227d60e2ee690a2dd416f83bd8e84529eca86bf00c0',
+    'app/static/equipment_lab_layer.js': '65efc0394c9ecca795e6d80bf4dde76e6370749b1a1a86196df7f9be96efef65',
     'internal/3PM_Equipment_Catalog_CANONICAL_EL18_FORM_UX_2026_09_30_R1.json': '40eb1a466f9f0d5f5db08d22b44791676aaf40022ae18d8b90803ef9ca4f4344',
+    'internal/3PM_Equipment_Catalog_CANONICAL_EL19_OWNER_LIST_2026_10_05_R1.json': 'aa94190a44203e48239987241e44400f1742aab90e6f6e86f335901dc201b8a7',
+    'internal/3PM_Equipment_Catalog_EL19_MERGE_AUDIT.json': '3f43e2a7ef0345b75429a6baf70482d66f40fb6965a8938669ef7a15e08a7905',
     'internal/3PM_Equipment_Catalog_EL17_MERGE_AUDIT.json': 'bbefaa6cfc8a3382ecffa2cfda949b660ef397fcbb0cb4609cbe8db630ef5a22',
     # R8 P1-08 explicit thaw (DECISION_LOG D-108-02 / D-108-03; rollback: ROLLBACK.md). Previous pins in THAWED below.
     'app/static/evidence_budget_core.js': 'de50d1eb86423fd3c093b1a5159dcb4ba3da7de455876405e1345c91685b1799',
@@ -39,13 +42,16 @@ PROTECTED = {
 THAWED = {  # path: (P1-07 pinned sha256, decision) -- recorded so a reviewer can diff/rollback exactly these bytes
     'app/static/evidence_budget_core.js': ('fd7335e88e02af4fa2d34a49006c0d0f821d2473e0bf924afcb0c62bf0ffc3cd', 'D-108-02 H-01/H-02 root cause (epoch-only identity, cross-domain mediaTime order)'),
     'app/static/temporal_evidence_layer.js': ('65aec49083091f60be6626775b5c89115e6646a4bc93c3b458ff846d9507db42', 'D-108-03 H-02 adapter null->0 identity (augmentBundle mapping only)'),
+    'app/static/equipment_catalog.js': ('d5eaf099b7823674ac884c9e210fda85496549c0fac5fdf85d41577bafadaa0a', 'D-EL19-01 owner equipment list merged as unverified records; EL18 duplicates renamed/folded with aliases'),
+    'app/static/equipment_lab_layer.js': ('dd425979d5e9b656ca870227d60e2ee690a2dd416f83bd8e84529eca86bf00c0', 'D-EL19-01 unverified records never auto-fill; alias/merged-id restore; limb core chosen once'),
 }
 P108_GATES = ['app/tests/test_p108_h01_chronology.js', 'app/tests/test_p108_h02_identity.js', 'app/tests/test_p108_h03_native_generation.js',
               'app/tests/test_p108_m01_fps_scope.js', 'app/tests/test_p108_m02_alignment_anchor.js', 'app/tests/test_p108_astra_probes.js',
               'app/tests/test_p108_m04_bridge_exposure.js', 'app/tests/test_p108_m05_migration_compat.js', 'app/tests/test_p108_m05_launcher_profile.js',
               'app/tests/phase01/repro_astra_legacy_gaps.js']
 EQUIPMENT_ATHLETE_SESSION = ['app/static/app.js', 'app/static/equipment_catalog.js', 'app/static/equipment_lab_core.js', 'app/static/equipment_lab_layer.js',
-                             'internal/3PM_Equipment_Catalog_CANONICAL_EL18_FORM_UX_2026_09_30_R1.json', 'internal/3PM_Equipment_Catalog_EL17_MERGE_AUDIT.json']
+                             'internal/3PM_Equipment_Catalog_CANONICAL_EL18_FORM_UX_2026_09_30_R1.json', 'internal/3PM_Equipment_Catalog_EL17_MERGE_AUDIT.json',
+                             'internal/3PM_Equipment_Catalog_CANONICAL_EL19_OWNER_LIST_2026_10_05_R1.json', 'internal/3PM_Equipment_Catalog_EL19_MERGE_AUDIT.json']
 
 
 def sha(p):
