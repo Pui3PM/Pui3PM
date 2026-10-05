@@ -1,5 +1,3 @@
-> **ร่าง (DRAFT) — ยังรอผลตรวจจาก ZIP ที่แตกใหม่ ตัวเลขที่เป็น `__…__` ยังไม่ใช่ผลจริง ห้ามใช้จนกว่าบรรทัดนี้จะถูกลบ**
-
 # รายงานส่งมอบ 3PM R8 Post-P108 R4 — 5 ตุลาคม 2026 (Claude Code)
 
 **เรื่องในรอบนี้: นำรายการอุปกรณ์ 303 แถวของคุณเข้าฐานข้อมูลอุปกรณ์ และตรวจแก้ฟอร์มอุปกรณ์**
@@ -12,8 +10,8 @@
 ## 1. ผลลัพธ์และไฟล์ที่ใช้งาน
 | ไฟล์ | SHA-256 | ใช้ทำอะไร |
 |---|---|---|
-| `3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005.zip` | `__MAC_SHA__` | ตัวที่ใช้เปิดบน Mac มี launcher เดียวคือ `START_3PM.command` |
-| `3PM_Analyzer_R8_POST_P108_R4_DEV_20261005.zip` | `__DEV_SHA__` | source/DEV สำหรับพัฒนาต่อ |
+| `3PM_Analyzer_R8_POST_P108_R4_MAC_BENCH_20261005.zip` | `6ea050fc9a3c1d87a55e781e069eb3ea7f79015d26d80f89960cdb9f13f4b2ae` | ตัวที่ใช้เปิดบน Mac มี launcher เดียวคือ `START_3PM.command` |
+| `3PM_Analyzer_R8_POST_P108_R4_DEV_20261005.zip` | `ea5e99dd57c0d99bcc8449965cf33fa1b49c4dde716e73e6709c9b16f17ef661` | source/DEV สำหรับพัฒนาต่อ |
 | `3PM_POST_P108_R4_VERIFICATION.json` | ดูใน `3PM_POST_P108_R4_SHA256SUMS.txt` | ผลตรวจจริงจากการแตก ZIP ใหม่ |
 
 - Source อยู่ที่ GitHub `Pui3PM/Pui3PM` branch `claude/magical-rubin-bovhje` (commit `5843695`) โฟลเดอร์ `3PM_Analyzer/`
@@ -62,8 +60,14 @@
 ตรวจบน Linux ด้วย Node 22.22, Python 3.11 และ Chromium 141 โดยแตก ZIP ตัวจริงลงโฟลเดอร์ใหม่ที่ path มีช่องว่าง
 | ด่านตรวจ | MAC BENCH | DEV |
 |---|---|---|
-__VERIFY_ROWS__
+| JS regressions ทั้งหมด (รวมเทสต์อุปกรณ์ใหม่ 2 ไฟล์) | **119/119** | 116/119 (ไม่ผ่าน 3 ไฟล์เรื่อง pose ตามนโยบาย DEV เดิม เหมือน R3) |
+| Phase01 | 15/15 | 15/15 |
+| Distribution contract / static integrity / Mac preflight / สิทธิ์ไฟล์ใน ZIP | ผ่าน | ผ่าน |
+| **ด่านใหม่: ฟอร์มอุปกรณ์ EL19 ใน Chromium จริง** (18 ข้อ: ไม่มีรุ่นซ้ำ, ป้าย unverified, ไม่เติมน้ำหนักจากรายการที่ยังไม่ยืนยัน, รายการที่ยืนยันแล้วยังเติมได้, เปิด setup เก่าได้, ไม่มี error) | ผ่าน | ผ่าน |
+| Browser gate เดิม 8 ตัว (full-app, Post-P108, R2 identity, identity parity, F01, shadow bundle, Anchor, full-page) | ผ่าน | ผ่าน |
 | เปิดบน Mac, compile Swift, กล้อง, BLE, นักยิงจริง | **ยังไม่ได้รัน** | **ยังไม่ได้รัน** |
+
+หมายเหตุ: สคริปต์ตรวจสรุปว่า DEV ไม่ผ่านทั้งชุดเพราะ pose 3 ไฟล์ที่ตั้งใจให้ไม่ผ่าน ส่วนแพ็กเกจ Mac ผ่านทุกข้อ ทั้งหมดนี้ใช้ backend จำลองและภาพสังเคราะห์ จึงยังไม่ใช่การรับรองกล้องจริง
 | เทียบข้อมูลอุปกรณ์ 205 รายการกับเว็บหรือแคตตาล็อกผู้ผลิต | **ยังไม่ได้ทำ** | — |
 
 **หลักฐานว่าการแก้ได้ผลจริง:**
