@@ -1,0 +1,213 @@
+{
+  "tool": "verify_package_fresh_unzip.py",
+  "host": {
+    "platform": "linux",
+    "python": "3.11.15",
+    "node": "v22.22.0"
+  },
+  "scope": "Linux fresh-unzip software gates; Mach-O runtimes, Swift helpers, camera and Mac browser are NOT executed",
+  "packages": [
+    {
+      "zip": "3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005.zip",
+      "sha256": "0f1da56133edc12d0aa89bf73173e4d29079aa44bc59f16a4e8cc20da7b4e9a5",
+      "size_bytes": 19949371,
+      "checks": {
+        "zip_member_modes": {
+          "returncode": 0,
+          "tail": "launcher/runtimes executable=True; internal scripts non-executable=True"
+        },
+        "distribution_contract": {
+          "command": "/usr/local/bin/python3 -B app/tests/test_distribution_contract_r6.py",
+          "returncode": 0,
+          "seconds": 0.2,
+          "tail": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint\n"
+        },
+        "static_integrity": {
+          "command": "/usr/local/bin/python3 -B app/tests/static_integrity_x282.py",
+          "returncode": 0,
+          "seconds": 1.3,
+          "tail": "X2.8.2 static/launch integrity: PASS \u00b7 frozen Dev4 JS hashes exact \u00b7 runtime binary SHA baseline pinned \u00b7 artifact_class=field_test_not_production\n"
+        },
+        "mac_preflight": {
+          "command": "node app/tests/test_mac_preflight_r5.js",
+          "returncode": 0,
+          "seconds": 0.1,
+          "tail": "Mac launcher preflight executed: PASS (native runtime not executed)\n"
+        },
+        "js_regressions": {
+          "command": "/usr/local/bin/python3 -B app/tests/run_regressions.py",
+          "returncode": 0,
+          "seconds": 12.6,
+          "tail": "Results written to /tmp/3pm-verify-iomtj54x/3pm-qa-e5ck5eqd/r7_results.json\nJS regressions: 117/117 PASS\n"
+        },
+        "browser_fullapp_gate": {
+          "command": "node app/tests/p108_browser/run_fullapp_gate_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip mibxqwix/3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH/app/static",
+          "returncode": 0,
+          "seconds": 18.6,
+          "tail": "\"after\": 5\n  },\n  \"play\": {\n   \"playing\": true\n  },\n  \"anchorConsistentNoTarget\": {\n   \"disabled\": true,\n   \"handler\": {\n    \"r\": false,\n    \"moved\": false\n   }\n  },\n  \"roleSwitch\": {\n   \"sel\": 11,\n   \"role\": \"rear\",\n   \"n\": 5,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 5,\n   \"missing\": 20,\n   \"offs\": [\n    -200,\n    -100,\n    0,\n    100,\n    200\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 6\n  },\n  \"shotSwitchNoStaleFrames\": {\n   \"sel\": 12,\n   \"role\": \"side\",\n   \"n\": 6,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 6,\n   \"missing\": 19,\n   \"offs\": [\n    -60,\n    -27,\n    6,\n    39,\n    900,\n    2000\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 7\n  },\n  \"shotSwitchPhysicalOrder\": [\n   -60,\n   -27,\n   6,\n   39,\n   900,\n   2000\n  ],\n  \"panelRebuildRail25\": {\n   \"sel\": 12,\n   \"role\": \"side\",\n   \"n\": 6,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 6,\n   \"missing\": 19,\n   \"offs\": [\n    -60,\n    -27,\n    6,\n    39,\n    900,\n    2000\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 7\n  },\n  \"noObjectUrlLeak\": {\n   \"liveObjectUrls\": 7,\n   \"currentFrames\": 6\n  },\n  \"idleObserverSettlesAfterInteraction\": {\n   \"rail\": 2,\n   \"maxPerSecond\": 61,\n   \"by\": {\n    \"field_polish_layer.js:26#5\": 121,\n    \"field_polish_layer.js:26#6\": 121,\n    \"field_polish_layer.js:26#7\": 121,\n    \"evidence_integrity_repair_layer.js:69#3\": 2\n   }\n  },\n  \"noPageErrors\": [],\n  \"noUnhandledBackendRequests\": [],\n  \"onlyExpectedConsoleErrors\": {\n   \"unexpected\": [],\n   \"refusedHosts\": [\n    \"127.0.0.1:48735\"\n   ]\n  }\n }\n}\n"
+        },
+        "browser_post_p108_gate": {
+          "command": "node app/tests/p108_browser/run_post_p108_browser.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip mibxqwix/3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH/app/static",
+          "returncode": 0,
+          "seconds": 6.3,
+          "tail": "{\n  \"status\": \"PASS\",\n  \"scope\": \"Linux Chromium; persisted real Blob bytes from synthetic fixtures; backend test double; no Mac/camera claim\",\n  \"checks\": {\n    \"analysis6Impact3\": true,\n    \"readbackRetry\": true,\n    \"browserRestartBytesIdentityRestore\": true,\n    \"sessionIsolation\": true,\n    \"restoredRail25\": true,\n    \"thirtyFPSSeparateCounts\": true,\n    \"noRuntimeErrors\": true\n  },\n  \"grouping\": {\n    \"ends\": [\n      {\n        \"end\": 1,\n        \"shots\": [\n          1,\n          2,\n          3,\n          4,\n          5,\n          6\n        ]\n      },\n      {\n        \"end\": 2,\n        \"shots\": [\n          7,\n          8,\n          9,\n          10,\n          11,\n          12\n        ]\n      }\n    ],\n    \"scoring\": 3,\n    \"links\": [\n      3,\n      4\n    ],\n    \"chips\": 3\n  },\n  \"fullCounts\": {\n    \"received\": 30,\n    \"unique\": 30,\n    \"persisted\": 25,\n    \"selected\": 25,\n    \"slots\": 25\n  },\n  \"counts\": {\n    \"received\": 10,\n    \"unique\": 10,\n    \"persisted\": 10,\n    \"selected\": 10,\n    \"logicalSlots\": 25,\n    \"missing\": 15\n  }\n}\n"
+        },
+        "browser_r2_identity_gate": {
+          "command": "node app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip mibxqwix/3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH/app/static",
+          "returncode": 0,
+          "seconds": 4.2,
+          "tail": "ergeAddsOnlyNewFrame\": true,\n    \"historicalNoDuplicateBytes\": true,\n    \"historicalRowsNowDurable\": true,\n    \"equalEpochSizeSourceNotMerged\": true,\n    \"noPageErrors\": true\n  },\n  \"detail\": {\n    \"versions\": {\n      \"identity\": \"R8-Post-P1-08-frame-identity-v4\",\n      \"writer\": \"R8-Post-P108-persist-identity-v2\",\n      \"budget\": \"R8-P1-08-fixed25-domain-chronology-durable-identity-v2\"\n    },\n    \"persist\": {\n      \"first\": {\n        \"n\": 19,\n        \"uniqueUIDs\": 19,\n        \"uniqueBytes\": 19,\n        \"native30\": 14,\n        \"sparse\": 5\n      },\n      \"second\": {\n        \"n\": 19,\n        \"uniqueUIDs\": 19,\n        \"uniqueBytes\": 19,\n        \"native30\": 14,\n        \"sparse\": 5\n      }\n    },\n    \"frozenPersistRan\": {\n      \"ok1\": true,\n      \"ok2\": true\n    },\n    \"rePersistAddsNoRow\": {\n      \"first\": 19,\n      \"second\": 19\n    },\n    \"rePersistNoDuplicateBytes\": {\n      \"rows\": 19,\n      \"uniqueBytes\": 19\n    },\n    \"historical\": {\n      \"stamped\": [\n        \"h2/1%3A12%3Aside/1791171923944/0\",\n        \"h2/1%3A12%3Aside/1791171923944/1\",\n        \"h2/1%3A12%3Aside/1791171923944/2\",\n        \"h2/1%3A12%3Aside/1791171923944/3\",\n        \"h2/1%3A12%3Aside/1791171923944/4\",\n        \"h2/1%3A12%3Aside/1791171923944/5\"\n      ],\n      \"after\": {\n        \"n\": 7,\n        \"uniqueBytes\": 7,\n        \"uniqueUIDs\": 7\n      }\n    },\n    \"historicalSnapshotMergeAddsOnlyNewFrame\": {\n      \"rows\": 7\n    },\n    \"equalEpochSizeSourceNotMerged\": {\n      \"rows\": 2\n    },\n    \"noPageErrors\": []\n  }\n}\n"
+        },
+        "browser_identity_parity": {
+          "command": "node app/tests/phase01/run_identity_parity_chromium_r8c.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 0.8,
+          "tail": "olden\",\n   \"uid\": \"f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a\"\n  },\n  {\n   \"name\": \"u64max\",\n   \"uid\": \"f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d\"\n  },\n  {\n   \"name\": \"utf8\",\n   \"uid\": \"f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49\"\n  },\n  {\n   \"name\": \"overflow\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"negative\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"leadingZero\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"numberSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"boolSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"nullSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"emptyRun\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"missingGen\",\n   \"rejected\": true\n  }\n ],\n \"browser\": [\n  {\n   \"name\": \"golden\",\n   \"uid\": \"f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a\"\n  },\n  {\n   \"name\": \"u64max\",\n   \"uid\": \"f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d\"\n  },\n  {\n   \"name\": \"utf8\",\n   \"uid\": \"f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49\"\n  },\n  {\n   \"name\": \"overflow\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"negative\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"leadingZero\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"numberSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"boolSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"nullSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"emptyRun\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"missingGen\",\n   \"rejected\": true\n  }\n ]\n}\n"
+        },
+        "browser_f01": {
+          "command": "node app/tests/phase01/run_f01_chromium_r8c.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 5.9,
+          "tail": "{\n \"status\": \"PASS\",\n \"harnessCompleted\": true,\n \"checks\": {\n  \"rail25\": true,\n  \"realCountMatchesFrames\": true,\n  \"noIdleLoop\": true,\n  \"activeFollowsReplay\": true,\n  \"slotClickWorks\": true,\n  \"anchorPicksTaggedFrameAtOrAfterTarget\": true,\n  \"anchorReboundAfterPanelRebuild\": true,\n  \"noPageErrors\": true\n },\n \"observed\": {\n  \"initialSlots\": 25,\n  \"initialReal\": 3,\n  \"idleCallbacks1500ms\": 0,\n  \"activeAfterStep\": 2,\n  \"idleAfterStep\": 0,\n  \"realAfterNewRecord\": 5,\n  \"indexAfterSlotClick\": 1,\n  \"indexAfterAnchor\": 2,\n  \"slotsAfterRebuild\": 25,\n  \"anchorRebound\": true,\n  \"idleAfterRebuild\": 0,\n  \"metaText\": \"Slot 1/25 \u00b7 real 5/25\"\n },\n \"errors\": []\n}\n"
+        },
+        "browser_shadow_bundle": {
+          "command": "node app/tests/phase01/run_shadow_bundle_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 4.6,
+          "tail": "{\n \"browser\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36\",\n \"checks\": {\n  \"noNodeGlobals\": true,\n  \"uidParity\": true,\n  \"projectionCanonicalParity\": true,\n  \"archiveV2DigestParity\": true,\n  \"archive16MB\": true,\n  \"payloadDigestBound\": true,\n  \"honestProjectionSaved\": true,\n  \"forgedProjectionRejected\": true,\n  \"namespacePolicyFixed\": true,\n  \"noPageErrors\": true\n },\n \"detail\": {\n  \"forgedSave\": \"PROJECTION_PHASE_MISMATCH: S06 time/uncertainty not the candidate's\",\n  \"honestSave\": \"committed\",\n  \"archive16MB\": true,\n  \"wrongBytes\": \"PAYLOAD_DIGEST_MISMATCH\",\n  \"pageErrors\": []\n }\n}\nShadow bundle Chromium gate: PASS (10 checks)\n"
+        },
+        "browser_anchor_single_owner": {
+          "command": "node app/tests/phase01/run_anchor_ownership_chromium.cjs http://127.0.0.1:46549/static/index.html /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 4.6,
+          "tail": "{\n \"status\": \"SINGLE_OWNER\",\n \"atLoad\": {\n  \"present\": true,\n  \"clickListeners\": 1,\n  \"listenerScripts\": [\n   \"script#39:20\"\n  ],\n  \"hv2Bound\": \"1\",\n  \"onclickProp\": \"object\"\n },\n \"after3s\": {\n  \"present\": true,\n  \"clickListeners\": 1,\n  \"listenerScripts\": [\n   \"script#39:20\"\n  ],\n  \"hv2Bound\": \"1\",\n  \"onclickProp\": \"object\"\n }\n}\n"
+        },
+        "browser_fullpage_liveness": {
+          "command": "node app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs http://127.0.0.1:46549/static/index.html /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 7.4,
+          "tail": "{\n \"status\": \"LOADED\",\n \"responsive\": true,\n \"state\": {\n  \"temporalCore\": true,\n  \"cameraTimeline\": true,\n  \"nativeCapture\": true,\n  \"evidenceRepair\": true,\n  \"formAnalyzer\": true,\n  \"rail25\": 25\n },\n \"pageErrors\": []\n}\n"
+        }
+      },
+      "top_level": [
+        "3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH"
+      ],
+      "package_id": "3PM_Analyzer_R8_POST_P108_R3_MAC_BENCH_20261005",
+      "artifact_class": "field_test_not_production",
+      "js_regressions": {
+        "pass": 117,
+        "total": 117,
+        "failed": []
+      },
+      "phase01": {
+        "pass": 15,
+        "total": 15,
+        "failed": []
+      },
+      "all_checks_pass": true
+    },
+    {
+      "zip": "3PM_Analyzer_R8_POST_P108_R3_DEV_20261005.zip",
+      "sha256": "d684a9514bde80943104509b15cb11141bb58dd0f1d90d9c064156b0fc79b165",
+      "size_bytes": 19945588,
+      "checks": {
+        "zip_member_modes": {
+          "returncode": 0,
+          "tail": "launcher/runtimes executable=True; internal scripts non-executable=True"
+        },
+        "distribution_contract": {
+          "command": "/usr/local/bin/python3 -B app/tests/test_distribution_contract_r6.py",
+          "returncode": 0,
+          "seconds": 0.2,
+          "tail": "Distribution contract PASS: sole fixed launcher, reviewed file set, frozen runtimes, internal routing, spaces-safe public entrypoint\n"
+        },
+        "static_integrity": {
+          "command": "/usr/local/bin/python3 -B app/tests/static_integrity_x282.py",
+          "returncode": 0,
+          "seconds": 1.3,
+          "tail": "X2.8.2 static/launch integrity: PASS \u00b7 frozen Dev4 JS hashes exact \u00b7 runtime binary SHA baseline pinned \u00b7 artifact_class=development_not_release\n"
+        },
+        "mac_preflight": {
+          "command": "node app/tests/test_mac_preflight_r5.js",
+          "returncode": 0,
+          "seconds": 0.1,
+          "tail": "Mac launcher preflight executed: PASS (native runtime not executed)\n"
+        },
+        "js_regressions": {
+          "command": "/usr/local/bin/python3 -B app/tests/run_regressions.py",
+          "returncode": 1,
+          "seconds": 12.9,
+          "tail": "odules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49\n\nNode.js v22.22.0\n\ntest_multiview_corroboration_integration_ble43895.js  /tmp/3pm-verify-iomtj54x/3PM fresh unzip 5b17ilm7/3PM_Analyzer_R8_POST_P108_R3_DEV/app/tests/test_multiview_corroboration_integration_ble43895.js:7\nfor(const [f,h] of Object.entries(expected)){const got=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,f))).digest('hex');if(got!==h)throw new Error(`Frozen changed ${f}`)}\n                                                                                                                                                       ^\n\nError: Frozen changed static/pose.js\n    at Object.<anonymous> (/tmp/3pm-verify-iomtj54x/3PM fresh unzip 5b17ilm7/3PM_Analyzer_R8_POST_P108_R3_DEV/app/tests/test_multiview_corroboration_integration_ble43895.js:7:158)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49\n\nNode.js v22.22.0\n\nResults written to /tmp/3pm-verify-iomtj54x/3pm-qa-_p982mr8/r7_results.json\nJS regressions: 114/117 PASS\n"
+        },
+        "browser_fullapp_gate": {
+          "command": "node app/tests/p108_browser/run_fullapp_gate_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip 5b17ilm7/3PM_Analyzer_R8_POST_P108_R3_DEV/app/static",
+          "returncode": 0,
+          "seconds": 18.6,
+          "tail": "\"after\": 5\n  },\n  \"play\": {\n   \"playing\": true\n  },\n  \"anchorConsistentNoTarget\": {\n   \"disabled\": true,\n   \"handler\": {\n    \"r\": false,\n    \"moved\": false\n   }\n  },\n  \"roleSwitch\": {\n   \"sel\": 11,\n   \"role\": \"rear\",\n   \"n\": 5,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 5,\n   \"missing\": 20,\n   \"offs\": [\n    -200,\n    -100,\n    0,\n    100,\n    200\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 6\n  },\n  \"shotSwitchNoStaleFrames\": {\n   \"sel\": 12,\n   \"role\": \"side\",\n   \"n\": 6,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 6,\n   \"missing\": 19,\n   \"offs\": [\n    -60,\n    -27,\n    6,\n    39,\n    900,\n    2000\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 7\n  },\n  \"shotSwitchPhysicalOrder\": [\n   -60,\n   -27,\n   6,\n   39,\n   900,\n   2000\n  ],\n  \"panelRebuildRail25\": {\n   \"sel\": 12,\n   \"role\": \"side\",\n   \"n\": 6,\n   \"idx\": 2,\n   \"playing\": false,\n   \"real\": 6,\n   \"missing\": 19,\n   \"offs\": [\n    -60,\n    -27,\n    6,\n    39,\n    900,\n    2000\n   ],\n   \"anchorDisabled\": true,\n   \"urls\": 7\n  },\n  \"noObjectUrlLeak\": {\n   \"liveObjectUrls\": 7,\n   \"currentFrames\": 6\n  },\n  \"idleObserverSettlesAfterInteraction\": {\n   \"rail\": 2,\n   \"maxPerSecond\": 60,\n   \"by\": {\n    \"field_polish_layer.js:26#5\": 120,\n    \"field_polish_layer.js:26#6\": 120,\n    \"field_polish_layer.js:26#7\": 120,\n    \"evidence_integrity_repair_layer.js:69#3\": 2\n   }\n  },\n  \"noPageErrors\": [],\n  \"noUnhandledBackendRequests\": [],\n  \"onlyExpectedConsoleErrors\": {\n   \"unexpected\": [],\n   \"refusedHosts\": [\n    \"127.0.0.1:48735\"\n   ]\n  }\n }\n}\n"
+        },
+        "browser_post_p108_gate": {
+          "command": "node app/tests/p108_browser/run_post_p108_browser.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip 5b17ilm7/3PM_Analyzer_R8_POST_P108_R3_DEV/app/static",
+          "returncode": 0,
+          "seconds": 6.4,
+          "tail": "{\n  \"status\": \"PASS\",\n  \"scope\": \"Linux Chromium; persisted real Blob bytes from synthetic fixtures; backend test double; no Mac/camera claim\",\n  \"checks\": {\n    \"analysis6Impact3\": true,\n    \"readbackRetry\": true,\n    \"browserRestartBytesIdentityRestore\": true,\n    \"sessionIsolation\": true,\n    \"restoredRail25\": true,\n    \"thirtyFPSSeparateCounts\": true,\n    \"noRuntimeErrors\": true\n  },\n  \"grouping\": {\n    \"ends\": [\n      {\n        \"end\": 1,\n        \"shots\": [\n          1,\n          2,\n          3,\n          4,\n          5,\n          6\n        ]\n      },\n      {\n        \"end\": 2,\n        \"shots\": [\n          7,\n          8,\n          9,\n          10,\n          11,\n          12\n        ]\n      }\n    ],\n    \"scoring\": 3,\n    \"links\": [\n      3,\n      4\n    ],\n    \"chips\": 3\n  },\n  \"fullCounts\": {\n    \"received\": 30,\n    \"unique\": 30,\n    \"persisted\": 25,\n    \"selected\": 25,\n    \"slots\": 25\n  },\n  \"counts\": {\n    \"received\": 10,\n    \"unique\": 10,\n    \"persisted\": 10,\n    \"selected\": 10,\n    \"logicalSlots\": 25,\n    \"missing\": 15\n  }\n}\n"
+        },
+        "browser_r2_identity_gate": {
+          "command": "node app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome /tmp/3pm-verify-iomtj54x/3PM fresh unzip 5b17ilm7/3PM_Analyzer_R8_POST_P108_R3_DEV/app/static",
+          "returncode": 0,
+          "seconds": 4.5,
+          "tail": "ergeAddsOnlyNewFrame\": true,\n    \"historicalNoDuplicateBytes\": true,\n    \"historicalRowsNowDurable\": true,\n    \"equalEpochSizeSourceNotMerged\": true,\n    \"noPageErrors\": true\n  },\n  \"detail\": {\n    \"versions\": {\n      \"identity\": \"R8-Post-P1-08-frame-identity-v4\",\n      \"writer\": \"R8-Post-P108-persist-identity-v2\",\n      \"budget\": \"R8-P1-08-fixed25-domain-chronology-durable-identity-v2\"\n    },\n    \"persist\": {\n      \"first\": {\n        \"n\": 19,\n        \"uniqueUIDs\": 19,\n        \"uniqueBytes\": 19,\n        \"native30\": 14,\n        \"sparse\": 5\n      },\n      \"second\": {\n        \"n\": 19,\n        \"uniqueUIDs\": 19,\n        \"uniqueBytes\": 19,\n        \"native30\": 14,\n        \"sparse\": 5\n      }\n    },\n    \"frozenPersistRan\": {\n      \"ok1\": true,\n      \"ok2\": true\n    },\n    \"rePersistAddsNoRow\": {\n      \"first\": 19,\n      \"second\": 19\n    },\n    \"rePersistNoDuplicateBytes\": {\n      \"rows\": 19,\n      \"uniqueBytes\": 19\n    },\n    \"historical\": {\n      \"stamped\": [\n        \"h2/1%3A12%3Aside/1791172088563/0\",\n        \"h2/1%3A12%3Aside/1791172088563/1\",\n        \"h2/1%3A12%3Aside/1791172088563/2\",\n        \"h2/1%3A12%3Aside/1791172088563/3\",\n        \"h2/1%3A12%3Aside/1791172088563/4\",\n        \"h2/1%3A12%3Aside/1791172088563/5\"\n      ],\n      \"after\": {\n        \"n\": 7,\n        \"uniqueBytes\": 7,\n        \"uniqueUIDs\": 7\n      }\n    },\n    \"historicalSnapshotMergeAddsOnlyNewFrame\": {\n      \"rows\": 7\n    },\n    \"equalEpochSizeSourceNotMerged\": {\n      \"rows\": 2\n    },\n    \"noPageErrors\": []\n  }\n}\n"
+        },
+        "browser_identity_parity": {
+          "command": "node app/tests/phase01/run_identity_parity_chromium_r8c.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 0.7,
+          "tail": "olden\",\n   \"uid\": \"f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a\"\n  },\n  {\n   \"name\": \"u64max\",\n   \"uid\": \"f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d\"\n  },\n  {\n   \"name\": \"utf8\",\n   \"uid\": \"f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49\"\n  },\n  {\n   \"name\": \"overflow\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"negative\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"leadingZero\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"numberSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"boolSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"nullSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"emptyRun\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"missingGen\",\n   \"rejected\": true\n  }\n ],\n \"browser\": [\n  {\n   \"name\": \"golden\",\n   \"uid\": \"f1/c211a2255ab0c090f787e7e10248515082fd50466306810e25a11150ebc8ac4a\"\n  },\n  {\n   \"name\": \"u64max\",\n   \"uid\": \"f1/8450da34a538fb6bd48cef34c46f529ce5311b1d92133cf3bd302c3c105cd42d\"\n  },\n  {\n   \"name\": \"utf8\",\n   \"uid\": \"f1/6d17630d3deb13100eae9b2020dd931a0db4a8ec177cac1ac22a5c730f17be49\"\n  },\n  {\n   \"name\": \"overflow\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"negative\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"leadingZero\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"numberSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"boolSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"nullSeq\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"emptyRun\",\n   \"rejected\": true\n  },\n  {\n   \"name\": \"missingGen\",\n   \"rejected\": true\n  }\n ]\n}\n"
+        },
+        "browser_f01": {
+          "command": "node app/tests/phase01/run_f01_chromium_r8c.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 5.9,
+          "tail": "{\n \"status\": \"PASS\",\n \"harnessCompleted\": true,\n \"checks\": {\n  \"rail25\": true,\n  \"realCountMatchesFrames\": true,\n  \"noIdleLoop\": true,\n  \"activeFollowsReplay\": true,\n  \"slotClickWorks\": true,\n  \"anchorPicksTaggedFrameAtOrAfterTarget\": true,\n  \"anchorReboundAfterPanelRebuild\": true,\n  \"noPageErrors\": true\n },\n \"observed\": {\n  \"initialSlots\": 25,\n  \"initialReal\": 3,\n  \"idleCallbacks1500ms\": 0,\n  \"activeAfterStep\": 2,\n  \"idleAfterStep\": 0,\n  \"realAfterNewRecord\": 5,\n  \"indexAfterSlotClick\": 1,\n  \"indexAfterAnchor\": 2,\n  \"slotsAfterRebuild\": 25,\n  \"anchorRebound\": true,\n  \"idleAfterRebuild\": 0,\n  \"metaText\": \"Slot 1/25 \u00b7 real 5/25\"\n },\n \"errors\": []\n}\n"
+        },
+        "browser_shadow_bundle": {
+          "command": "node app/tests/phase01/run_shadow_bundle_chromium.cjs /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 4.2,
+          "tail": "{\n \"browser\": \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36\",\n \"checks\": {\n  \"noNodeGlobals\": true,\n  \"uidParity\": true,\n  \"projectionCanonicalParity\": true,\n  \"archiveV2DigestParity\": true,\n  \"archive16MB\": true,\n  \"payloadDigestBound\": true,\n  \"honestProjectionSaved\": true,\n  \"forgedProjectionRejected\": true,\n  \"namespacePolicyFixed\": true,\n  \"noPageErrors\": true\n },\n \"detail\": {\n  \"forgedSave\": \"PROJECTION_PHASE_MISMATCH: S06 time/uncertainty not the candidate's\",\n  \"honestSave\": \"committed\",\n  \"archive16MB\": true,\n  \"wrongBytes\": \"PAYLOAD_DIGEST_MISMATCH\",\n  \"pageErrors\": []\n }\n}\nShadow bundle Chromium gate: PASS (10 checks)\n"
+        },
+        "browser_anchor_single_owner": {
+          "command": "node app/tests/phase01/run_anchor_ownership_chromium.cjs http://127.0.0.1:58685/static/index.html /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 4.3,
+          "tail": "{\n \"status\": \"SINGLE_OWNER\",\n \"atLoad\": {\n  \"present\": true,\n  \"clickListeners\": 1,\n  \"listenerScripts\": [\n   \"script#38:20\"\n  ],\n  \"hv2Bound\": \"1\",\n  \"onclickProp\": \"object\"\n },\n \"after3s\": {\n  \"present\": true,\n  \"clickListeners\": 1,\n  \"listenerScripts\": [\n   \"script#38:20\"\n  ],\n  \"hv2Bound\": \"1\",\n  \"onclickProp\": \"object\"\n }\n}\n"
+        },
+        "browser_fullpage_liveness": {
+          "command": "node app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs http://127.0.0.1:58685/static/index.html /opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+          "returncode": 0,
+          "seconds": 7.0,
+          "tail": "{\n \"status\": \"LOADED\",\n \"responsive\": true,\n \"state\": {\n  \"temporalCore\": true,\n  \"cameraTimeline\": true,\n  \"nativeCapture\": true,\n  \"evidenceRepair\": true,\n  \"formAnalyzer\": true,\n  \"rail25\": 25\n },\n \"pageErrors\": []\n}\n"
+        }
+      },
+      "top_level": [
+        "3PM_Analyzer_R8_POST_P108_R3_DEV"
+      ],
+      "package_id": "3PM_Analyzer_R8_POST_P108_R3_DEV_20261005",
+      "artifact_class": "development_not_release",
+      "js_regressions": {
+        "pass": 114,
+        "total": 117,
+        "failed": [
+          "app/tests/test_field_resilience_ble43894.js",
+          "app/tests/test_multicamera_skeleton_ble4362.js",
+          "app/tests/test_multiview_corroboration_integration_ble43895.js"
+        ]
+      },
+      "phase01": {
+        "pass": 15,
+        "total": 15,
+        "failed": []
+      },
+      "all_checks_pass": false
+    }
+  ]
+}

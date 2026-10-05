@@ -1,0 +1,2 @@
+SUPERSEDED 2026-10-05 by ../POST_P108_R3_20261005 (owner decided D-R2-01 = option 1; Mac bench package 117/117 on Linux).
+Do not use the R2 ZIPs or the R2 handoff prompt for new work.
