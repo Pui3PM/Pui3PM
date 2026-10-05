@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('assert');
+const P=require('../static/camera_policy.js');
+const G=require('../static/camera_fps_guard_core.js');
+assert.equal(G.VERSION,'BLE4.3.8.9.4.1-camera-fps-guard-core-v1');
+const caps60={width:{min:640,max:1920},height:{min:360,max:1080},frameRate:{min:15,max:60}};
+const caps30={width:{min:640,max:1920},height:{min:360,max:1080},frameRate:{min:15,max:30}};
+assert.equal(P.candidates('side',1,'auto',caps60,true)[0].id,'720p60','single-camera Auto must prefer genuine advertised 60 fps');
+assert(!P.candidates('side',1,'auto',caps30,true).some(x=>x.highFps),'30-fps camera must never receive a 60-fps request');
+assert(!P.candidates('side',2,'auto',caps60,true).some(x=>x.highFps),'multi-camera default must retain proven 30-fps bandwidth budget');
+assert.equal(P.nearestIndex({width:1280,height:720,frameRate:60}),P.PROFILES.findIndex(x=>x.id==='720p60'));
+let s=G.fresh(),r;for(let i=0;i<2;i++){r=G.update(s,{fps:60,poseHz:9,costMs:90,rawFps:58,jitterMs:10,activeCount:1,phase:'Set'});s=r.state;assert.equal(r.action,'hold');}r=G.update(s,{fps:60,poseHz:9,costMs:90,rawFps:58,jitterMs:10,activeCount:1,phase:'Draw',shotActive:true});s=r.state;assert.equal(r.action,'pending-down','fallback must wait until the active shot is safe');r=G.update(s,{fps:60,poseHz:9,costMs:90,rawFps:58,jitterMs:10,activeCount:1,phase:'Set'});s=r.state;assert.equal(r.action,'down30');assert.equal(s.downgraded,true);r=G.update(s,{fps:60,poseHz:60,costMs:10,rawFps:60,jitterMs:1,activeCount:1,phase:'Set'});assert.equal(r.action,'hold');assert.equal(r.reason,'already-fallback','governor must not oscillate back to 60 inside the same session');
+console.log('BLE4.3.8.9.4.1 Camera60 QA PASS · capability-aware 720p60 · multi-cam budget · repeated-strike safe fallback · no mid-shot constraint change');

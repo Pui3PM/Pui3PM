@@ -1,0 +1,39 @@
+{
+  "schema_version": "3PM-hybrid-vision-audit-1.0",
+  "build": "R6-HV1-NativeVisionShadow",
+  "generated_at": "2026-10-01T08:27:00+07:00",
+  "mode": "shadow_only",
+  "production_authority": "MediaPipe + frozen Dev4 shot intelligence",
+  "native_shadow": "Apple Vision body + phase-gated hand pose",
+  "safety_guards": [
+    "side-only",
+    "<=8 Hz",
+    "explicit enable",
+    "capture-cadence auto-pause",
+    "fail-open",
+    "no phase/release/capture/scoring/evidence authority"
+  ],
+  "modified_runtime_support_files": [
+    "app/native_capture_bridge/3PMNativeCaptureBridge.swift",
+    "internal/start_services.sh",
+    "app/static/index.html",
+    "app/static/native_vision_shadow_core.js",
+    "app/static/native_vision_shadow_layer.js",
+    "app/tests/test_native_vision_shadow_hv1.js"
+  ],
+  "frozen_files_unchanged": [
+    "app/static/app.js",
+    "app/static/core_runtime.js",
+    "app/static/pose.js",
+    "app/3PM_Form_Analyzer_arm64",
+    "app/3PM_Form_Analyzer_x64"
+  ],
+  "qa": {
+    "javascript_regressions": "94/94 PASS",
+    "static_integrity": "PASS",
+    "mac_preflight": "PASS (Linux host; native runtime not executed)",
+    "swift_parse": "PASS",
+    "macos_vision_compile_live": "NOT RUN"
+  },
+  "high_speed_capture": "NOT IMPLEMENTED; capability metadata only"
+}

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3PM Archery Form Analyzer V5 X2.8.2 · UNIFIED REVIEW + CONSISTENCY · Mac R8 Merge Candidate</title>
+  <link rel="stylesheet" href="/static/style.css?v=ble438941" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="/static/assets/3pm_archery_logo.cropped.png" alt="3PM Archery" />
+      <div class="brand-copy">
+        <div class="brand-title">Form Analyzer <span class="version-badge">V5 X2.8.2 · UNIFIED REVIEW · CONSISTENCY</span></div>
+        <div class="brand-sub">AI MEASURES · COACH DECIDES</div>
+      </div>
+    </div>
+    <nav>
+      <button class="nav-btn" data-view="home">Home</button>
+      <button class="nav-btn" data-view="athletes">Athletes</button>
+      <button class="nav-btn active" data-view="sessions">Sessions</button>
+      <button class="nav-btn" data-view="analyze">Analyze</button>
+      <button class="nav-btn" data-view="impact">Impact</button>
+      <button class="nav-btn" data-view="compare">Compare</button>
+      <button class="nav-btn" data-view="reports">Reports</button>
+      <button class="nav-btn" data-view="devices">Devices</button>
+      <button class="nav-btn" data-view="settings">Settings</button>
+    </nav>
+    <div class="header-status">
+      <span id="storageStatus" class="status-pill neutral">Storage: checking…</span>
+      <span id="poseHeaderStatus" class="status-pill neutral">Pose: loading…</span>
+      <span id="cameraStatus" class="status-pill neutral">Camera: checking…</span>
+      <span id="buildVerifyBadge" class="status-pill neutral compact-status">Core: verifying…</span>
+      <button id="coachHeaderButton" class="user coach-header" type="button" title="Open Coach Profile"><span id="headerCoachName">Coach</span><span class="coach-header-role"> · Coach</span></button>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- HOME -->
+    <section id="view-home" class="view dashboard-page">
+      <div class="page-shell">
+        <div class="page-title-row">
+          <div><h1>Coach Dashboard</h1><p class="muted">Local-first overview of athletes, sessions and analysis.</p></div>
+          <button class="primary" id="homeNewSessionBtn">+ New Session</button>
+        </div>
+        <div class="dashboard-stats">
+          <div class="stat-card card"><span>Athletes</span><strong id="homeAthleteCount">0</strong></div>
+          <div class="stat-card card"><span>Sessions</span><strong id="homeSessionCount">0</strong></div>
+          <div class="stat-card card"><span>Shots Logged</span><strong id="homeShotCount">0</strong></div>
+          <div class="stat-card card"><span>Reference Shots</span><strong id="homeReferenceCount">0</strong></div>
+        </div>
+        <div class="home-grid">
+          <div class="card panel-pad">
+            <div class="section-head"><h2>Recent Sessions</h2><button class="small-btn" data-go-view="sessions">Open Sessions</button></div>
+            <div id="recentSessions" class="recent-list"></div>
+          </div>
+          <div class="card panel-pad">
+            <div class="section-head"><h2>System Readiness</h2><span class="badge">Local</span></div>
+            <div class="readiness-list">
+              <div><span>Camera</span><b id="homeCameraReady">Checking…</b></div>
+              <div><span>Pose Engine</span><b id="homePoseReady">Loading…</b></div>
+              <div><span>Storage</span><b id="homeStorageReady">Checking…</b></div>
+              <div><span>Auto Release Marking</span><b id="homeAutoMarkReady">On</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATHLETES + EQUIPMENT -->
+    <section id="view-athletes" class="view form-page v21-profile-page">
+      <div class="card form-card profile-editor-card">
+        <div class="section-head">
+          <div><h1 id="athleteEditorTitle">Add Athlete</h1><p class="muted">Create, edit or delete athlete profiles. Session measurements always stay linked to the selected athlete.</p></div>
+          <button id="newAthleteBtn" class="small-btn" type="button">+ New Athlete</button>
+        </div>
+        <form id="athleteForm" class="form-grid">
+          <input type="hidden" name="athlete_id" id="athleteId" />
+          <label>Name<input name="name" required /></label>
+          <label>Handedness<select name="handedness"><option>Right-handed</option><option>Left-handed</option></select></label>
+          <label>Discipline<select name="discipline"><option>Olympic Recurve</option><option>Barebow</option></select></label>
+          <label>Age Group<select name="age_group"><option>Youth</option><option selected>Adult</option><option>Masters</option></select></label>
+          <label>Experience<select name="experience_level"><option>Beginner</option><option>Developing</option><option selected>Intermediate</option><option>Advanced</option><option>Competitive</option></select></label>
+          <label>Height (cm)<input type="number" min="50" max="250" step="0.01" name="height_cm"  inputmode="decimal" autocomplete="off" /></label>
+          <label>Arm Span (cm)<input type="number" min="50" max="260" step="0.01" name="arm_span_cm"  inputmode="decimal" autocomplete="off" /></label>
+          <label title="AMO/ATA draw length = nock groove at full draw to grip pivot point + 1.75 inches.">Measured Draw Length AMO / ATA (in)<input type="number" min="10" max="40" step="0.01" name="draw_length_in" inputmode="decimal" autocomplete="off" /><small id="eqlabDrawEstimate">Enter arm span for a starting estimate.</small></label>
+          <label class="span2">Coach Note<textarea name="coach_note" rows="3" placeholder="Long-term athlete notes, coaching context or restrictions."></textarea></label>
+          <label class="check"><input type="checkbox" name="archived" /> Archived</label>
+          <div class="form-actions span2">
+            <button type="button" id="deleteAthleteBtn" class="danger-btn hidden">Delete Athlete</button>
+            <span class="form-spacer"></span>
+            <button type="button" id="cancelAthleteEditBtn" class="small-btn hidden">Cancel Edit</button>
+            <button class="primary" type="submit" id="saveAthleteBtn">Save Athlete</button>
+          </div>
+        </form>
+      </div>
+      <div class="card list-card profile-list-card">
+        <div class="section-head"><h2>Athletes</h2><span class="muted">Click Edit to load a profile.</span></div>
+        <div id="athleteList"></div>
+      </div>
+
+      <div class="card form-card span-page equipment-editor-card">
+        <div class="section-head">
+          <div><h1 id="equipmentEditorTitle">Add Equipment Profile</h1><p class="muted">Save bow geometry, BH/tiller and component weights as context. Blank values stay Unknown. Draw weight remains in lb and arrow weight remains in grains.</p><small id="equipmentCatalogVersion">Equipment Catalog · loading…</small></div>
+          <button id="newEquipmentBtn" class="small-btn" type="button">+ New Equipment</button>
+        </div>
+        <form id="equipmentForm" class="equipment-editor-form">
+          <input type="hidden" name="equipment_id" id="equipmentId" />
+          <div class="form-section">
+            <h3>Profile & Bow</h3>
+            <p class="muted">Choose the product once. Model identity stays separate from size, marked specification and your measured setup values. Catalog facts fill automatically when known; measured values remain yours.</p>
+            <div class="form-grid equipment-form-grid">
+              <label>Athlete<select name="athlete_id" id="equipmentAthlete" required></select></label>
+              <label>Setup Name<input name="name" placeholder="Outdoor 70m / Indoor / Barebow" required /></label>
+              <label>Discipline<select name="discipline" id="equipmentDiscipline"><option>Olympic Recurve</option><option>Barebow</option></select></label>
+              <label>Component Mass Display Unit<select name="weight_unit" id="equipmentWeightUnit" title="Used for catalog/self-weight/accessory mass fields. Numeric values are converted when this unit changes. Draw weight remains lb and arrow weight remains grains."><option value="g">grams (g)</option><option value="oz">ounces (oz)</option></select></label>
+
+              <label>Riser Brand<select id="currentRiserBrand"><option value="">Select brand</option></select></label>
+              <label>Riser Model<select id="currentRiserModel"><option value="">Select model</option></select><input type="hidden" name="riser_model" /><small id="eqlabRiserCatalogStatus">Choose brand → model → length</small></label>
+              <label>Riser Length<select id="currentRiserLength"><option value="">Select model first / Unknown</option></select><input class="hidden" type="number" step="0.01" name="riser_in" id="currentRiserLengthCustom" inputmode="decimal" placeholder="Custom length (in)" /></label>
+
+              <label>Limb Brand<select id="currentLimbBrand"><option value="">Select brand</option></select></label>
+              <label>Limb Model<select id="currentLimbModel"><option value="">Select model</option></select><input type="hidden" name="limb_model" /><small id="eqlabLimbCatalogStatus">Choose model; size and marked draw weight are separate</small></label>
+              <label>Limb Size<select name="limb_size" id="currentLimbSize"><option value="">Select limb model first / Unknown</option></select></label>
+              <label>Marked Draw Weight (lb)<select name="marked_draw_weight_lb" id="currentMarkedDrawWeight"><option value="">Select limb model first / Unknown</option></select><small>Manufacturer/model specification</small></label>
+              <label>Actual On-the-Fingers (lb)<input type="number" step="0.01" name="actual_draw_weight_lb" inputmode="decimal" placeholder="Measured actual" /><small>Measured setup value, not the limb label</small></label>
+              <label title="Derived from riser length + limb size for standard target recurve geometry. Disable Auto only for a manufacturer-specific/custom combination.">Bow Length AMO (nominal, in)<input type="number" step="0.01" name="bow_length_in" inputmode="decimal" /></label>
+              <label class="check"><input type="checkbox" id="autoBowLengthToggle" checked /> Auto AMO from riser + limb size</label>
+
+              <label>Sight Brand<select id="currentSightBrand"><option value="">Select brand</option></select></label>
+              <label>Sight Model<select id="currentSightModel"><option value="">Select model</option></select><input type="hidden" name="sight_model" /><small id="eqlabSightCatalogStatus">Catalog identity; fitted status is derived automatically</small></label>
+              <label>Sight Mass <span class="equipment-unit-hint" data-unit-for="sight_weight"></span><input type="number" step="0.001" name="sight_weight" inputmode="decimal" placeholder="Catalog / measured if unknown" /><small id="eqlabSightMassStatus">Auto from catalog when exact mass is known</small></label>
+
+              <input class="hidden" type="checkbox" name="sight" aria-hidden="true" tabindex="-1" />
+              <input class="hidden" type="checkbox" name="clicker" aria-hidden="true" tabindex="-1" />
+              <label class="check"><input type="checkbox" name="is_default" /> Default setup for this athlete</label>
+            </div>
+          </div>
+
+          <div class="form-section bow-setup-section">
+            <h3>Bow Setup Geometry</h3>
+            <p class="muted">Brace Height and tiller are setup measurements, separate from component weight. Tiller Difference is calculated as Upper − Lower; no universal “good” value is assumed.</p>
+            <div class="form-grid equipment-form-grid">
+              <label>Setup Distance Unit<select name="setup_distance_unit" id="equipmentSetupDistanceUnit"><option value="mm">millimetres (mm)</option><option value="in">inches (in)</option></select></label>
+              <label>Brace Height (BH)<input type="number" step="0.01" name="brace_height" inputmode="decimal" autocomplete="off" placeholder="Unknown" /></label>
+              <label>Upper Tiller<input type="number" step="0.01" name="upper_tiller" inputmode="decimal" autocomplete="off" placeholder="Unknown" /></label>
+              <label>Lower Tiller<input type="number" step="0.01" name="lower_tiller" inputmode="decimal" autocomplete="off" placeholder="Unknown" /></label>
+              <div class="computed-weight tiller-difference"><span>Tiller Difference · Upper − Lower</span><strong id="equipmentTillerDiff">—</strong></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Stabilizer Setup</h3>
+            <div class="equipment-advisor-card" id="eqlabStabilizerAdvisor"><strong>3PM Stabilizer Starting Reference</strong><span id="eqlabStabAthleteContext">Uses Athlete + Bow data automatically</span><span id="eqlabStabSuggestion">Enter/select athlete, draw length and current stabilizer setup.</span><small>Starting reference only · compare with bow balance, form and later Bow Sensor evidence.</small></div>
+            <p class="muted">Select product identity once, then choose the actual installed length/variant. Catalog self-mass is filled from the matching length when available. End-stack weight is a measured/setup value and stays in ounces because target stabilizer weights are normally specified that way.</p>
+            <div class="form-grid weight-grid">
+              <label>Long Rod Brand<select id="currentLongRodBrand"><option value="">Select brand</option></select></label>
+              <label>Long Rod Model<select id="currentLongRodModel"><option value="">Select model</option></select><input type="hidden" data-eqlab-key="long_rod_model" /><small id="eqlabLongRodCatalogStatus">Choose model → installed length</small></label>
+              <label>Long Rod Length<select id="currentLongRodLength"><option value="">Select model first / Unknown</option></select><input class="hidden" type="number" step="0.01" name="long_rod_length_in" id="currentLongRodLengthCustom" inputmode="decimal" placeholder="Custom length (in)" /></label>
+              <label>Long Rod Self Mass<input type="number" step="0.001" name="long_rod_self_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabLongRodMassStatus">Matched to selected model + length when known</small></label>
+              <label>Long Rod End / Stack Weight (oz)<input type="number" step="0.01" name="long_rod_end_weight" inputmode="decimal" placeholder="Actual installed total" /></label>
+
+              <label>Side Rod Brand<select id="currentSideRodBrand"><option value="">Select brand</option></select></label>
+              <label>Side Rod Model<select id="currentSideRodModel"><option value="">Select model</option></select><input type="hidden" data-eqlab-key="side_rod_model" /></label>
+              <label>Left Side Rod Length<select id="currentLeftSideRodLength"><option value="">Select model first / Unknown</option></select><input class="hidden" type="number" step="0.01" name="left_side_rod_length_in" id="currentLeftSideRodLengthCustom" inputmode="decimal" placeholder="Custom length (in)" /></label>
+              <label>Left Side Rod Self Mass<input type="number" step="0.001" name="left_side_rod_self_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabLeftSideRodMassStatus">Matched to selected model + length when known</small></label>
+              <label>Left Side Rod End / Stack Weight (oz)<input type="number" step="0.01" name="left_side_rod_end_weight" inputmode="decimal" placeholder="Actual installed total" /></label>
+              <label>Right Side Rod Length<select id="currentRightSideRodLength"><option value="">Select model first / Unknown</option></select><input class="hidden" type="number" step="0.01" name="right_side_rod_length_in" id="currentRightSideRodLengthCustom" inputmode="decimal" placeholder="Custom length (in)" /></label>
+              <label>Right Side Rod Self Mass<input type="number" step="0.001" name="right_side_rod_self_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabRightSideRodMassStatus">Matched to selected model + length when known</small></label>
+              <label>Right Side Rod End / Stack Weight (oz)<input type="number" step="0.01" name="right_side_rod_end_weight" inputmode="decimal" placeholder="Actual installed total" /></label>
+
+              <label>Extender Brand<select id="currentExtenderBrand"><option value="">Select brand</option></select></label>
+              <label>Extender Model<select id="currentExtenderModel"><option value="">Select model</option></select><input type="hidden" data-eqlab-key="extender_model" /></label>
+              <label>Extender Length<select id="currentExtenderLength"><option value="">Select model first / Unknown</option></select><input class="hidden" type="number" step="0.01" name="extender_length_in" id="currentExtenderLengthCustom" inputmode="decimal" placeholder="Custom length (in)" /></label>
+              <label>Extender Mass<input type="number" step="0.001" name="extender_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabExtenderMassStatus">Matched to selected model + length when known</small></label>
+
+              <label>V-Bar Brand<select id="currentVbarBrand"><option value="">Select brand</option></select></label>
+              <label>V-Bar Model<select id="currentVbarModel"><option value="">Select model</option></select><input type="hidden" data-eqlab-key="vbar_model" /><small>Not Installed / Unknown is allowed</small></label>
+              <label>V-Bar Variant / Setting<select id="currentVbarVariant" data-eqlab-key="vbar_variant"><option value="">Select model first / Unknown</option></select></label>
+              <div class="computed-weight"><span>V-Bar Geometry</span><strong id="eqlabVbarGeometry">—</strong><small id="eqlabVbarGeometryStatus">Fixed geometry is derived from the selected variant</small></div>
+              <label id="eqlabVbarTypeField" class="hidden">V-Bar Type<select name="vbar_type"><option value="">Unknown</option><option>Fixed</option><option>Adjustable</option></select></label>
+              <label id="eqlabVbarOutField" class="hidden">V-Bar Out Angle (°)<input type="number" step="0.01" name="vbar_angle_out_deg" inputmode="decimal" /></label>
+              <label id="eqlabVbarDownField" class="hidden">V-Bar Down Angle (°)<input type="number" step="0.01" name="vbar_angle_down_deg" inputmode="decimal" /></label>
+              <label>V-Bar Mass<input type="number" step="0.001" name="vbar_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabVbarMassStatus">Auto from the selected variant when exact mass is known</small></label>
+
+              <label>Damper Brand<select data-eqlab-key="damper_brand" id="eqlabDamperBrand"></select></label>
+              <label>Damper Model<select data-eqlab-key="damper_model" id="eqlabDamperModel"></select></label>
+              <label>Damper Mass<input type="number" step="0.001" name="damper_weight" inputmode="decimal" placeholder="Catalog / measured" /><small id="eqlabDamperMassStatus">Auto from catalog when exact mass is known</small></label>
+
+              <label>Weight System Brand (optional)<select data-eqlab-key="stab_weight_brand" id="eqlabStabWeightBrand"></select></label>
+              <label>Weight Model (optional)<select data-eqlab-key="stab_weight_model" id="eqlabStabWeightModel"></select><small>Reference only; installed end-stack totals are entered once above</small></label>
+              <label>Additional Bow-Attached Mass<input type="number" step="0.001" name="other_bow_weight" inputmode="decimal" placeholder="Only if not represented above" /></label>
+            </div>
+          </div>
+
+          <div class="form-section hidden" id="barebowWeightSection">
+            <h3>Barebow Weighting</h3>
+            <p class="muted">Shown only for Barebow. Record actual added riser weights here; do not repeat normal riser self-mass or stabilizer weights.</p>
+            <div class="form-grid weight-grid">
+              <label>Top Riser Weight<input type="number" step="0.001" name="riser_top_weight" inputmode="decimal" /></label>
+              <label>Bottom Riser Weight<input type="number" step="0.001" name="riser_bottom_weight" inputmode="decimal" /></label>
+              <label>Front Riser Weight<input type="number" step="0.001" name="riser_front_weight" inputmode="decimal" /></label>
+              <label>Other Riser Weight<input type="number" step="0.001" name="riser_other_weight" inputmode="decimal" /></label>
+            </div>
+          </div>
+
+          <div class="form-section equipment-lab-section">
+            <h3>Bow Accessories & Tuning</h3>
+            <p class="muted">Product identity is selected once. Tuning fields contain only the actual setup values that cannot be inferred from the catalog.</p>
+            <div class="equipment-advisor-card"><strong id="eqlabCurrentBowSummary">Current bow setup · not selected</strong><small>Riser, limb, size, marked weight and OTF are reused from Profile & Bow.</small></div>
+            <div class="form-grid equipment-form-grid">
+              <label>Limb Construction<input data-eqlab-key="limb_construction" readonly placeholder="From catalog / Unknown" /></label>
+              <label>Limb Bolt · Turns Out<input type="number" step="0.25" min="0" data-eqlab-key="limb_bolt_turns_out" inputmode="decimal" placeholder="Measured setup" /></label>
+
+              <label>Plunger Brand<select data-eqlab-key="plunger_brand" id="eqlabPlungerBrand"><option value="">Select brand</option></select></label>
+              <label>Plunger Model<select data-eqlab-key="plunger_model" id="eqlabPlungerModel"><option value="">Select model</option></select><small id="eqlabPlungerCatalogStatus">Choose brand → model</small></label>
+              <label>Plunger Spring<select data-eqlab-key="plunger_spring"><option value="">Unknown</option><option>Soft</option><option>Medium</option><option>Stiff</option><option>Other / Custom</option></select></label>
+              <label>Plunger Tension · Amount<input type="number" step="0.25" min="0" data-eqlab-key="plunger_tension_amount" inputmode="decimal" placeholder="Measured setup" /></label>
+              <label>Plunger Tension · Unit<select data-eqlab-key="plunger_tension_unit"><option value="">Unknown</option><option value="clicks">clicks</option><option value="turns">turns</option></select></label>
+              <label>Centershot<select data-eqlab-key="plunger_centershot"><option value="">Unknown</option><option value="centered">Arrow centered on string</option><option value="tip_out">Arrow tip slightly outside string</option><option value="shaft_out">About 1/2 shaft outside string</option><option value="custom">Custom / see notes</option></select></label>
+
+              <label>Rest Brand<select data-eqlab-key="rest_brand" id="eqlabRestBrand"></select></label>
+              <label>Rest Model<select data-eqlab-key="rest_model" id="eqlabRestModel"></select></label>
+              <label>Clicker Brand<select data-eqlab-key="clicker_brand" id="eqlabClickerBrand"></select></label>
+              <label>Clicker Model<select data-eqlab-key="clicker_model" id="eqlabClickerModel"></select></label>
+              <label>Finger Tab Brand<select data-eqlab-key="finger_tab_brand" id="eqlabFingerTabBrand"></select></label>
+              <label>Finger Tab Model<select data-eqlab-key="finger_tab_model" id="eqlabFingerTabModel"></select></label>
+              <label>Finger Tab Size<select data-eqlab-key="finger_tab_size" id="eqlabFingerTabSize"><option value="">Unknown / select model first</option></select></label>
+              <label>String Material<select data-eqlab-key="string_material_id" id="eqlabStringMaterial"><option value="">Unknown / select material</option></select></label>
+              <label>Serving Material<select data-eqlab-key="serving_material_id" id="eqlabServingMaterial"><option value="">Unknown / select material</option></select></label>
+            </div>
+          </div>
+
+          <div class="computed-weight equipment-total-summary"><span id="equipmentTotalWeightLabel">Known Component Weight Subtotal (g)</span><strong id="equipmentTotalWeight">Unknown</strong><small>Only physical masses entered or verified above are counted; unknown values remain unknown.</small></div>
+
+          <div class="form-section">
+            <h3>Arrows</h3>
+            <div class="form-grid equipment-form-grid">
+              <label>Arrow Brand<select data-eqlab-key="arrow_manufacturer" id="eqlabArrowBrand"><option value="">Select brand</option></select></label>
+              <label>Arrow Model<select name="arrow_model" id="eqlabArrowModel"><option value="">Select model</option></select><small id="eqlabArrowCatalogStatus">Choose brand → model → spine</small></label>
+              <label>Arrow Spine / Size<select name="arrow_spine" id="eqlabArrowSpine"><option value="">Select spine / size / custom</option></select></label>
+              <label>Factory Shaft Length (in)<input id="eqlabFactoryShaftLength" readonly placeholder="From catalog / Unknown" /><small>Reference only · never overwrites your cut length.</small></label>
+              <label title="Measured from the deepest/bottom of the nock groove to the cut end of the shaft. Point is not included.">Actual Cut Shaft Length · Nock Groove → Shaft End (in)<input type="number" step="0.01" name="arrow_length_in" inputmode="decimal" /></label>
+              <label>Catalog Point Reference (gr)<input id="eqlabPointReference" readonly placeholder="From catalog / Unknown" /><small>Recommendation/reference only; actual point weight stays separate.</small></label>
+              <label>Point Component<select data-eqlab-key="point_catalog_id" id="eqlabPointCatalog"><option value="">Unknown / select point</option></select><small>Catalog identity is stored separately from measured point weight.</small></label>
+              <label>Actual Point Weight (gr)<input type="number" step="0.01" name="point_weight_gr" inputmode="decimal" /></label>
+              <label>Measured Finished Arrow Weight (gr)<input type="number" step="0.01" name="total_arrow_weight_gr" inputmode="decimal" placeholder="Optional scale measurement" /><small>Actual measurement; kept separate from calculated weight</small></label>
+              <label>Inside Diameter · ID (mm)<input type="number" step="0.001" data-eqlab-key="arrow_id_mm" inputmode="decimal" placeholder="Catalog / custom" /><small data-arrow-spec-source="id">Catalog value when known</small></label>
+              <label>Outside Diameter · OD (mm)<input type="number" step="0.001" data-eqlab-key="arrow_od_mm" inputmode="decimal" placeholder="Catalog / custom" /><small data-arrow-spec-source="od">Catalog value when known</small></label>
+              <label>GPI · grains/in<input type="number" step="0.001" data-eqlab-key="arrow_gpi" inputmode="decimal" placeholder="Catalog / custom" /><small data-arrow-spec-source="gpi">Catalog value when known</small></label>
+              <label>Insert / Outsert<select data-component-picker="insert"><option value="unknown">Unknown</option><option value="na">None / N/A</option><option value="custom">Custom / measured</option></select><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="insert_weight_gr" inputmode="decimal" placeholder="—" /><small data-component-source="insert">Not included until known</small></span></label>
+              <label>Nock<select data-component-picker="nock"><option value="unknown">Unknown</option><option value="custom">Other / Custom measured</option></select><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="nock_weight_gr" inputmode="decimal" placeholder="—" /><small data-component-source="nock">Choose a component</small></span></label>
+              <label>Vanes<select data-component-picker="vane"><option value="unknown">Unknown</option><option value="custom">Other / Custom measured</option></select><span class="component-inline"><span>Qty</span><input type="number" min="1" max="6" step="1" value="3" data-eqlab-key="vane_qty" inputmode="numeric" /></span><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="vane_weight_gr" inputmode="decimal" placeholder="Total weight" /><small data-component-source="vane">Total for all vanes</small></span></label>
+              <label>Vane Tape / Glue<select data-component-picker="vane_attachment"><option value="unknown">Unknown</option><option value="generic_spin_tape">Generic spin-vane tape set · est. 1.75 gr / arrow</option><option value="generic_glue">Generic glue · est. 1.0 gr / arrow</option><option value="na">None / N/A</option><option value="custom">Custom / measured</option></select><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="vane_attachment_weight_gr" inputmode="decimal" placeholder="—" /><small data-component-source="vane_attachment">Choose attachment method</small></span></label>
+              <label>Wrap<select data-component-picker="wrap"><option value="unknown">Unknown</option><option value="na">None / N/A</option><option value="custom">Custom / measured</option></select><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="wrap_weight_gr" inputmode="decimal" placeholder="—" /><small data-component-source="wrap">No generic value assumed</small></span></label>
+              <label>Pin / Bushing<select data-component-picker="pin"><option value="unknown">Unknown</option><option value="na">None / N/A</option><option value="custom">Other / Custom measured</option></select><span class="component-weight-row"><input type="number" step="0.01" data-eqlab-key="pin_weight_gr" inputmode="decimal" placeholder="—" /><small data-component-source="pin">Choose a component</small></span></label>
+              <label>Vane Position · Nock Groove → Leading Edge (mm)<input type="number" step="0.1" data-eqlab-key="vane_position_mm" inputmode="decimal" placeholder="Measured actual" /><small id="eqlabVanePositionHint">Generic starting reference shown after vane selection</small></label>
+              <label title="Optional actual measurement. Measure from the throat/bottom of the nock groove to the balance point of the finished arrow.">Measured Balance Point from Nock Groove (in)<input type="number" step="0.01" data-eqlab-key="balance_point_in" inputmode="decimal" placeholder="Optional actual measurement" /></label>
+              <div class="computed-weight"><span>3PM Estimated Balance Point</span><strong id="eqlabEstimatedBalance">—</strong><small id="eqlabBalanceConfidence">Needs component data</small></div>
+              <div class="computed-weight"><span>Balance Check</span><strong id="eqlabBalanceCompare">Measure actual to compare</strong></div>
+              <div class="computed-weight"><span>Calculated Shaft Weight</span><strong id="eqlabShaftWeight">—</strong></div>
+              <div class="computed-weight"><span>Calculated Finished Weight</span><strong id="eqlabFinishedWeight">—</strong></div>
+              <div class="computed-weight"><span>FOC · Estimated / Measured</span><strong id="eqlabFoc">—</strong><small id="eqlabFocDetail">Uses measured balance when available.</small></div>
+              <div class="computed-weight"><span>Arrow / Spine Advisor</span><strong id="eqlabArrowReference">Enter length + OTF</strong><small id="eqlabSpineHint">Manufacturer-backed where available; generic fallback is labelled.</small></div>
+              <label class="span2">Equipment Notes<textarea name="notes" rows="3" placeholder="Damper type, weight placement, crawl-related barebow notes, etc."></textarea></label>
+            </div>
+          </div>
+
+          <div class="form-section equipment-lab-section">
+            <h3>Setup History</h3>
+            <p class="muted">3PM keeps setup-change context with the profile. You only need to note what changed; technical calculations stay in Advanced details.</p>
+            <div class="form-grid equipment-form-grid">
+              <label class="span2">What changed? <input data-eqlab-key="revision_note" placeholder="Optional · e.g. Point 100 → 120 gr" /></label>
+              <div class="computed-weight"><span>Equipment Lab</span><strong id="eqlabStatus">Saved with profile</strong></div>
+              <details class="span2"><summary>Advanced calculated balance details</summary><div class="form-grid equipment-form-grid" style="margin-top:10px"><div class="computed-weight"><span>Calculated Front Moment</span><strong id="eqlabFrontMoment">—</strong></div><div class="computed-weight"><span>Calculated Side Contribution</span><strong id="eqlabSideMoment">—</strong></div></div></details>
+            </div>
+            <p class="muted" id="eqlabInterpretation">Reference values are starting evidence only. Manufacturer charts, tuning results and athlete-specific shot evidence remain separate from coach judgement.</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="deleteEquipmentBtn" class="danger-btn hidden">Delete Equipment</button>
+            <span class="form-spacer"></span>
+            <button type="button" id="cancelEquipmentEditBtn" class="small-btn hidden">Cancel Edit</button>
+            <button class="primary" type="submit" id="saveEquipmentBtn">Save Equipment</button>
+          </div>
+        </form>
+      </div>
+      <div class="card list-card span-page equipment-profile-list">
+        <div class="section-head"><h2>Equipment Profiles</h2><span class="muted">Profiles stay tied to an athlete and can be reused across sessions.</span></div>
+        <div id="equipmentList" class="equipment-list"></div>
+      </div>
+    </section>
+
+    <!-- SESSIONS / LIVE CAPTURE -->
+    <section id="view-sessions" class="view active">
+      <aside class="sidebar card">
+        <div class="section-head">
+          <h2>Session</h2>
+          <div class="compact-actions"><button id="newSessionBtn" class="small-btn">+ New</button><button id="editSessionBtn" class="small-btn">Edit</button><button id="deleteSessionBtn" class="danger-mini">Delete</button></div>
+        </div>
+        <label class="sidebar-field">Active Athlete<select id="activeAthleteSelect"></select></label>
+        <label class="sidebar-field">Session<select id="sessionSelect"></select></label>
+        <div id="sessionInfo" class="info-block"></div>
+
+        <h3>Athlete Profile</h3>
+        <div id="athleteInfo" class="kv"></div>
+
+        <h3>Bow & Equipment</h3>
+        <div id="equipmentInfo" class="kv"></div>
+
+        <h3>Session Details</h3>
+        <div id="sessionDetails" class="kv"></div>
+
+        <div class="session-archive-card">
+          <div class="session-archive-head"><h3>Session Storage</h3><span class="badge">V5 Archive</span></div>
+          <div id="sessionArchiveSummary" class="session-archive-summary"><span class="muted">Select a session to archive.</span></div>
+          <div class="session-archive-actions">
+            <button type="button" id="archiveSessionBtn" class="small-btn">Archive Session…</button>
+            <button type="button" id="archiveRemoveSessionBtn" class="small-btn archive-remove-btn">Archive & Remove Local…</button>
+            <button type="button" id="importSessionArchiveBtn" class="small-btn">Import Archived Session…</button>
+          </div>
+          <p class="session-archive-note">Archive writes a verified session folder to a drive you choose. Local removal happens only after checksum verification succeeds.</p>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="camera-toolbar card">
+          <div class="camera-toolbar-left">
+            <div><b>Live Camera Setup</b><div id="cameraSummary" class="muted">Waiting for camera permission…</div><div id="cameraTuneSummary" class="muted">Auto Tune: waiting for live camera…</div><div id="cameraAssignmentSummary" class="camera-assignment-summary">Side — · Rear — · Overhead —</div></div>
+          </div>
+          <div class="camera-toolbar-actions">
+            <div class="workspace-mode" id="workspaceMode"><button type="button" class="mode-btn active" data-mode="capture">Capture</button><button type="button" class="mode-btn" data-mode="review">Review</button><button type="button" class="mode-btn" data-mode="coach">Coach</button></div>
+            <span id="adaptiveLayoutBadge" class="status-pill neutral compact-status">Layout: Auto</span>
+            <span id="singleCameraBadge" class="status-pill good compact-status">Any View · 3-Camera Ready</span>
+            <span id="focusViewBadge" class="status-pill neutral compact-status">Focus: Side</span>
+            <span id="shotSaveStatus" class="status-pill neutral compact-status">Shot Save: checking…</span>
+            <button id="auxViewsToggle" class="small-btn" type="button">Show Rear / Overhead</button>
+            <button id="poseToggleBtn" class="pose-btn" disabled>Pose: Loading…</button>
+            <button id="resetPoseBaselineBtn" class="small-btn" disabled>Reset Baseline</button>
+            <button id="rescanCamerasBtn" class="small-btn">Rescan</button>
+            <button id="startLiveBtn" class="small-btn">Start Live</button>
+            <button id="stopLiveBtn" class="small-btn" disabled>Stop Live</button>
+            <button id="recordAllBtn" class="record-btn" disabled>● Record Session Video</button>
+            <button id="stopRecordBtn" class="danger-btn" disabled>■ Stop & Save Video</button>
+            <button id="exportPhaseTraceBtn" class="small-btn" type="button">Export Phase Trace</button>
+            <span id="recordTimer" class="record-timer">00:00</span>
+          </div>
+        </div>
+
+        <div id="permissionBanner" class="permission-banner hidden">
+          <div><b>Camera permission is required.</b><br><span>Allow camera access in the browser and macOS Privacy & Security → Camera.</span></div>
+          <button id="grantCameraBtn" class="primary">Enable Cameras</button>
+        </div>
+
+        <div id="poseDiagnostic" class="pose-diagnostic card">
+          <div class="pose-diagnostic-main"><span id="poseEngineDot" class="pose-dot loading"></span><b id="poseEngineText">Loading markerless pose engine…</b></div>
+          <div class="pose-diagnostic-items">
+            <span id="poseDetectedText">Person: —</span>
+            <span id="poseQualityText">Tracking quality: —</span>
+            <span id="cameraQualityText">Camera quality: —</span>
+            <span id="cameraGeometryText">Observed view geometry: —</span>
+            <span id="poseFramingText">Framing: waiting for live camera</span>
+            <span id="rangeReadinessText">Position: waiting for athlete</span>
+            <span id="shotReadiness" class="readiness-chip waiting">Waiting for live camera</span>
+          </div>
+        </div>
+
+        <div class="camera-grid">
+          <div class="video-card main-video" data-camera-card="side">
+            <div class="video-title">
+              <div class="cam-title-group"><span>Side View</span><span id="sideLiveBadge" class="live-badge hidden">LIVE</span></div>
+              <div class="cam-actions"><button type="button" class="camera-focus-btn" data-focus-role="side" title="Show Side in the large Coach Focus View">⛶ Focus</button><select id="sideCameraSelect" class="camera-select"><option value="">No camera</option></select><label class="upload-label">Upload<input type="file" accept="video/*" data-camera="side" hidden /></label></div>
+            </div>
+            <div class="video-wrap">
+              <video id="sideVideo" controls playsinline muted></video>
+              <canvas id="sideOverlay" class="pose-overlay"></canvas>
+              <div id="livePhaseBadge" class="live-phase-badge">Phase: —</div>
+              <div id="shotReadinessOverlay" class="readiness-overlay waiting">Waiting for live camera</div>
+              <div id="framingGuide" class="framing-guide hidden"><span>Framing…</span></div>
+              <div id="shotCaptureFlash" class="shot-capture-flash hidden"><b>SHOT SAVED</b><span id="shotCaptureFlashDetail">Release captured</span></div>
+              <div id="sidePositionGuide" class="position-guide waiting">Position: waiting for athlete</div>
+              <div id="sideEmpty" class="empty">Detecting camera…</div>
+            </div>
+            <div class="cam-foot"><span id="sideInfo">No camera assigned</span><span id="sidePose">POSE —</span><span id="sideMode">SAVED</span></div>
+          </div>
+
+          <div class="stack">
+            <div class="video-card" data-camera-card="rear">
+              <div class="video-title">
+                <div class="cam-title-group"><span>Rear View</span><span id="rearLiveBadge" class="live-badge hidden">LIVE</span></div>
+                <div class="cam-actions compact"><button type="button" class="camera-focus-btn" data-focus-role="rear" title="Show Rear in the large Coach Focus View">⛶ Focus</button><select id="rearCameraSelect" class="camera-select"><option value="">No camera</option></select><label class="upload-label">Upload<input type="file" accept="video/*" data-camera="rear" hidden /></label></div>
+              </div>
+              <div class="video-wrap small"><video id="rearVideo" controls playsinline muted></video><canvas id="rearOverlay" class="pose-overlay"></canvas><div id="rearFramingGuide" class="framing-guide role-framing-guide hidden"><span>Framing…</span></div><div id="rearPositionGuide" class="position-guide waiting">Position: waiting for athlete</div><div id="rearEmpty" class="empty">Rear View</div></div>
+              <div class="cam-foot"><span id="rearInfo">No camera assigned</span><span id="rearPose">POSE —</span><span id="rearMode">SAVED</span></div>
+            </div>
+            <div class="video-card" data-camera-card="overhead">
+              <div class="video-title">
+                <div class="cam-title-group"><span>Overhead View</span><span id="overheadLiveBadge" class="live-badge hidden">LIVE</span></div>
+                <div class="cam-actions compact"><button type="button" class="camera-focus-btn" data-focus-role="overhead" title="Show Overhead in the large Coach Focus View">⛶ Focus</button><select id="overheadCameraSelect" class="camera-select"><option value="">No camera</option></select><label class="upload-label">Upload<input type="file" accept="video/*" data-camera="overhead" hidden /></label></div>
+              </div>
+              <div class="video-wrap small"><video id="overheadVideo" controls playsinline muted></video><canvas id="overheadOverlay" class="pose-overlay"></canvas><div id="overheadFramingGuide" class="framing-guide role-framing-guide hidden"><span>Framing…</span></div><div id="overheadPositionGuide" class="position-guide waiting">Position: waiting for athlete</div><div id="overheadEmpty" class="empty">Overhead View</div></div>
+              <div class="cam-foot"><span id="overheadInfo">No camera assigned</span><span id="overheadPose">POSE —</span><span id="overheadMode">SAVED</span></div>
+            </div>
+          </div>
+
+          <div class="shot-panel card">
+            <div class="section-head">
+              <div><h2>Shot List</h2><span class="panel-subtitle">Grouped by End. Click a shot to review; false/invalid shots can be marked Problem and are excluded from baselines.</span></div>
+              <button id="markShotBtn" class="small-btn">+ Add Shot</button>
+            </div>
+            <div class="shot-table-wrap">
+              <table>
+                <thead><tr><th>Ref</th><th>#</th><th>Time</th><th>Score</th><th>Baseline Status</th><th></th></tr></thead>
+                <tbody id="shotRows"></tbody>
+              </table>
+            </div>
+            <div id="shotCards" class="shot-cards"></div>
+            <button id="compareBtn" class="primary full">Compare Selected Shot</button>
+          </div>
+        </div>
+
+        <div class="phase-strip card">
+          <div class="section-head phase-section-head">
+            <div><h2>Live Shot Phase</h2><span class="muted">Bright green = where the detector is now · ✓ = phase already passed · grey = not reached yet.</span></div>
+          </div>
+          <div class="phases" id="phaseButtons" aria-label="Live shot phase progress">
+            <div class="phase-pill phase-upcoming" data-phase="Setup">Set</div><div class="phase-pill phase-upcoming" data-phase="Set">Setup</div><div class="phase-pill phase-upcoming" data-phase="Draw">Draw</div><div class="phase-pill phase-upcoming" data-phase="Anchor">Anchor</div>
+            <div class="phase-pill phase-upcoming" data-phase="Aim / Hold">Aim / Hold</div><div class="phase-pill phase-upcoming" data-phase="Expansion">Expansion</div><div class="phase-pill phase-upcoming" data-phase="Release">Release</div><div class="phase-pill phase-upcoming" data-phase="Follow Through">Follow Through</div>
+          </div>
+          <div id="phaseGuardReason" class="phase-guard-reason">Waiting for athlete tracking / shot readiness</div>
+
+          <div id="baselineCalibration" class="baseline-calibration" data-state="building" aria-live="polite">
+            <div class="baseline-calibration-copy"><b id="baselineCalibrationTitle">Building Baseline · 0/3</b><span id="baselineCalibrationDetail">Calibration / Warm-up · 0/6 verified shots captured.</span></div>
+            <div id="baselineCalibrationDots" class="baseline-calibration-dots"><span class="baseline-dot">1</span><span class="baseline-dot">2</span><span class="baseline-dot">3</span><span class="baseline-dot">4</span><span class="baseline-dot">5</span><span class="baseline-dot">6</span></div>
+          </div>
+
+          <div id="liveEvidencePanel" class="live-evidence-panel hidden" aria-live="polite">
+            <div class="live-evidence-head"><b>Capture Evidence</b><span id="liveEvidenceStatus" class="muted">Waiting for a confirmed Release.</span></div>
+            <div id="liveEvidenceButtons" class="live-evidence-row">
+              <div class="live-evidence-stage waiting" data-evidence-stage="draw">Draw</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="anchor">Anchor</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="hold">Hold</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="release">Release</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="post">Post-release</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="follow">Follow-through</div>
+              <div class="live-evidence-stage waiting" data-evidence-stage="recovery">Recovery</div>
+            </div>
+            <div class="live-evidence-legend">Amber = collecting / not yet persisted · green = real frame verified in saved evidence · red = required evidence missing · Recovery is optional closing evidence.</div>
+          </div>
+        </div>
+
+        <div class="metrics-grid pose-metrics">
+          <div class="metric card"><span>Hold Time</span><strong id="mHold">—</strong><small>confirmed Anchor → Release</small></div>
+          <div class="metric card"><span>Draw Elbow</span><strong id="mElbow">—</strong><small>degrees</small></div>
+          <div class="metric card"><span>Bow Arm</span><strong id="mBowArm">—</strong><small>degrees</small></div>
+          <div class="metric card"><span>Shoulder Line</span><strong id="mShoulder">—</strong><small>degrees</small></div>
+          <div class="metric card"><span>Torso Lean</span><strong id="mTorso">—</strong><small>degrees</small></div>
+          <div class="metric card"><span>Head Movement</span><strong id="mHeadMm">—</strong><small>estimated mm</small></div>
+          <div class="metric card"><span>Head Pitch</span><strong id="mHeadPitch">—</strong><small>2D side-view estimate</small></div>
+          <div class="metric card"><span>Anchor → Face</span><strong id="mAnchorFace">—</strong><small>% shoulder width</small></div>
+          <div class="metric card"><span>Head → Draw Side</span><strong id="mHeadTowardDraw">—</strong><small>Δ from anchor reference</small></div>
+          <div class="metric card"><span>Anchor Hand Drift</span><strong id="mAnchorDrift">—</strong><small>Δ after confirmed anchor</small></div>
+          <div class="metric card"><span>Anchor Stability</span><strong id="mAnchorStability">—</strong><small>RMS drift · lower is steadier</small></div>
+          <div class="metric card"><span>Release Path</span><strong id="mReleasePath">—</strong><small>rearward / off-axis</small></div>
+          <div class="metric card"><span>Tracking Quality</span><strong id="mPoseQuality">—</strong><small>confidence</small></div>
+        </div>
+
+        <div class="card filmstrip-card">
+          <div class="section-head filmstrip-head">
+            <div>
+              <h2>Shot Review · Phase-Aware Evidence</h2>
+              <span id="filmstripStatus" class="muted">Select a shot. Display frames are selected from continuous rolling evidence; they are not the capture limit.</span>
+              <div id="reviewRoleTabs" class="review-role-tabs">
+                <button type="button" class="review-role-btn active" data-review-role="side">Side</button>
+                <button type="button" class="review-role-btn" data-review-role="rear">Rear</button>
+                <button type="button" class="review-role-btn" data-review-role="overhead">Overhead</button>
+                <button type="button" class="review-role-btn" data-review-role="multi">Multi View</button>
+              </div>
+            </div>
+          </div>
+          <div class="review-control-bar" aria-label="Shot replay controls">
+            <button id="jumpAnchorBtn" class="small-btn" title="Jump to settled Anchor">Anchor</button>
+            <button id="jumpReleaseBtn" class="small-btn" title="Jump to Release Focus">Release</button>
+            <span class="replay-frame-group" aria-label="Frame stepping and playback">
+              <button id="prevFrameBtn" class="small-btn" title="Previous real evidence frame">◀ Frame</button>
+              <button id="nextFrameBtn" class="small-btn" title="Next real evidence frame">Frame ▶</button>
+              <button id="replayPlayBtn" class="small-btn" type="button">▶ Play</button>
+              <select id="replaySpeedSelect" class="small-select replay-speed" title="Replay speed"><option value="0.25">0.25×</option><option value="0.5" selected>0.5×</option><option value="1">1×</option></select>
+            </span>
+            <span class="replay-zoom-group" aria-label="Replay zoom controls">
+              <button id="replayZoomOutBtn" class="small-btn" type="button" title="Zoom out">−</button>
+              <button id="replayZoomResetBtn" class="small-btn replay-zoom-label" type="button" title="Reset zoom and pan">100%</button>
+              <button id="replayZoomInBtn" class="small-btn" type="button" title="Zoom in">+</button>
+            </span>
+            <span class="replay-pan-group" aria-label="Move zoomed replay image">
+              <button id="replayPanLeftBtn" class="small-btn" type="button" title="Move image left">←</button>
+              <button id="replayPanUpBtn" class="small-btn" type="button" title="Move image up">↑</button>
+              <button id="replayPanDownBtn" class="small-btn" type="button" title="Move image down">↓</button>
+              <button id="replayPanRightBtn" class="small-btn" type="button" title="Move image right">→</button>
+            </span>
+            <button id="generateFramesBtn" class="small-btn">Generate Key Frames</button>
+          </div>
+          <div id="reviewMultiView" class="review-multi-view hidden">
+            <div class="review-multi-cell" data-role="side"><div class="review-multi-title">Side</div><img id="reviewMultiSide" alt="Side shot frame"><span id="reviewMultiSideState">No captured frame</span></div>
+            <div class="review-multi-cell" data-role="rear"><div class="review-multi-title">Rear</div><img id="reviewMultiRear" alt="Rear shot frame"><span id="reviewMultiRearState">No captured frame</span></div>
+            <div class="review-multi-cell" data-role="overhead"><div class="review-multi-title">Overhead</div><img id="reviewMultiOverhead" alt="Overhead shot frame"><span id="reviewMultiOverheadState">No captured frame</span></div>
+          </div>
+          <div id="shotReplayPanel" class="shot-replay-panel replay-empty">
+            <div id="shotReplayStage" class="shot-replay-stage"><img id="shotReplayImage" alt="Full shot evidence frame"><div id="shotReplayEmpty" class="shot-replay-empty">Select a shot to load Full Shot Evidence.</div></div>
+            <div class="shot-replay-scrub-row">
+              <button id="replayMinusFrameBtn" class="small-btn replay-step-btn" type="button" title="Previous real camera frame">−1</button>
+              <input id="shotReplaySlider" class="shot-replay-slider" type="range" min="0" max="0" step="1" value="0" disabled aria-label="Full shot evidence timeline">
+              <button id="replayPlusFrameBtn" class="small-btn replay-step-btn" type="button" title="Next real camera frame">+1</button>
+            </div>
+            <div class="shot-replay-footer"><span id="shotReplayMeta">—</span><span class="muted">Full Shot Evidence · real captured camera frames · AI keyframes below are summary only</span></div>
+          </div>
+          <div id="filmstrip" class="filmstrip"><div class="filmstrip-empty">No shot selected.</div></div>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="card timeline-card">
+            <div class="section-head">
+              <div><h2>Angle / Motion Timeline</h2><span id="timelineHint" class="muted">Live movement appears here automatically.</span></div>
+              <div class="timeline-controls">
+                <button id="timelineLiveBtn" class="small-btn active">Live 10s</button>
+                <button id="timelineShotsBtn" class="small-btn">Shot History</button>
+              </div>
+            </div>
+            <div class="timeline-legend"><span class="l-elbow">Draw Elbow</span><span class="l-bow">Bow Arm</span><span class="l-shoulder">Shoulder</span><span class="l-head">Head Move</span></div>
+            <canvas id="timeline" height="220"></canvas>
+          </div>
+          <div class="card note-card">
+            <div class="section-head"><h2>Coach / System Notes</h2><button id="editShotBtn" class="small-btn">Edit Shot</button></div>
+            <div id="shotNotes" class="notes">Select a shot.</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ANALYZE -->
+    <section id="view-analyze" class="view analysis-page">
+      <div class="page-shell analysis-shell">
+        <div class="page-title-row compact-title-row">
+          <div><h1 id="analysisPageTitle">Shot Analysis</h1><p id="analysisPageSubtitle" class="muted">Measured execution, athlete baseline and equipment context — without inventing precision.</p></div>
+          <div class="inline-controls"><select id="analyzeSessionSelect"></select><select id="analyzeShotSelect"></select><select id="analysisRoleSelect" title="Choose the camera media for this shot. Auto selects the best captured view."><option value="auto">Media: Auto</option><option value="side">Media: Side</option><option value="rear">Media: Rear</option><option value="overhead">Media: Overhead</option></select></div>
+        </div>
+        <div class="analysis-hero-grid v21-analysis-grid">
+          <div class="card analysis-video-card">
+            <div class="section-head"><div><h2 id="analysisShotTitle">Shot —</h2><div class="analysis-media-switch"><button id="analysisFrameModeBtn" class="small-btn active" type="button">Key Frame</button><button id="analysisVideoModeBtn" class="small-btn" type="button">Camera Video</button></div></div><span id="analysisLabel" class="analysis-label building">Building baseline</span></div>
+            <div class="analysis-video-wrap v21-analysis-media">
+              <video id="analysisVideo" controls playsinline muted></video>
+              <img id="analysisImage" class="analysis-shot-image hidden" alt="Selected shot key frame" />
+              <canvas id="analysisOverlay" class="pose-overlay"></canvas>
+              <div id="analysisEmpty" class="analysis-empty">Select a measured shot.</div>
+            </div>
+            <div id="analysisFrameStrip" class="analysis-frame-strip"></div>
+            <div id="analysisVideoHint" class="muted panel-note">The selected shot shows the chosen camera evidence. Side supplies the authoritative shot timeline. Rear / Overhead, when live, are synchronized evidence views and never create or complete a shot.</div>
+          </div>
+          <div id="analysisBowSensorHero" class="card panel-pad bow-sensor-hero-card"><div class="section-head"><h2>Bow Sensor</h2><span class="badge">Optional</span></div><div class="bow-hero-empty">Select a camera shot to load synchronized sensor evidence.</div></div>
+        </div>
+        <div id="analysisBowSensorDetail" class="card panel-pad bow-sensor-detail-card"><div class="bow-detail-empty">Analyzer camera analysis remains fully available without a Bow Sensor.</div></div>
+        <div class="analysis-support-grid">
+          <div class="card interpretation-card compact-interpretation">
+            <h2>Interpretation</h2>
+            <div id="analysisInterpretation" class="interpretation-body">Select a shot.</div>
+            <div class="reference-actions"><button id="toggleReferenceBtn" class="primary">☆ Mark as Reference</button><small>Coach-approved references define the athlete's own repeatable baseline.</small><small id="referenceProgress" class="reference-progress">Reference set: 0/3 minimum</small></div>
+          </div>
+          <div class="card equipment-context-card">
+            <div class="section-head"><h2>Equipment Context</h2><span class="badge">Hypothesis only</span></div>
+            <div id="equipmentContextSummary" class="equipment-context-summary">Select a shot and an equipment profile.</div>
+            <div id="equipmentContextHints" class="equipment-hint-list"></div>
+          </div>
+        </div>
+        <div id="analysisMetrics" class="analysis-metrics-grid compact-metrics"></div>
+        <div class="analysis-intelligence-grid">
+          <div class="card panel-pad"><div class="section-head"><h2>Anchor Integrity</h2><span class="badge">Best Evidence</span></div><div id="anchorAnalysis" class="intelligence-body">Select a measured shot.</div></div>
+          <div class="card panel-pad"><div class="section-head"><h2>Release & Follow-through</h2><span class="badge">Evidence</span></div><div id="releaseAnalysis" class="intelligence-body">Select a measured shot.</div></div>
+          <div class="card panel-pad"><div class="section-head"><h2>Multi-View Evidence</h2><span class="badge">Cross-check</span></div><div id="multiViewAnalysis" class="intelligence-body">Captured Side / Rear / Overhead evidence appears here when available.</div></div>
+          <div class="card panel-pad biomechanics-matrix-card"><div class="section-head"><h2>3PM Biomechanics Matrix</h2><span class="badge">Measurement → Evidence</span></div><div id="biomechanicsMatrix" class="intelligence-body">Select a measured shot.</div></div>
+        </div>
+        <div class="card panel-pad baseline-card"><div class="section-head"><h2>Baseline Comparison</h2><span id="baselineSource" class="muted">—</span></div><div id="baselineTable"></div></div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section id="view-compare" class="view compare-page">
+      <div class="page-shell">
+        <div class="page-title-row"><div><h1>Compare Shots</h1><p class="muted">Compare measurements without turning them into a simplistic score.</p></div><select id="compareSessionSelect"></select></div>
+        <div class="compare-selectors card"><label>Shot A<select id="compareShotA"></select></label><div class="vs">VS</div><label>Shot B<select id="compareShotB"></select></label></div>
+        <div class="compare-grid">
+          <div class="card compare-shot-card"><h2 id="compareATitle">Shot A</h2><div id="compareAInfo"></div></div>
+          <div class="card compare-shot-card"><h2 id="compareBTitle">Shot B</h2><div id="compareBInfo"></div></div>
+        </div>
+        <div class="card panel-pad"><h2>Metric Difference</h2><p class="muted">Differences describe direction only; they do not mean better or worse.</p><div id="compareTable"></div></div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="view-reports" class="view reports-page">
+      <div class="page-shell">
+        <div class="page-title-row">
+          <div><h1>Session Report</h1><p class="muted">Consistency, recurring deviations and coach-approved references.</p></div>
+          <div class="inline-controls"><select id="reportSessionSelect"></select><button id="printReportBtn" class="small-btn">Print / Save PDF</button></div>
+        </div>
+        <div id="reportHeader" class="card report-header"></div>
+        <div id="reportStats" class="dashboard-stats report-stats"></div>
+        <div class="card panel-pad consistency-card">
+          <div class="section-head"><div><h2>Consistency / Repeatability</h2><p class="muted">Shot-to-shot spread for this session, with coach-reference comparison when available.</p></div><span class="badge">Coach Aid</span></div>
+          <div id="consistencyPanel" class="consistency-panel"><span class="muted">Capture at least 3 validated shots to build a repeatability view.</span></div>
+        </div>
+        <div class="report-grid">
+          <div class="card panel-pad"><h2>Session Findings</h2><div id="reportFindings"></div></div>
+          <div class="card panel-pad"><h2>Data Export</h2><p class="muted">Exports include shot measurements and coach notes. Raw pose logs remain in your selected tracking folder.</p><div class="export-actions"><button id="exportCsvBtn" class="primary">Download CSV</button><button id="exportJsonBtn" class="small-btn">Download JSON</button></div></div>
+        </div>
+        <div class="card panel-pad"><h2>Shot Summary</h2><div id="reportShotTable"></div></div>
+      </div>
+    </section>
+
+    <!-- DEVICES / 3PM BOW SENSOR BLE4 -->
+    <section id="view-devices" class="view devices-page">
+      <div class="page-shell ecosystem-shell ble4-shell">
+        <div class="page-title-row">
+          <div><h1>3PM Ecosystem</h1><p class="muted">Form Analyzer remains the X2.8.2 camera system. Bow Sensor adds optional, time-linked bow-motion evidence without gating Capture or Release Proof.</p></div>
+          <div class="ecosystem-status-row"><span id="ecoSensorPill" class="status-pill neutral">Bow Sensor: Searching</span><span id="ecoModePill" class="status-pill neutral">Transport: BLE</span><span id="ecoDataPill" class="status-pill warn">Data: —</span><span id="ecoSessionPill" class="status-pill warn">Session: none</span></div>
+        </div>
+        <div id="ecoNotice" class="ecosystem-notice neutral">Searching automatically for the trusted physical 3PM Bow Sensor…</div>
+
+        <div class="eco-tabs" role="tablist" aria-label="Bow Sensor views">
+          <button class="eco-tab active" data-eco-tab="overview" type="button">Overview</button>
+          <button class="eco-tab" data-eco-tab="shots" type="button">Sensor Shots</button>
+          <button class="eco-tab" data-eco-tab="linked" type="button">Linked Camera Shots</button>
+          <button class="eco-tab" data-eco-tab="live" type="button">Live</button>
+          <button class="eco-tab" data-eco-tab="diagnostics" type="button">Diagnostics</button>
+        </div>
+
+        <div class="eco-tab-panel active" data-eco-panel="overview">
+          <div class="ecosystem-grid eco-overview-grid">
+            <div class="card panel-pad eco-device-card">
+              <div class="section-head"><div><h2>Bow Sensor</h2><p class="muted">Connection is automatic. Mac stays on its normal Wi-Fi while the physical S3 streams over BLE.</p></div><span class="badge">Optional evidence</span></div>
+              <div class="eco-device-summary">
+                <div><span>Device</span><b id="ecoDeviceName">—</b></div>
+                <div><span>Firmware</span><b id="ecoFirmware">—</b></div>
+                <div><span>Transport</span><b id="ecoTransport">BLE</b></div>
+                <div><span>Current phase</span><b id="ecoPhase">IDLE</b></div>
+              </div>
+              <div class="eco-safety-note"><b>Isolation rule</b><span>Bow Sensor can add evidence to a validated camera shot. It cannot create, approve, reject or block a camera Capture. X2.8.2 Release Proof remains authoritative.</span></div>
+            </div>
+            <div class="card panel-pad eco-context-card">
+              <div class="section-head"><h2>Analyzer Session Link</h2><span class="badge">Automatic</span></div>
+              <div id="ecoContext" class="eco-context"><b>No athlete</b><span>No active session</span><small>Form Analyzer works normally without the Bow Sensor.</small></div>
+              <div class="eco-marker-box"><span class="eco-label">Linked camera-shot markers</span><div id="ecoMarkers"><span class="muted">No linked camera shots yet.</span></div></div>
+            </div>
+          </div>
+
+          <div class="eco-stats-grid ble4-stats">
+            <div class="card eco-stat"><span>Stream Rate</span><strong id="ecoRate">—</strong><small>received samples</small></div>
+            <div class="card eco-stat"><span>Live Buffer</span><strong id="ecoPackets">—</strong><small>samples · rolling 45 s</small></div>
+            <div class="card eco-stat"><span>Dropped</span><strong id="ecoDrops">0</strong><small>sequence gaps</small></div>
+            <div class="card eco-stat"><span>Data Mode</span><strong id="ecoDataMode">—</strong><small>real / synthetic</small></div>
+            <div class="card eco-stat"><span>Latest Seq</span><strong id="ecoSeq">—</strong><small>sensor sequence</small></div>
+            <div class="card eco-stat"><span>Last Event</span><strong id="ecoLastEvent">—</strong><small>release / let-down</small></div>
+          </div>
+
+          <div class="card panel-pad eco-latest-card">
+            <div class="section-head"><div><h2>Latest Sensor Shot</h2><p class="muted">Frozen metrics remain visible after the live graph moves on.</p></div><span id="ecoLatestShotBadge" class="badge">No shot</span></div>
+            <div id="ecoLatestShotSummary" class="eco-latest-shot"><span class="muted">Use the Bow Sensor mobile UI to create a demo shot, or shoot with the future real IMU.</span></div>
+          </div>
+
+          <div class="card panel-pad eco-link-explain">
+            <div class="section-head"><div><h2>Camera + Bow Sensor</h2><p class="muted">Same shot, two evidence sources.</p></div><span class="badge">Timestamp link</span></div>
+            <div class="eco-link-flow"><div><b>Camera</b><span>Body geometry · hand/elbow path · phase timing · follow-through</span></div><div class="eco-link-arrow">↔</div><div><b>Bow Sensor</b><span>Hold stability · drift · release disturbance · bow response · recovery</span></div></div>
+            <p class="muted eco-link-note">Measurements with different units are not treated as equivalent. The link aligns evidence in time so a coach can inspect what the athlete did and what the bow did during the same shot.</p>
+          </div>
+        </div>
+
+        <div class="eco-tab-panel" data-eco-panel="shots">
+          <div class="card panel-pad">
+            <div class="section-head"><div><h2>Sensor Shot Records</h2><p class="muted">Release and Let-down are stored separately. Let-down never becomes a camera shot.</p></div><span class="badge">Stored evidence</span></div>
+            <div id="ecoSensorShotRecords" class="eco-shot-records"><span class="muted">No completed Sensor shot record yet.</span></div>
+            <div id="ecoSensorShotDetail" class="eco-sensor-shot-detail"></div>
+          </div>
+        </div>
+
+        <div class="eco-tab-panel" data-eco-panel="linked">
+          <div class="ecosystem-grid eco-linked-grid">
+            <div class="card panel-pad">
+              <div class="section-head"><div><h2>Linked Camera Shots</h2><p class="muted">Camera Release is authoritative; nearest Sensor Release is attached by session and timestamp.</p></div><span class="badge">Auto-link</span></div>
+              <div id="ecoLinkedShotRecords" class="eco-linked-records"><span class="muted">No camera shot has been matched yet.</span></div>
+            </div>
+            <div class="card panel-pad">
+              <div class="section-head"><div><h2>Linked Shot Evidence</h2><p class="muted">Select a linked shot to inspect the two evidence sets side by side.</p></div><span id="ecoLinkedDetailBadge" class="badge">—</span></div>
+              <div id="ecoLinkedShotDetail" class="eco-linked-detail"><span class="muted">No linked shot selected.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eco-tab-panel" data-eco-panel="live">
+          <div class="ecosystem-grid eco-lower-grid">
+            <div class="card panel-pad eco-chart-card">
+              <div class="section-head"><div><h2>Live IMU Preview</h2><p class="muted">Blue = gyro magnitude; yellow = acceleration deviation from 1 g. This is live transport evidence, not the saved shot record.</p></div><button id="ecoClearLiveBtn" class="small-btn" type="button">Clear Preview</button></div>
+              <canvas id="ecoSensorChart"></canvas>
+            </div>
+            <div class="card panel-pad">
+              <div class="section-head"><h2>Latest Sample</h2><span class="badge">Raw evidence</span></div>
+              <div id="ecoLiveValues" class="eco-live-values"><span class="muted">No BLE samples yet.</span></div>
+              <div class="eco-protocol-note"><b>Physical transport path</b><p>During prototype testing, the phone commands the physical S3. The S3 itself generates <code>DEMO_SYNTHETIC</code>; Analyzer receives those packets independently over BLE.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eco-tab-panel" data-eco-panel="diagnostics">
+          <div class="ecosystem-grid">
+            <div class="card panel-pad">
+              <div class="section-head"><div><h2>Transport Diagnostics</h2><p class="muted">Normal use requires no Connect button. These controls are for field diagnosis only.</p></div><span class="badge">Developer / support</span></div>
+              <div id="ecoBrowserFallback" class="eco-fallback hidden"><span>Native BLE bridge is unavailable. Chrome/Edge Web Bluetooth can be used as a temporary fallback.</span><button id="ecoPairBtn" class="small-btn" type="button">Pair Browser Fallback</button></div>
+              <div class="eco-actions"><button id="ecoStartRecordBtn" class="primary" type="button" disabled>Start Raw Sensor Run</button><button id="ecoStopRecordBtn" class="small-btn" type="button" disabled>Stop & Save Run</button><button id="ecoExportRunBtn" class="small-btn" type="button" disabled>Export Run JSON</button></div>
+              <div id="ecoRecordingState" class="eco-recording-state"><b>Idle</b><span>0 saved sensor runs</span><small>Raw run recording is optional and separate from automatic shot evidence.</small></div>
+            </div>
+            <div class="card panel-pad eco-events-card" style="margin-top:0">
+              <div class="section-head"><div><h2>Recent Sensor Events</h2><p class="muted">Release / Let-down markers received from the physical S3 stream.</p></div><span id="ecoEventCount" class="badge">0 events</span></div>
+              <div id="ecoSensorEvents" class="eco-events-list"><span class="muted">No Sensor event yet.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view settings-page">
+      <div class="settings-grid-page">
+        <div class="card settings-card">
+          <div class="section-head"><div><h1>Storage</h1><p class="muted">Choose where large Form Analyzer data is stored.</p></div><span id="storageReadyBadge" class="status-pill neutral">Checking…</span></div>
+          <div class="storage-summary"><div class="storage-icon">◉</div><div class="storage-main"><span class="storage-label">Current data location</span><strong id="storagePath">—</strong><span id="storageMeta" class="muted">—</span></div></div>
+          <div class="storage-actions"><button id="chooseStorageBtn" class="primary">Choose Storage Folder…</button><button id="internalStorageBtn" class="small-btn">Use App Internal Storage</button><button id="openStorageBtn" class="small-btn">Open Storage Folder</button></div>
+          <div class="storage-note"><b>Selectable storage.</b><p>Use the app folder now, or choose an external SSD/HDD for new recordings and analysis data.</p><p><strong>No silent fallback:</strong> if a selected external drive is disconnected, saving is blocked instead of silently falling back to another drive.</p></div>
+        </div>
+        <div class="card settings-card coach-profile-card" id="coachProfileCard">
+          <div class="section-head"><div><h1>Coach Profile</h1><p class="muted">This name appears in the top-right header. New sessions snapshot the current coach details so old sessions keep the coach who actually ran them.</p></div><span id="coachProfileStatus" class="status-pill neutral">Local profile</span></div>
+          <form id="coachProfileForm" class="coach-profile-form">
+            <label>Coach Name<input id="coachName" name="coach_name" autocomplete="name" placeholder="Coach name" /></label>
+            <label>Organization / Club<input id="coachOrganization" name="coach_organization" placeholder="Optional" /></label>
+            <label>Certification / Role<input id="coachCertification" name="coach_certification" placeholder="e.g. USA Archery Level 2" /></label>
+            <label>Contact / Feedback ID<input id="coachContact" name="coach_contact" placeholder="Optional · email / WhatsApp / other" /></label>
+            <div class="form-actions span2"><span class="form-spacer"></span><button class="primary" type="submit">Save Coach Profile</button></div>
+          </form>
+        </div>
+
+        <div class="card settings-card">
+          <h1>Analysis</h1>
+          <div class="setting-row"><div><b>Automatic Release Marking</b><span>When a live camera completes a valid archery shot sequence through follow-through, create a shot automatically.</span></div><label class="switch"><input id="autoMarkToggle" type="checkbox" checked><span></span></label></div>
+          <div class="setting-row"><div><b>Live Phase Detection</b><span>Estimate Set / Set-up / Draw / Anchor / Hold / Release / Follow Through from pose movement.</span></div><label class="switch"><input id="phaseDetectToggle" type="checkbox" checked><span></span></label></div>
+          <div class="setting-row"><div><b>Phase Detection Profile</b><span>Controls how long a movement must be stable before the app advances to the next shot phase.</span></div><select id="phaseProfileSelect" class="analysis-select"><option value="verified" selected>Verified · recommended</option><option value="conservative">Conservative · slower</option><option value="balanced">Balanced · more sensitive</option></select></div>
+          <div class="setting-row"><div><b>Markerless Pose</b><span>Can be toggled during a session with the Pose button.</span></div><span class="status-pill good">Enabled</span></div>
+          <div class="setting-row"><div><b>Skeleton Overlay</b><span>Show or hide the live landmark/skeleton drawing without stopping pose analysis or shot detection.</span></div><label class="switch"><input id="skeletonOverlayToggle" type="checkbox" checked><span></span></label></div>
+          <div class="settings-explain"><b>Precision boundary</b><p>Head and anchor guidance use validated body/face-adjacent pose landmarks. Clicker blade, arrow point, bow cant and stabilizer reaction are not reported unless a future dedicated equipment tracker reaches sufficient confidence. V5 Dev4-X1 does not invent unsupported values. Release classification uses validated shot sequence, hand/elbow trajectory and coarse pose-hand evidence when visible; fine finger timing, clicker blade and arrow-point measurements stay unavailable until dedicated tracking has sufficient evidence.</p></div>
+          <div class="settings-explain"><b>Skeleton overlay & captured evidence</b><p>The live skeleton is a display/diagnostic layer only. Shot key frames are saved from the raw camera image without the skeleton burned in, so the coach can inspect the original picture. Pose landmarks and measurements are analyzed separately; turning the visible overlay off does not disable analysis while Pose remains enabled.</p></div>
+        </div>
+        <div class="card settings-card display-settings-card">
+          <div class="section-head"><div><h1>Display & Workspace</h1><p class="muted">The app adapts to the actual browser area, not the computer model name.</p></div><span id="layoutDetectedBadge" class="status-pill neutral">Detecting…</span></div>
+          <div class="setting-row"><div><b>Layout Mode</b><span>Auto reacts to Mac/Windows window size and changes live when the window moves or resizes.</span></div><select id="layoutModeSelect" class="analysis-select"><option value="auto">Auto · recommended</option><option value="compact">Compact Laptop</option><option value="standard">Standard</option><option value="wide">Wide Desktop</option></select></div>
+          <div class="setting-row"><div><b>Camera Strategy</b><span>Side is the Shot Process Authority for automatic capture. Rear / Overhead are synchronized evidence and measurement views only. Camera activity, generation, measured FPS and timing quality are tracked independently so a closed or stale camera cannot create a shot.</span></div><span id="oneCameraSettingStatus" class="status-pill good">Adaptive Detector · Ready</span></div>
+          <div class="setting-row"><div><b>Camera Quality Mode</b><span>Auto reads each camera capability and watches real pose throughput. It uses higher capture detail when the machine has headroom, then reduces load before tracking quality suffers.</span></div><select id="cameraQualityMode" class="analysis-select"><option value="auto">Auto Tune · recommended</option><option value="detail">High Detail</option><option value="performance">Performance / older hardware</option></select></div>
+          <div class="setting-row"><div><b>Portable Analysis Backup</b><span>Export/import coach profile, equipment supplements, session context, target mapping and advanced shot analysis. Camera device IDs are intentionally not copied to another computer.</span></div><div class="compact-actions"><button id="exportLocalDataBtn" class="small-btn" type="button">Export Backup</button><label class="small-btn upload-label">Import Backup<input id="importLocalDataInput" type="file" accept="application/json,.json" hidden></label></div></div>
+          <div class="display-diagnostics" id="displayDiagnostics">Viewport —</div>
+        </div>
+
+        <div class="card settings-card about-3pm-card">
+          <div class="about-brand-row"><img src="/static/assets/3pm_archery_icon.cropped.png" alt="3PM Archery" class="about-brand-icon" /><div><h1>3PM Archery Form Analyzer</h1><p class="muted">Concept & Product Design by 3PM Archery</p><div class="about-version">Mac R8 Merge Candidate 2026-10-01 · Version 5.0.0 X2.8.2 · Trust-First Live Phase + Release Evidence Field Candidate · Release Proof</div></div></div>
+          <div class="license-box"><b>© 2026 3PM Archery. All rights reserved.</b><p>This Community/Beta build may be provided free for approved coaching and testing use. Practical feedback is part of the beta participation condition. Redistribution, resale, sublicensing, commercial use, or removal of 3PM Archery branding requires permission from 3PM Archery.</p><p class="muted">AI measures · AI finds patterns · AI provides evidence · Coach decides.</p></div>
+        </div>
+      </div>
+    </section>
+    <!-- IMPACT MAPPING -->
+    <section id="view-impact" class="view impact-page">
+      <div class="page-shell impact-shell">
+        <div class="page-title-row">
+          <div>
+            <h1>Target Impact Mapping</h1>
+            <p class="muted">Map each arrow onto the target, review end bias, and link target results back to form data.</p>
+          </div>
+          <div class="impact-summary-pills">
+            <span class="status-pill neutral" id="impactSessionPill">Session: —</span>
+            <span class="status-pill neutral" id="impactModePill">Mode: —</span>
+          </div>
+        </div>
+
+        <div class="impact-grid">
+          <aside class="card panel-pad impact-left">
+            <div class="section-head"><h2>Round Setup</h2><span class="badge">Local</span></div>
+            <div class="impact-config-grid">
+              <label>Training Mode
+                <select id="impactTrainingMode">
+                  <option value="free">Free Training</option>
+                  <option value="competition">Competition Training</option>
+                </select>
+              </label>
+              <label>Target Face
+                <select id="impactFaceType">
+                  <optgroup label="World Archery / Standard">
+                    <option value="122-full">122 cm Full Face · 1–10</option>
+                    <option value="80-full">80 cm Full Face · 1–10</option>
+                    <option value="80-6ring">80 cm 6-Ring · 5–10</option>
+                    <option value="60-full">60 cm Full Face · Recurve/Barebow 1–10</option>
+                    <option value="60-full-c">60 cm Full Face · Compound scoring</option>
+                    <option value="40-full">40 cm Full Face · Recurve/Barebow 1–10</option>
+                    <option value="40-full-c">40 cm Full Face · Compound scoring</option>
+                    <option value="40-r-vertical">40 cm Recurve Triple · Vertical</option>
+                    <option value="40-r-triangle">40 cm Recurve Triple · Triangle</option>
+                    <option value="40-c-vertical">40 cm Compound Triple · Vertical</option>
+                    <option value="40-c-triangle">40 cm Compound Triple · Triangle</option>
+                  </optgroup>
+                  <optgroup label="Club / Training Custom">
+                    <option value="80-5ring">80 cm 5-Ring · 6–10</option>
+                    <option value="40-6ring">40 cm 6-Ring · 5–10</option>
+                    <option value="40-5ring">40 cm 5-Ring · 6–10</option>
+                    <option value="3pm-single-r">3PM Single Spot · 20 cm · Recurve 6–10</option>
+                    <option value="3pm-single-c">3PM Single Spot · 20 cm · Compound 6–10</option>
+                  </optgroup>
+                </select>
+              </label>
+              <label>Distance (m)
+                <input id="impactDistanceM" type="number" min="1" max="100" step="0.01" value="18" inputmode="decimal" />
+              </label>
+              <label>Arrow Ø (mm)
+                <input id="impactArrowDiameterMm" type="number" min="1" max="12.2" step="0.01" value="5.2" inputmode="decimal" title="Used for line-cutter scoring: if the shaft touches a higher ring, the higher score is awarded." />
+              </label>
+              <label>Arrows / End
+                <input id="impactArrowsPerEnd" type="number" min="1" max="12" step="1" value="6" inputmode="numeric" />
+              </label>
+              <label>Ends / Score
+                <input id="impactEndsPerScore" type="number" min="1" max="20" step="1" value="6" inputmode="numeric" />
+              </label>
+              <label>Scores / Session
+                <input id="impactScoreCount" type="number" min="1" max="12" step="1" value="2" inputmode="numeric" />
+              </label>
+            </div>
+            <div id="impactRoundSummary" class="round-summary">Competition round: 72 arrows · 720 max</div>
+            <div class="impact-action-row">
+              <button class="small-btn" id="impactSaveConfigBtn" type="button">Save Setup</button>
+              <button class="small-btn" id="impactAutoFromSessionBtn" type="button">Use Session Defaults</button>
+            </div>
+            <div id="impactConditionSummary" class="condition-summary muted">Session conditions: —</div>
+
+            <div class="impact-nav card inset-card">
+              <div class="impact-nav-row">
+                <button class="small-btn" id="impactPrevEndBtn" type="button">◀ End</button>
+                <div class="impact-nav-meta">
+                  <label class="end-jump-label">End <input id="impactEndJump" type="number" min="1" step="1" value="1" inputmode="numeric" aria-label="Jump to end" /></label>
+                  <span id="impactEndLabel" class="sr-only">End 1</span>
+                  <span id="impactBlockLabel" class="muted">Score 1 · Arrows 1–6</span>
+                </div>
+                <button class="small-btn" id="impactNextEndBtn" type="button">End ▶</button>
+              </div>
+              <div class="impact-end-stats">
+                <div><span>End Score</span><b id="impactEndScore">—</b></div>
+                <div><span>Running Total</span><b id="impactRunningTotal">—</b></div>
+                <div><span>Average / Arrow</span><b id="impactEndAverage">—</b></div>
+              </div>
+            </div>
+
+            <div class="card inset-card">
+              <div class="section-head"><h3>Arrows in This End</h3><button class="small-btn" id="impactClearEndBtn" type="button">Clear End</button></div>
+              <div id="impactArrowStrip" class="impact-arrow-strip"></div>
+              <div class="impact-arrow-actions">
+                <button class="small-btn" id="impactDeleteArrowBtn" type="button">Delete Selected Arrow</button>
+                <button class="small-btn" id="impactUndoBtn" type="button">Undo Last Plot</button>
+              </div>
+              <div id="impactLinkedShot" class="muted impact-linked-shot">Select an arrow chip to place or review it.</div>
+            </div>
+
+            <div class="card inset-card">
+              <div class="section-head"><h3>End Group Analysis</h3><span class="badge">Coach Aid</span></div>
+              <div class="analysis-list" id="impactEndAnalysis"></div>
+            </div>
+
+            <div class="card inset-card">
+              <div class="section-head"><h3>End Conditions</h3><span class="muted">Optional</span></div>
+              <div class="end-condition-grid">
+                <label>Wind speed<input id="impactEndWindSpeed" type="number" min="0" step="0.01" placeholder="Use session value" inputmode="decimal" /></label>
+                <label>Relative wind<select id="impactEndWindRelative"><option value="">Use session value</option><option>Headwind</option><option>Tailwind</option><option>Left → Right</option><option>Right → Left</option><option>Quartering L→R</option><option>Quartering R→L</option><option>Variable</option></select></label>
+                <label class="span2">Sight adjustment<input id="impactEndSightAdjustment" placeholder="e.g. Up 2 clicks / Left 1 click" /></label>
+                <label class="span2">End note<textarea id="impactEndNote" rows="2" placeholder="e.g. gust on arrows 4–6, sun in eyes, rushed end"></textarea></label>
+              </div>
+              <button class="small-btn" id="impactSaveEndConditionsBtn" type="button">Save End Conditions</button>
+            </div>
+          </aside>
+
+          <section class="card panel-pad impact-center">
+            <div class="section-head">
+              <div>
+                <h2>Target Board</h2>
+                <p class="muted">Click the target to place the selected arrow. Scroll through ends and compare group direction.</p>
+              </div>
+              <div class="impact-board-actions">
+                <span class="status-pill neutral compact-status" id="impactScorePreview">Score preview: —</span>
+                <button class="small-btn" id="impactZoomOutBtn" type="button">−</button>
+                <span class="badge" id="impactZoomBadge">100%</span>
+                <button class="small-btn" id="impactZoomInBtn" type="button">+</button>
+              </div>
+            </div>
+            <div class="impact-board-wrap">
+              <canvas id="impactCanvas" width="900" height="900" aria-label="Target impact board"></canvas>
+            </div>
+            <div class="impact-board-legend muted"><span id="impactFaceSpec">World Archery geometry preview</span> · Display size is normalized for accurate marking, while scoring geometry remains in real centimetres. Arrow circle shows the saved shaft diameter for line-cutter scoring.</div>
+          </section>
+
+          <aside class="card panel-pad impact-right">
+            <div class="section-head"><h2>Score / Session Trend</h2><span class="badge">Daily View</span></div>
+            <div id="impactScoreSummary" class="score-summary-list"></div>
+            <div class="section-head mt16"><h2>Coach Interpretation</h2></div>
+            <div id="impactCoachInsights" class="note-box">Map a few ends to see session trend, group drift and likely form-impact relationships.</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <footer class="app-footer"><span>© 2026 3PM Archery. All rights reserved.</span><span>3PM Archery Form Analyzer · Community/Beta · Feedback requested</span></footer>
+
+  <dialog id="sessionDialog">
+    <form id="sessionForm" method="dialog" class="dialog-form">
+      <h2 id="sessionDialogTitle">New Session</h2><input type="hidden" name="session_id" id="sessionId" />
+      <label>Athlete<select name="athlete_id" id="sessionAthlete" required></select></label>
+      <label>Equipment<select name="equipment_id" id="sessionEquipment"></select></label>
+      <label>Title<input name="title" value="Training Session" required /></label>
+      <label>Date<input type="date" name="session_date" /></label>
+      <label>Distance (m)<input type="number" step="0.01" min="1" max="100" name="distance_m" inputmode="decimal" /></label>
+      <label>Target Face<select name="target_face">
+        <optgroup label="World Archery / Standard">
+          <option>122 cm Full Face</option><option>80 cm Full Face</option><option>80 cm 6-Ring</option><option>60 cm Full Face</option><option>40 cm Full Face</option><option>40 cm Recurve Triple Vertical</option><option>40 cm Recurve Triple Triangle</option><option>40 cm Compound Triple Vertical</option><option>40 cm Compound Triple Triangle</option>
+        </optgroup>
+        <optgroup label="Club / Training Custom">
+          <option>80 cm 5-Ring (6–10)</option><option>40 cm 6-Ring (5–10)</option><option>40 cm 5-Ring (6–10)</option><option>3PM Single Spot 20 cm Recurve (6–10)</option><option>3PM Single Spot 20 cm Compound (6–10)</option>
+        </optgroup>
+        <option>Blank Bale</option>
+      </select></label>
+      <label>Environment<select name="environment" id="sessionEnvironment"><option>Indoor</option><option>Outdoor</option><option>Semi-outdoor</option></select></label>
+      <label>Training Mode<select name="mode"><option>Free Training</option><option>Competition Training</option><option>Technique Drill</option><option>Equipment Test</option><option>Blank Bale</option></select></label>
+
+      <div id="sessionOutdoorFields" class="session-outdoor-fields hidden span2">
+        <div class="section-head"><h3>Outdoor Conditions</h3><span class="muted">Saved with this session</span></div>
+        <div class="mini-grid outdoor-condition-grid">
+          <label>Sky / Weather<select name="weather_condition"><option value="">—</option><option>Sunny</option><option>Partly Cloudy</option><option>Cloudy</option><option>Light Rain</option><option>Rain</option></select></label>
+          <label>Light<select name="light_condition"><option value="">—</option><option>Direct Sun</option><option>Bright</option><option>Overcast</option><option>Low Light</option></select></label>
+          <label>Wind<select name="wind_pattern"><option value="">—</option><option>Calm</option><option>Steady</option><option>Gusty</option><option>Variable</option></select></label>
+          <label>Wind Speed<input type="number" min="0" step="0.01" name="wind_speed" inputmode="decimal" /></label>
+          <label>Wind Unit<select name="wind_unit"><option value="m/s">m/s</option><option value="km/h">km/h</option></select></label>
+          <label>Gust Speed<input type="number" min="0" step="0.01" name="gust_speed" inputmode="decimal" /></label>
+          <label>Shooting Direction<select name="shooting_direction"><option value="">—</option><option>N</option><option>NE</option><option>E</option><option>SE</option><option>S</option><option>SW</option><option>W</option><option>NW</option></select></label>
+          <label>Wind Direction<select name="wind_direction_abs"><option value="">—</option><option>N</option><option>NE</option><option>E</option><option>SE</option><option>S</option><option>SW</option><option>W</option><option>NW</option></select></label>
+          <label>Relative Wind<select name="wind_direction_relative"><option value="">—</option><option>Headwind</option><option>Tailwind</option><option>Left → Right</option><option>Right → Left</option><option>Quartering L→R</option><option>Quartering R→L</option><option>Variable</option></select></label>
+          <label>Temperature (°C)<input type="number" step="0.01" name="temperature_c" inputmode="decimal" /></label>
+          <label>Humidity (%)<input type="number" min="0" max="100" step="0.01" name="humidity_pct" inputmode="decimal" /></label>
+        </div>
+      </div>
+      <label>Notes<textarea name="notes"></textarea></label>
+      <div class="dialog-actions split-actions"><button type="button" id="deleteSessionDialogBtn" class="danger-text hidden">Delete Session</button><div class="right-actions"><button type="button" id="cancelSession">Cancel</button><button class="primary" type="submit" id="saveSessionBtn">Save Session</button></div></div>
+    </form>
+  </dialog>
+
+  <dialog id="archiveProgressDialog" class="archive-progress-dialog">
+    <div class="archive-progress-card">
+      <div class="dialog-title-row"><div><h2>Session Archive</h2><span id="archiveProgressText" class="muted">Preparing…</span></div><span id="archiveProgressBadge" class="status-pill neutral">Working</span></div>
+      <progress id="archiveProgressBar" class="archive-progress-bar"></progress>
+      <p class="archive-progress-note">The local session is never removed unless the external archive completes and verifies successfully.</p>
+      <div class="dialog-actions"><button type="button" id="archiveProgressClose" class="small-btn">Close</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="shotDialog" class="shot-dialog">
+    <form id="shotForm" method="dialog" class="dialog-form">
+      <div class="dialog-title-row">
+        <div><h2 id="shotDialogTitle">Add Shot</h2><span id="shotDialogTime" class="muted">—</span></div>
+        <span id="shotDialogAnalysis" class="analysis-chip building">Live measurement</span>
+      </div>
+
+      <label>Score
+        <input type="number" min="0" max="10" name="score" placeholder="0–10" />
+      </label>
+      <div class="score-picker" id="scorePicker">
+        <button type="button" data-score="0">0</button><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button>
+        <button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button>
+        <button type="button" data-score="6">6</button><button type="button" data-score="7">7</button><button type="button" data-score="8">8</button>
+        <button type="button" data-score="9">9</button><button type="button" data-score="10">10</button><button type="button" data-score="X">X</button>
+      </div>
+      <label class="check"><input type="checkbox" name="is_x" id="shotIsX" /> Inner 10 / X</label>
+      <label>Status<select name="status"><option value="ok">OK</option><option value="warn">Review</option><option value="bad">Problem</option></select></label>
+      <label>Phase<input name="phase" value="Release" /></label>
+      <label>Coach Note<textarea name="note" placeholder="What did you see or feel on this shot?"></textarea></label>
+      <label class="check"><input type="checkbox" name="is_reference" id="shotIsReference" /> Coach-approved Reference Shot</label>
+
+      <div class="mini-grid measurement-grid">
+        <label>Hold (s)<input type="number" step="0.01" name="hold_time_s" inputmode="decimal" /></label>
+        <label>Draw Elbow (°)<input type="number" step="0.01" name="draw_elbow_deg" inputmode="decimal" /></label>
+        <label>Bow Arm (°)<input type="number" step="0.01" name="bow_arm_deg" inputmode="decimal" /></label>
+        <label>Shoulder Line (°)<input type="number" step="0.01" name="shoulder_line_deg" inputmode="decimal" /></label>
+        <label>Torso Lean (°)<input type="number" step="0.01" name="torso_lean_deg" inputmode="decimal" /></label>
+        <label>Head Move (mm)<input type="number" step="0.01" name="head_movement_mm" inputmode="decimal" /></label>
+      </div>
+      <div class="dialog-actions split-actions">
+        <button type="button" id="deleteShotBtn" class="danger-text hidden">Delete Shot</button>
+        <div class="right-actions"><button type="button" id="cancelShot">Cancel</button><button class="primary" type="submit" id="saveShotBtn">Save Shot</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="frameViewerDialog" class="frame-viewer-dialog">
+    <div class="frame-viewer">
+      <div class="section-head"><div><h2 id="frameViewerTitle">Key Frame</h2><span id="frameViewerTime" class="muted"></span></div><button id="closeFrameViewerBtn" class="small-btn">Close</button></div>
+      <img id="frameViewerImage" alt="Shot key frame" />
+    </div>
+  </dialog>
+
+
+<style id="hv2EvidenceIntegrityStyle">
+.fixed-evidence-25-rail{display:grid;grid-template-columns:repeat(25,minmax(18px,1fr));gap:3px;margin:7px 0 3px}.fixed-evidence-25-rail .fixed-slot{min-width:0;padding:3px 0;font-size:9px;line-height:1;border-radius:4px}.fixed-evidence-25-rail .fixed-slot.missing{opacity:.42;border-style:dashed}.fixed-evidence-25-rail .fixed-slot.active{outline:2px solid currentColor;outline-offset:1px}@media(max-width:900px){.fixed-evidence-25-rail{grid-template-columns:repeat(13,minmax(18px,1fr))}}
+</style>
+  <script src="/static/pose_filter_core.js?v=x281lg"></script>
+  <script src="/static/core_runtime.js?v=x281lg"></script>
+  <script src="/static/coach_keyframe_plan_core.js?v=ble438941"></script>
+  <script src="/static/coach_keyframe25_backfill_core.js?v=ble438941"></script>
+  <script src="/static/multiview_corroboration_core.js?v=ble438951"></script>
+  <script src="/static/capture_integrity_core.js?v=review20260929r1"></script>
+  <script src="/static/shot_intent_core.js?v=ble43890"></script>
+  <script src="/static/side_lifecycle_core.js?v=ble438954"></script>
+  <script src="/static/real_bow_anchor_bridge_core.js?v=ble43892"></script>
+  <script src="/static/adaptive_release_core.js?v=mac20260930r7"></script>
+  <script src="/static/activity_classifier_core.js?v=ble4384"></script>
+  <script src="/static/native_vision_shadow_core.js?v=hv1"></script>
+  <script src="/static/foundation_guard_core.js?v=ble43888"></script>
+  <script src="/static/frame_identity_core.js?v=p108"></script>
+  <script src="/static/temporal_evidence_core.js?v=ble438952-r8c1-p108"></script>
+  <script src="/static/camera_timeline_core.js?v=hv3-r8c1-p108"></script>
+  <script src="/static/evidence_budget_core.js?v=r8merge1-p108"></script>
+  <script src="/static/evidence_budget_layer.js?v=r3fixed25"></script>
+  <script src="/static/capture_integrity_layer.js?v=mac20260930r7"></script>
+  <script src="/static/camera_fps_guard_core.js?v=ble438941"></script>
+  <script src="/static/camera_policy.js?v=ble438941"></script>
+  <script src="/static/range_intelligence.js?v=x281lg"></script>
+  <script src="/static/shot_cycle.js?v=500x1"></script>
+  <script src="/static/app.js?v=ble43888"></script>
+<script src="/static/equipment_catalog.js?v=el18-formux-r1"></script>
+<script src="/static/equipment_lab_core.js?v=ble438956"></script>
+<script src="/static/equipment_lab_layer.js?v=el18-formux-r1"></script>
+  <script src="/static/evidence_identity_persistence_layer.js?v=postp108"></script>
+  <script src="/static/shot_list_ux_layer.js?v=ble43892"></script>
+  <script src="/static/review_precision_layer.js?v=ble43888"></script>
+  <script src="/static/evidence_integrity_repair_layer.js?v=hv2-r8c1-p108"></script>
+  <script src="/static/evidence_timeline_baseline_layer.js?v=mac20260930r7"></script>
+  <script src="/static/temporal_evidence_layer.js?v=mac20260930r7-p108"></script>
+  <script src="/static/native_capture_layer.js?v=hv3-r8c1-p108"></script>
+  <script src="/static/multicamera_timeline_layer.js?v=hv3"></script>
+  <script src="/static/native_vision_shadow_layer.js?v=hv1"></script>
+  <script src="/static/coach_keyframe25_backfill_layer.js?v=mac20260930r7"></script>
+  <script src="/static/camera_fps_guard_layer.js?v=ble438941"></script>
+  <script src="/static/ui_stability_core.js?v=ble4374"></script>
+  <script src="/static/ui_stability_layer.js?v=ble4374"></script>
+  <script src="/static/bow_sensor_ble.js?v=x282ble41"></script>
+  <script src="/static/multicamera_admission_guard.js?v=ble4363"></script>
+  <script src="/static/field_polish_layer.js?v=ble4382"></script>
+  <script src="/static/foundation_guard_layer.js?v=mac20260930r7"></script>
+  <script>window.CaptureIntegrityLayer?.installFormAnalyzer?.();</script>
+  <script>
+    // V5 pose-module watchdog: a module parse/load failure must never look like an endless normal Loading state.
+    setTimeout(()=>{
+      if(window.PoseEngine)return;
+      const h=document.getElementById("poseHeaderStatus"),b=document.getElementById("poseToggleBtn"),e=document.getElementById("poseEngineText");
+      if(h){h.textContent="Pose: module error";h.className="status-pill bad";}
+      if(b){b.textContent="Pose: Error";b.disabled=true;}
+      if(e)e.textContent="Pose module did not start. This build failed to load the pose code; restart or use a corrected build.";
+    },7000);
+  </script>
+  <script type="module" src="/static/pose.js?v=x281lg"></script>
+  <script type="module" src="/static/pose_visual_fallback.js?v=ble4362"></script>
+  <script type="module" src="/static/activity_classifier_layer.js?v=ble4386"></script>
+<script src="/static/capture_session_guard_layer.js?v=ble438953"></script>
+</body>
+</html>

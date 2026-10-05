@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/data/3pm_hv3_phase01_work/3PM_Analyzer_Mac_20261001_R6_HV3_ThreeCameraFoundation/app/tests/static_integrity_x282.py", line 25, in <module>
+    got=hashlib.sha256(p.read_bytes()).hexdigest(); assert got==want, f'{f} frozen hash changed: {got}'
+                                                           ^^^^^^^^^
+AssertionError: static/pose.js frozen hash changed: ca544eb05f68e309de2b8c6b0855448b211788230d7820edb651f7c7c4e5cb50

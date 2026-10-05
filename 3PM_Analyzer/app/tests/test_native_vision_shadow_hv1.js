@@ -1,0 +1,18 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const Core=require(path.join(root,'static/native_vision_shadow_core.js'));
+assert(Core.VERSION.includes('shadow-core-v1'));
+const p={role:'side',epochMs:1000,phase:'Anchor',shoulderLineDeg:2,bowArm2DDeg:176,drawElbow2DDeg:162};
+const n={available:true,role:'side',epoch_ms:1010,latency_ms:8,body_quality:.9,hand_pose_active:true,geometry:{shoulderLineDeg:3.5,bowArm2DDeg:174,drawElbow2DDeg:165}};
+const c=Core.compare(p,n);assert(c&&c.comparable_metrics===3);assert(Math.abs(c.deltas.shoulder_line_deg-1.5)<1e-9);assert(c.deltas.bow_arm_2d_deg===2);assert(c.deltas.draw_elbow_2d_deg===3);
+let s=Core.fresh();s=Core.update(s,c);const sum=Core.summary(s);assert(sum.matched===1&&sum.metric_delta.bow_arm_2d_deg.n===1);
+assert(Core.compare({...p,epochMs:0},n)===null,'stale frames must not compare');
+const swift=fs.readFileSync(path.join(root,'native_capture_bridge','3PMNativeCaptureBridge.swift'),'utf8');
+for(const marker of ['import Vision','VNDetectHumanBodyPoseRequest','VNDetectHumanHandPoseRequest','shadow_only','vision_authority":false','role == "side"','/vision/latest','/vision/hint'])assert(swift.includes(marker),marker);
+const layer=fs.readFileSync(path.join(root,'static/native_vision_shadow_layer.js'),'utf8');
+assert(layer.includes('original.apply(this,arguments)'),'production pose hook must remain pass-through');
+assert(!layer.includes('updateLivePhase')&&!layer.includes('onShotEvidence'),'shadow layer must not drive shot lifecycle');
+const html=fs.readFileSync(path.join(root,'static/index.html'),'utf8');
+assert(html.includes('native_vision_shadow_core.js?v=hv1')&&html.includes('native_vision_shadow_layer.js?v=hv1'));
+const services=fs.readFileSync(path.resolve(root,'../internal/start_services.sh'),'utf8');assert(services.includes('-framework Vision'));
+console.log('Native Vision Shadow HV1: PASS · passive A/B only · no shot authority');

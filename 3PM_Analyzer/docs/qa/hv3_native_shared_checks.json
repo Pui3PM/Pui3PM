@@ -1,0 +1,11 @@
+{
+  "build": "3PM_Analyzer_Mac_20261001_R6_HV3_ThreeCameraFoundation",
+  "js_regressions": "99/99 PASS",
+  "static_integrity": "PASS",
+  "mac_preflight": "PASS (native runtime not executed on Linux)",
+  "shared_cpp_ring_compile_run": "PASS",
+  "windows_adapter_non_windows_sentinel_compile": "PASS",
+  "swift_syntax_parse": "true",
+  "real_mac_camera_acceptance": false,
+  "real_windows_native_acceptance": false
+}

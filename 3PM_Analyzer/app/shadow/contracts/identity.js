@@ -1,0 +1,3 @@
+'use strict';
+const material=require('./identity_material');const sha=require('./sha256_pure');
+function frameIdentityTuple(fields){return material.validateIdentityFields(fields);}function lengthPrefixedUtf8(parts){return material.lengthPrefixedUtf8(parts);}function frameUID(fields){frameIdentityTuple(fields);return material.uidFromDigestBytes(sha.digest(material.frameIdentityBytes(fields)));}function samePhysicalSample(a,b){return !!a&&!!b&&a.runId===b.runId&&a.sourceId===b.sourceId&&a.streamGeneration===b.streamGeneration&&a.frameSeq===b.frameSeq;}module.exports={lengthPrefixedUtf8,frameIdentityTuple,frameUID,samePhysicalSample};

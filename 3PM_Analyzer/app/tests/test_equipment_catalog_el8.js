@@ -1,0 +1,10 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const code=fs.readFileSync('static/equipment_catalog.js','utf8');const ctx={window:{}};vm.createContext(ctx);vm.runInContext(code,ctx);const C=ctx.window.EquipmentCatalog;
+assert(C.version.startsWith('EL8') || C.version.startsWith('EL9') || C.version.startsWith('EL10') || C.version.startsWith('EL11') || C.version.startsWith('EL15') || (C.version.startsWith('EL17') || C.version.startsWith('EL18')));
+const limbBrands=new Set(C.records.filter(r=>r.category==='limbs').map(r=>r.brand));
+['Hoyt','WNS','WIAWIS / Win&Win','Kinetic','Core Archery','Fivics','Gillo','MK Korea','Mybo','Samick','Sanlida','Uukha','Sebastien Flute','Shocq','Krossen'].forEach(b=>assert(limbBrands.has(b),b));
+assert(C.records.some(r=>r.category==='limbs'&&r.brand==='WNS'&&r.model==='Armato C3 Carbon Foam'));
+assert(C.records.some(r=>r.category==='riser'&&r.brand==='WNS'&&r.model==='Elnath FX'));
+assert(C.records.some(r=>r.category==='sight'&&r.brand==='Shibuya'&&r.model==='ULTIMA RC PRO G2'));
+const layer=fs.readFileSync('static/equipment_lab_layer.js','utf8');assert(layer.includes('syncLabFromCurrentSetup'));assert(layer.includes('syncCurrentSetupFromLab'));assert(!layer.includes('C.marketCoverage?.[cat]'),'UI selectors should show verified catalog brands only; Other / Custom covers unverified brands');
+console.log('EL8 catalog coverage + shared-data binding PASS');

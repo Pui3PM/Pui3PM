@@ -1,0 +1,1 @@
+Rollback: close this version; launch the untouched original P1-08 folder with its START_3PM.command. Keep separate browser profiles and all existing data. Git rollback reference is the authoritative base commit above; do not overwrite databases or reuse an older unsafe evidence writer on newer data.

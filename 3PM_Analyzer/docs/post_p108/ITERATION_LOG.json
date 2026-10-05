@@ -1,0 +1,18 @@
+{
+  "base": "0f3ee6d08ab59a1cca98611762d2d7947b012bb5",
+  "iterations": [
+    {
+      "symptom": "kit publishes lifecycle token after permission; /diag non-200 can still confirm; unknown keys collide",
+      "rootCause": "token reservation too late; HTTP status ignored; metadata-only fallback identity",
+      "repair": "reservation before permission; fail-closed diag; object-specific unknown keys plus persisted IDs",
+      "verification": "new targeted tests + actual Chromium browser gates",
+      "open": "unmodified incompatible legacy assertions; Swift compile/runtime unavailable"
+    },
+    {
+      "symptom": "new chronology fixture crossed discontinuity threshold unintentionally",
+      "rootCause": "fixture used whole-second media changes with 20 ms epoch jitter",
+      "repair": "use realistic 33 ms media changes; retain expected physical order",
+      "verification": "all six permutations PASS; production discontinuity rule unchanged"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+const assert=require('assert');
+const B=require('../static/evidence_budget_core.js');
+function frame(i,zone,release=100000){return {epochMs:release-4000+i*120,offsetMs:-4000+i*120,blob:{id:i},source:i%3===0?'native30':'sparse-jpeg',evidenceZone:zone,evidenceTags:[zone]};}
+const zones=[];
+for(let i=0;i<60;i++)zones.push(i<8?'draw':i<16?'anchor-focus':i<24?'aim-hold':i<28?'expansion-pin':i<48?'release-focus':i<58?'follow-summary':'recovery-end');
+const input=zones.map((z,i)=>frame(i,z));
+const a=B.normalizeRecord({frames:input,releaseEpochMs:100000,captureKind:'phase-weighted'},25);
+assert.equal(a.frames.length,25,'60-frame evidence must be reduced to fixed 25 real frames');
+assert.equal(a.evidenceBudget.targetSlots,25);assert.equal(a.evidenceBudget.actualFrames,25);assert.equal(a.evidenceBudget.missingSlots,0);assert.equal(a.evidenceBudget.sourceFrames,60);assert.equal(a.evidenceBudget.trimmed,35);
+assert.equal(a.reviewSlots.length,25);assert(B.isStrictChronology(a.frames),'final review frames must be strict chronological');
+assert(a.frames.some(f=>String(f.evidenceZone).includes('anchor')),'anchor evidence preserved');
+assert(a.frames.some(f=>String(f.evidenceZone).includes('hold')),'hold evidence preserved');
+assert(a.frames.some(f=>String(f.evidenceZone).includes('release')),'release evidence preserved');
+assert(a.frames.some(f=>String(f.evidenceZone).includes('follow')),'follow evidence preserved');
+assert(a.frames.some(f=>String(f.evidenceZone).includes('recovery')),'recovery evidence preserved');
+const b=B.normalizeRecord({frames:[...input].reverse(),releaseEpochMs:100000,captureKind:'phase-weighted'},25);
+assert.deepEqual(a.frames.map(f=>f.epochMs),b.frames.map(f=>f.epochMs),'selection must be deterministic regardless of merge order');
+const short=B.normalizeRecord({frames:input.slice(0,17),releaseEpochMs:100000,captureKind:'phase-weighted'},25);
+assert.equal(short.frames.length,17,'must never fabricate/duplicate frames to reach 25');
+assert.equal(short.evidenceBudget.missingSlots,8);assert.equal(short.reviewSlots.filter(x=>x.missing).length,8);
+const plus=B.normalizeRecord({...a,frames:[...a.frames,...input.slice(25,55)]},25);
+assert.equal(plus.frames.length,25,'later temporal/recovery writes must remain capped at 25');
+assert(B.isStrictChronology(plus.frames));
+console.log('PASS test_evidence_budget_r3 · fixed 25 budget · deterministic · chronological · no fabrication');

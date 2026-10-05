@@ -1,0 +1,1 @@
+Post-P108 changes and RCA: see DELIVERY_REPORT sections 2–4. No protected app.js/core_runtime.js/pose algorithm/equipment or native runtime byte changes. Narrow changes: shared identity, persistence adapter, native facade, Swift lifecycle/security, Shot List UI policy; new independent tests only. Original test assertions are unchanged.

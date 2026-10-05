@@ -1,0 +1,3 @@
+'use strict';
+const sha=require('./sha256_pure');
+function canonicalize(value){if(value===null||typeof value==='boolean'||typeof value==='string')return JSON.stringify(value);if(typeof value==='number'){if(!Number.isFinite(value))throw new TypeError('canonical JSON forbids non-finite numbers');return JSON.stringify(value);}if(Array.isArray(value))return '['+value.map(canonicalize).join(',')+']';if(value&&typeof value==='object'){const keys=Object.keys(value).sort();return '{'+keys.map(k=>JSON.stringify(k)+':'+canonicalize(value[k])).join(',')+'}';}throw new TypeError(`canonical JSON unsupported type: ${typeof value}`);}function sha256Canonical(value){return sha.hex(canonicalize(value));}module.exports={canonicalize,sha256Canonical};

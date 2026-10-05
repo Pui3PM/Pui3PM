@@ -1,0 +1,3297 @@
+{
+  "source": "BLE43888 field trace 2026-09-26T08-58-20-089Z evidence manifest",
+  "cases": [
+    {
+      "shot_id": 1,
+      "releaseEpochMs": 1790412967862,
+      "anchorOffsetMs": -3105,
+      "followThroughEndEpochMs": 1790412970896,
+      "anchorEpochMs": 1790412964443,
+      "anchorSettledEpochMs": 1790412964757,
+      "anchorFocusEpochMs": 1790412964757,
+      "frames": [
+        {
+          "offsetMs": -5823,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -5669,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -5364,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -5057,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4754,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4450,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4139,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3835,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3576,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3468,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3255,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -3153,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2948,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2844,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -2690,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2379,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2072,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1762,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1448,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1139,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -824,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -634,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -567,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -500,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -467,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -400,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -367,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -301,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -234,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -200,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -134,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -100,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -68,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 0,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 66,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 99,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 166,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 200,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 265,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 332,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 365,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 433,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 500,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 532,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 599,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 633,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 702,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 733,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 800,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 914,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1000,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1124,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1229,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1332,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1833,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2433,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 3033,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790412962088,
+          "role": "side",
+          "confidence": 0.9986786663532257
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790412964443,
+          "role": "side",
+          "confidence": 0.9928723234396715
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790412964757,
+          "role": "side",
+          "confidence": 0.9922049948802361
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790412965064,
+          "role": "side",
+          "confidence": 0.9959527955605434
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790412967862,
+          "role": "side",
+          "confidence": 0.9945320797586528
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790412968026,
+          "role": "side",
+          "confidence": 0.9976427472554721
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 12,
+          "required": true,
+          "deltaMs": 157,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 10,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 13,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 33,
+          "deltaMs": 0,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 46,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 56,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 2,
+      "releaseEpochMs": 1790412977722,
+      "anchorOffsetMs": -2338,
+      "followThroughEndEpochMs": 1790412980375,
+      "anchorEpochMs": 1790412973363,
+      "anchorSettledEpochMs": 1790412975384,
+      "anchorFocusEpochMs": 1790412975384,
+      "frames": [
+        {
+          "offsetMs": -4743,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -4634,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4405,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4350,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3979,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3666,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3293,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2968,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2649,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2384,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -2336,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2013,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1646,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1426,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1273,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -958,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -627,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -560,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -527,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -461,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -393,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -360,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -293,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -228,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -160,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -127,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -60,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 7,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 40,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 106,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 173,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 240,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 273,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 339,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 406,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 439,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 507,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 573,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 607,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 675,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 740,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 789,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 901,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1007,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1115,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1220,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1340,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1772,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2240,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2640,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790412973084,
+          "role": "side",
+          "confidence": 0.9913192606889285
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790412973363,
+          "role": "side",
+          "confidence": 0.998549490250074
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790412975384,
+          "role": "side",
+          "confidence": 0.9966129720211028
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790412976342,
+          "role": "side",
+          "confidence": 0.9986558960034297
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790412977722,
+          "role": "side",
+          "confidence": 0.9918204938527937
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790412977776,
+          "role": "side",
+          "confidence": 0.9975473128832305
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 10,
+          "required": true,
+          "deltaMs": 2,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 9,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 13,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 27,
+          "deltaMs": 7,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 40,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 49,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 3,
+      "releaseEpochMs": 1790413004442,
+      "anchorOffsetMs": -2111,
+      "followThroughEndEpochMs": 1790413007483,
+      "anchorEpochMs": 1790412999771,
+      "anchorSettledEpochMs": 1790413002331,
+      "anchorFocusEpochMs": 1790413002331,
+      "frames": [
+        {
+          "offsetMs": -5078,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -4765,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4717,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4416,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4118,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3806,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3500,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3199,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2888,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2579,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2265,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -2211,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1897,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1693,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1591,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1282,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -647,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -613,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -547,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -513,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -447,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -380,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -346,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -280,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -246,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -213,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -180,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -80,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -45,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -14,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 53,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 87,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 120,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 158,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 187,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 254,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 287,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 354,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 387,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 453,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 487,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 553,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 580,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 686,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 754,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 791,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 900,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 986,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1119,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1232,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1354,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1821,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2454,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 3021,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790412999466,
+          "role": "side",
+          "confidence": 0.9869660886434409
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790412999771,
+          "role": "side",
+          "confidence": 0.9976647046896127
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413002331,
+          "role": "side",
+          "confidence": 0.9929987265513495
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413002849,
+          "role": "side",
+          "confidence": 0.9971786792461688
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413004442,
+          "role": "side",
+          "confidence": 0.9957752379533729
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413004645,
+          "role": "side",
+          "confidence": 0.9978402591668643
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 12,
+          "required": true,
+          "deltaMs": 214,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 10,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 13,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 29,
+          "deltaMs": 14,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 44,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 53,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 4,
+      "releaseEpochMs": 1790413018655,
+      "anchorOffsetMs": -2797,
+      "followThroughEndEpochMs": 1790413021318,
+      "anchorEpochMs": 1790413013649,
+      "anchorSettledEpochMs": 1790413015858,
+      "anchorFocusEpochMs": 1790413015858,
+      "frames": [
+        {
+          "offsetMs": -5564,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -5458,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -5227,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -5109,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4903,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4587,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4270,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3952,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3648,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3303,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3017,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2909,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -2690,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2363,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2050,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1740,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1410,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1101,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -789,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -592,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -526,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -493,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -460,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -393,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -326,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -292,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -226,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -159,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -126,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -59,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -26,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 41,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 108,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 141,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 207,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 241,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 272,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 308,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 373,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 407,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 474,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 540,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 607,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 641,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 713,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 740,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 818,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 940,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 974,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1044,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1155,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1254,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1374,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1808,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2240,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2641,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413013246,
+          "role": "side",
+          "confidence": 0.9815714065845196
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413013649,
+          "role": "side",
+          "confidence": 0.9988582400175242
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413015858,
+          "role": "side",
+          "confidence": 0.9912803090535677
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413017347,
+          "role": "side",
+          "confidence": 0.9985122666909145
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413018655,
+          "role": "side",
+          "confidence": 0.9936454485433355
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413018813,
+          "role": "side",
+          "confidence": 0.9968739514167491
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 12,
+          "required": true,
+          "deltaMs": 107,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 11,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 16,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 30,
+          "deltaMs": 26,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 44,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 55,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 5,
+      "releaseEpochMs": 1790413029528,
+      "anchorOffsetMs": -1959,
+      "followThroughEndEpochMs": 1790413032848,
+      "anchorEpochMs": 1790413025332,
+      "anchorSettledEpochMs": 1790413027569,
+      "anchorFocusEpochMs": 1790413027569,
+      "frames": [
+        {
+          "offsetMs": -4590,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -4472,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4245,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4190,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3875,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3564,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3246,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2905,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2587,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2284,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2008,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -1679,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1371,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1059,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -744,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -632,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -598,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -532,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -498,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -432,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -365,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -332,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -265,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -232,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -165,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -132,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -100,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -65,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 34,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 102,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 167,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 202,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 228,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 268,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 334,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 368,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 435,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 467,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 535,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 602,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 635,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 663,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 767,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 802,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 892,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 968,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 994,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1096,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1199,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1303,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1334,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1801,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2553,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 3302,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413024990,
+          "role": "side",
+          "confidence": 0.9889987111091614
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413025332,
+          "role": "side",
+          "confidence": 0.9961104787313021
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413027569,
+          "role": "side",
+          "confidence": 0.9812277124478267
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413027899,
+          "role": "side",
+          "confidence": 0.9902315061825973
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413029528,
+          "role": "side",
+          "confidence": 0.9853369797107127
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413029693,
+          "role": "side",
+          "confidence": 0.9929252633681666
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 11,
+          "required": true,
+          "deltaMs": 280,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 10,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 11,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 28,
+          "deltaMs": 1,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 43,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 54,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 6,
+      "releaseEpochMs": 1790413042125,
+      "anchorOffsetMs": -3137,
+      "followThroughEndEpochMs": 1790413045028,
+      "anchorEpochMs": 1790413037354,
+      "anchorSettledEpochMs": 1790413038988,
+      "anchorFocusEpochMs": 1790413038988,
+      "frames": [
+        {
+          "offsetMs": -5118,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -4712,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4394,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -4076,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3769,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3496,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3190,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -2868,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -2554,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2246,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1979,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1645,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1354,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1037,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -728,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -629,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -562,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -530,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -462,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -429,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -362,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -296,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -263,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -196,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -163,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -95,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -62,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 4,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 38,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 105,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 137,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 205,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 271,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 305,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 370,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 404,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 472,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 537,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 571,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 638,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 738,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 805,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1005,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1337,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1804,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2370,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2838,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413037113,
+          "role": "side",
+          "confidence": 0.9778534572858077
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413037354,
+          "role": "side",
+          "confidence": 0.9917568848683284
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413038988,
+          "role": "side",
+          "confidence": 0.9873546568246988
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413039308,
+          "role": "side",
+          "confidence": 0.987974049953314
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413042125,
+          "role": "side",
+          "confidence": 0.9822553401496541
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413042330,
+          "role": "side",
+          "confidence": 0.9903461603017953
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 7,
+          "required": true,
+          "deltaMs": 269,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 6,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 7,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 27,
+          "deltaMs": 4,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 40,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 46,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 7,
+      "releaseEpochMs": 1790413052986,
+      "anchorOffsetMs": -2089,
+      "followThroughEndEpochMs": 1790413055593,
+      "anchorEpochMs": 1790413049327,
+      "anchorSettledEpochMs": 1790413050897,
+      "anchorFocusEpochMs": 1790413050897,
+      "frames": [
+        {
+          "offsetMs": -4021,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -3967,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3760,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3710,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3389,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3072,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2767,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2450,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2140,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -1818,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1694,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1474,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1146,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -839,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -623,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -589,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -523,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -456,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -423,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -356,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -289,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -256,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -189,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -156,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -89,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -56,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 11,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 43,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 110,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 177,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 211,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 277,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 311,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 377,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 411,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 477,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 544,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 577,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 644,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 744,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 811,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 856,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 957,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1010,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1070,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1174,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1281,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1344,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1797,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2176,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2543,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413049065,
+          "role": "side",
+          "confidence": 0.9932133005215571
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413049327,
+          "role": "side",
+          "confidence": 0.9970094309403346
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413050897,
+          "role": "side",
+          "confidence": 0.9896535511200244
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413051344,
+          "role": "side",
+          "confidence": 0.9971110994999226
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413052986,
+          "role": "side",
+          "confidence": 0.9911474986390485
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413053145,
+          "role": "side",
+          "confidence": 0.9963283309569727
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 9,
+          "required": true,
+          "deltaMs": 271,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 8,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 10,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 26,
+          "deltaMs": 11,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 39,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 50,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 8,
+      "releaseEpochMs": 1790413069742,
+      "anchorOffsetMs": -1970,
+      "followThroughEndEpochMs": 1790413072236,
+      "anchorEpochMs": 1790413066945,
+      "anchorSettledEpochMs": 1790413067772,
+      "anchorFocusEpochMs": 1790413067772,
+      "frames": [
+        {
+          "offsetMs": -4310,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -4202,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3890,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3607,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -3294,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2960,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2899,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2674,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2338,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2017,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -1702,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -1388,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1082,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -771,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -645,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -613,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -545,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -512,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -445,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -412,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -346,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -312,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -245,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -178,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -146,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -79,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -46,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 21,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 54,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 122,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 188,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 221,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 288,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 322,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 388,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 421,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 487,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 522,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 588,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 622,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 686,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 738,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 789,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 894,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1005,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1103,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1205,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1338,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1794,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2125,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2444,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413065479,
+          "role": "side",
+          "confidence": 0.997896297619893
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413066945,
+          "role": "side",
+          "confidence": 0.9865864877517408
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413067772,
+          "role": "side",
+          "confidence": 0.990304907468649
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413068091,
+          "role": "side",
+          "confidence": 0.992986907867285
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413069742,
+          "role": "side",
+          "confidence": 0.9889066014740522
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413069802,
+          "role": "side",
+          "confidence": 0.9952557627971355
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 10,
+          "required": true,
+          "deltaMs": 268,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 9,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 10,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 27,
+          "deltaMs": 21,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 41,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 50,
+          "required": true
+        }
+      }
+    },
+    {
+      "shot_id": 9,
+      "releaseEpochMs": 1790413084835,
+      "anchorOffsetMs": -849,
+      "followThroughEndEpochMs": 1790413087724,
+      "anchorEpochMs": 1790413082116,
+      "anchorSettledEpochMs": 1790413083986,
+      "anchorFocusEpochMs": 1790413083986,
+      "frames": [
+        {
+          "offsetMs": -3343,
+          "evidenceZone": "draw-pin",
+          "evidenceTags": [
+            "draw-pin"
+          ]
+        },
+        {
+          "offsetMs": -3244,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2930,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2819,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2603,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -2290,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1979,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1624,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1311,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -1005,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -955,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -889,
+          "evidenceZone": "hold-pin",
+          "evidenceTags": [
+            "hold-pin"
+          ]
+        },
+        {
+          "offsetMs": -856,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -788,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -755,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -688,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -621,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -589,
+          "evidenceZone": "expansion-pin",
+          "evidenceTags": [
+            "expansion-pin"
+          ]
+        },
+        {
+          "offsetMs": -521,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -488,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -421,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -388,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -321,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -255,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -221,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -155,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -121,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": -56,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 12,
+          "evidenceZone": "release-focus",
+          "evidenceTags": [
+            "release-focus"
+          ]
+        },
+        {
+          "offsetMs": 45,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 112,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 144,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 211,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 245,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 312,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 379,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 412,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 478,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 512,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 579,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 645,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 692,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 744,
+          "evidenceZone": "follow-summary",
+          "evidenceTags": [
+            "follow-summary"
+          ]
+        },
+        {
+          "offsetMs": 812,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 903,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1012,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1114,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1221,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1345,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 1812,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2345,
+          "evidenceZone": "aim-hold",
+          "evidenceTags": []
+        },
+        {
+          "offsetMs": 2878,
+          "evidenceZone": "recovery-end",
+          "evidenceTags": [
+            "recovery-end"
+          ]
+        }
+      ],
+      "phase_timeline": [
+        {
+          "phase": "Draw",
+          "epochMs": 1790413081588,
+          "role": "side",
+          "confidence": 0.9961765674444346
+        },
+        {
+          "phase": "Anchor",
+          "epochMs": 1790413082116,
+          "role": "side",
+          "confidence": 0.9957754556949323
+        },
+        {
+          "phase": "Aim / Hold",
+          "epochMs": 1790413083986,
+          "role": "side",
+          "confidence": 0.9867547186521383
+        },
+        {
+          "phase": "Expansion",
+          "epochMs": 1790413084303,
+          "role": "side",
+          "confidence": 0.9932872744706962
+        },
+        {
+          "phase": "Release",
+          "epochMs": 1790413084835,
+          "role": "side",
+          "confidence": 0.99014275891393
+        },
+        {
+          "phase": "Follow Through",
+          "epochMs": 1790413084985,
+          "role": "side",
+          "confidence": 0.9959063479533563
+        }
+      ],
+      "old_stages": {
+        "draw": {
+          "ok": true,
+          "index": 0,
+          "required": true
+        },
+        "anchor": {
+          "ok": true,
+          "index": 13,
+          "required": true,
+          "deltaMs": 61,
+          "verifiedForward": true
+        },
+        "hold": {
+          "ok": true,
+          "index": 11,
+          "required": true
+        },
+        "expansion": {
+          "ok": true,
+          "index": 17,
+          "required": true,
+          "observed": true,
+          "optional": false
+        },
+        "release": {
+          "ok": true,
+          "index": 28,
+          "deltaMs": 12,
+          "required": true
+        },
+        "follow": {
+          "ok": true,
+          "index": 42,
+          "required": true
+        },
+        "recovery": {
+          "ok": true,
+          "index": 51,
+          "required": true
+        }
+      }
+    }
+  ]
+}

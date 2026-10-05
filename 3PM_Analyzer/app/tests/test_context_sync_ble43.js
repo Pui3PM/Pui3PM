@@ -1,0 +1,24 @@
+const fs=require('fs'),vm=require('vm'),path=require('path');
+const src=fs.readFileSync(path.join(__dirname,'..','static','bow_sensor_ble.js'),'utf8');
+const html=fs.readFileSync(path.join(__dirname,'..','static','index.html'),'utf8');
+const bridge=fs.readFileSync(path.join(__dirname,'..','ble_bridge','3PMBLEBridge.swift'),'utf8');
+const store=new Map();
+const document={readyState:'loading',querySelector:()=>null,querySelectorAll:()=>[],addEventListener:()=>{}};
+const equipment={id:7,name:'Hoyt Arcos Outdoor',discipline:'Olympic Recurve',riser_model:'Hoyt Arcos',actual_draw_weight_lb:37.5};
+const athlete={id:3,name:'Pui ทดสอบ',handedness:'Right-handed',discipline:'Olympic Recurve'};
+const session={id:12,title:'Morning 30m'};
+const windowObj={FormAnalyzer:{getCurrentSession:()=>session,getCurrentAthlete:()=>athlete,getCurrentEquipment:()=>equipment},addEventListener:()=>{},dispatchEvent:()=>{}};
+const ctx={window:windowObj,document,sessionStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},navigator:{},fetch:async()=>({ok:false,json:async()=>({})}),CustomEvent:function(){},indexedDB:undefined,console,setTimeout,clearTimeout,Blob:function(){},URL:{createObjectURL:()=>'',revokeObjectURL:()=>{}},Date,Math,Number,Map,Set,Uint8Array,ArrayBuffer,DataView,BigInt,TextDecoder,TextEncoder};
+ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(src,ctx);
+const api=ctx.window.ThreePMBowSensor; const payload=api.getContextPayload();
+function assert(x,m){if(!x)throw new Error(m)}
+assert(payload.includes('aid=3'),'athlete id missing');
+assert(payload.includes('ath=Pui%20%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A'),'UTF-8 athlete encoding missing');
+assert(payload.includes('sid=12')&&payload.includes('ses=Morning%2030m'),'session context missing');
+assert(payload.includes('eid=7')&&payload.includes('eq=Hoyt%20Arcos%20Outdoor'),'equipment context missing');
+assert(payload.includes('bow=Olympic%20Recurve')&&payload.includes('hand=Right')&&payload.includes('otf=37.5'),'bow context missing');
+assert(bridge.includes('NWEndpoint.Port(rawValue: port)')&&bridge.includes('39742'),'native context bridge endpoint missing');
+assert(bridge.includes('0x20')&&bridge.includes('0x21')&&bridge.includes('0x22'),'chunked BLE context protocol missing');
+assert(src.includes('syncAnalyzerContext')&&src.includes('browserWriteContext'),'Analyzer context sync paths missing');
+assert(html.includes('analysisBowSensorHero')&&html.includes('analysisBowSensorDetail'),'cockpit visual evidence regions missing');
+console.log('BLE4.3 Analyzer context sync QA: PASS · athlete/session/equipment UTF-8 payload · native/browser BLE paths · cockpit UI present');

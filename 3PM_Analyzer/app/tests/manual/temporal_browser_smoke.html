@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8"><title>Temporal smoke</title>
+<body><pre id="out">RUNNING</pre>
+<canvas id="c" width="640" height="360"></canvas>
+<script src="/static/frame_identity_core.js?v=p108"></script>
+<script src="/static/temporal_evidence_core.js?v=ble4374"></script>
+<script src="/static/temporal_evidence_layer.js?v=ble4374"></script>
+<script>
+(async()=>{
+ const c=document.getElementById('c'),ctx=c.getContext('2d'); let n=0,stop=false;
+ function paint(){if(stop)return;ctx.fillStyle=`rgb(${n%255},${(n*3)%255},${(n*7)%255})`;ctx.fillRect(0,0,c.width,c.height);n++;requestAnimationFrame(paint)} paint();
+ const stream=c.captureStream(30),track=stream.getVideoTracks()[0];
+ TemporalEvidenceLayer.openRole('side',track,1);
+ await new Promise(r=>setTimeout(r,3500));
+ const d=TemporalEvidenceLayer.diagnostics('side');
+ document.getElementById('out').textContent=JSON.stringify({browser:TemporalEvidenceLayer.browserInfo(),diag:d},null,2);
+ stop=true;TemporalEvidenceLayer.closeRole('side');track.stop();
+})();
+</script></body>

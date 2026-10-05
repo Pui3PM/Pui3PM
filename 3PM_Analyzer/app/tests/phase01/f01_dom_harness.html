@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><title>F01 baseline repro</title>
+<div id="shotReplayPanel"><div id="shotReplayMeta">Frame 1/1</div><button id="jumpAnchorBtn">Anchor</button></div>
+<pre id="result">starting</pre>
+<script>
+window.setInterval=()=>0;
+window.shotReplayState={record:{frames:[{offsetMs:0,blob:{}}]},index:0};window.selectedShot=()=>({id:1});
+window.replayAnchorOffsetForShot=()=>0;window.renderShotReplayFrame=()=>{};window.stopShotReplay=()=>{};
+const RealMO=window.MutationObserver;let callbacks=0;
+window.MutationObserver=class {constructor(cb){this.inner=new RealMO((m,o)=>{callbacks++;if(callbacks>=100){this.inner.disconnect();document.documentElement.dataset.f01Callbacks=String(callbacks);document.getElementById('result').textContent='callbacks='+callbacks;}cb(m,o);});}observe(...a){return this.inner.observe(...a)}disconnect(){return this.inner.disconnect()}takeRecords(){return this.inner.takeRecords()}};
+setTimeout(()=>{document.documentElement.dataset.f01Callbacks=String(callbacks);document.getElementById('result').textContent='callbacks='+callbacks;},300);
+</script>
+<script src="../../static/evidence_integrity_repair_layer.js"></script>

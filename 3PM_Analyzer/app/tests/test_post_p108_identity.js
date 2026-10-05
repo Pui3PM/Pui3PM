@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('assert'),FI=require('../static/frame_identity_core'),B=require('../static/evidence_budget_core'),T=require('../static/temporal_evidence_core');
+const f=(o={})=>({epochMs:1000,blob:new Blob(['abc']),...o});
+const perms=a=>a.length?a.flatMap((x,i)=>perms(a.filter((_,j)=>i!==j)).map(p=>[x,...p])):[[]];
+let checks=0;const test=(n,fn)=>{fn();checks++;};
+test('equal time/size is not identity',()=>assert.equal(FI.uniqueFrames([f(),f()]).length,2));
+test('unknown device/source/generation',()=>{for(const extra of [{},{source:'same'},{source:'same',generation:1},{deviceID:'d',mediaTime:1,frameSeq:1}])assert.equal(FI.uniqueFrames([f(extra),f(extra)]).length,2);});
+test('durable clones/readback',()=>{const a=f({frameUID:'A'});assert.equal(FI.uniqueFrames([a,structuredClone(a)]).length,1);});
+test('known stream frame retry',()=>{const a=f({source:'cam',generation:3,deviceID:'d',mediaTime:1,frameSeq:7});assert.equal(FI.uniqueFrames([a,structuredClone(a)]).length,1);});
+test('contradictory media/seq',()=>{const a=f({source:'cam',generation:3,deviceID:'d',mediaTime:1,frameSeq:7});assert.equal(FI.uniqueFrames([a,f({...a,frameSeq:8})]).length,2);});
+test('adversarial alias permutations',()=>{const b=new Blob(['abc']);const a=f({frameUID:'A',source:'cam',generation:1,deviceID:'d',mediaTime:1,blob:b}),u=f({source:'cam',generation:1,deviceID:'d',mediaTime:1,blob:b}),z=f({frameUID:'B',source:'cam',generation:1,deviceID:'d',mediaTime:1,blob:b});for(const rows of perms([a,u,z])){const out=FI.uniqueFrames(rows);assert(out.some(x=>x.frameUID==='A'));assert(out.some(x=>x.frameUID==='B'));}});
+test('unknown keys do not collapse selection',()=>{const rows=Array.from({length:25},()=>f({source:'same',offsetMs:0}));const r=B.normalizeRecord({releaseEpochMs:1000,frames:rows});assert.equal(r.frames.length,25);assert.equal(r.reviewSlots.length,25);});
+test('known physical chronology permutations',()=>{const a=[f({epochMs:1020,mediaTime:1,source:'cam',deviceID:'d',generation:1,frameUID:'a'}),f({epochMs:1000,mediaTime:1.033,source:'cam',deviceID:'d',generation:1,frameUID:'b'}),f({epochMs:1030,mediaTime:1.066,source:'cam',deviceID:'d',generation:1,frameUID:'c'})];for(const p of perms(a))assert.deepEqual(FI.physicalOrder(p).map(x=>x.frameUID),['a','b','c']);});
+test('30/60/120/240 cores retain unique inputs',()=>{for(const fps of [30,60,120,240]){const rows=Array.from({length:fps},(_,i)=>f({source:'cam',generation:1,deviceID:'d',epochMs:1000+i*1000/fps,frameSeq:i,mediaTime:i/fps,frameUID:'fps'+fps+'/'+i}));assert.equal(T.canonicalFrames(rows).length,fps);assert.equal(B.canonicalUnique(rows).length,fps);}});
+console.log('Post-P108 identity PASS '+checks+' groups; high FPS is core-only, not production sampler/camera acceptance');

@@ -1,0 +1,112 @@
+{
+  "catalog_version": "EL17-MERGED-FORM-2026-09-30-R2",
+  "baseline_el16_count": 655,
+  "ramrods_r4_count": 592,
+  "merged_record_count": 691,
+  "records_preserved_from_el16": 655,
+  "new_r4_ids_accepted": 26,
+  "semantic_duplicates_removed": 1,
+  "pandarus_champion_spine_records_restored": 11,
+  "ramrods_record_count": 49,
+  "validation": {
+    "json_valid": true,
+    "unique_ids": true,
+    "monotonic_vs_el16_655": true,
+    "pandarus_11_spines_restored": true,
+    "ramrods_quick_disconnect_taxonomy_clean": true,
+    "ultra_current_name_is_ultra_4": true
+  },
+  "mandatory_pandarus_spines": [
+    300,
+    350,
+    400,
+    450,
+    500,
+    550,
+    600,
+    650,
+    700,
+    750,
+    800
+  ],
+  "root_cause_prevention": [
+    "Never build a newer catalog from an older parent without explicit merge.",
+    "Record-count monotonic gate versus current canonical source.",
+    "Mandatory regression fixture for Pandarus Champion 11-spine matrix.",
+    "Semantic duplicate gate before runtime integration."
+  ],
+  "record_count": 681,
+  "ramrods_records": 39,
+  "pandarus_champion_spine_records": 11,
+  "sha256": "cf3e3eb2c3aa18d87535edc2acd617fc6d48a18761401a71b4d8e4bf177e51b6",
+  "normalization_changes": [
+    "Normalized K2 V2 alias/family records into official K2 2 generation; kept six length-specific current records.",
+    "Collapsed EDGE Fixed V-Bar aggregate duplicate into four exact variants.",
+    "Collapsed EDGE Carbon Extension aggregate duplicate into 3/4/5 inch records.",
+    "Collapsed EQ Cylinder aggregate duplicate into stiffness-specific records.",
+    "Collapsed EQ Bow Damper aggregate duplicate.",
+    "Reclassified EDGE Quick Disconnect - Large from vbar to quick_disconnect.",
+    "Normalized RamRods QDC taxonomy and removed duplicate Small/standard family records.",
+    "Merged duplicate Stainless Steel Weight Collection records.",
+    "Normalized current Ultra V4 label to official Ultra 4 and refreshed current manufacturer specs/length options.",
+    "Refreshed K2 2 current official naming/specs and 30-inch mass."
+  ],
+  "duplicate_or_alias_records_removed": [
+    {
+      "id": "ramrods_k2_v2_12",
+      "reason": "Legacy/alternate K2 V2 naming duplicates official K2 2 generation; conflicting archived spine value not propagated. Official current/history source retained."
+    },
+    {
+      "id": "ramrods_k2_v2_long",
+      "reason": "Legacy/alternate K2 V2 naming duplicates official K2 2 generation; conflicting archived spine value not propagated. Official current/history source retained."
+    },
+    {
+      "id": "ramrods_k2_v2_side_family",
+      "reason": "Legacy/alternate K2 V2 naming duplicates official K2 2 generation; conflicting archived spine value not propagated. Official current/history source retained."
+    },
+    {
+      "id": "ramrods_edge_fixed_vbar",
+      "reason": "Aggregate duplicate; exact 45x0/40x0/40x5/40x15 variants retained."
+    },
+    {
+      "id": "ramrods_edge_carbon_extension",
+      "reason": "Aggregate duplicate; exact 3/4/5 inch variants retained."
+    },
+    {
+      "id": "ramrods_eq_cylinder_damper",
+      "reason": "Aggregate duplicate; exact stiffness 30/40/50 records retained."
+    },
+    {
+      "id": "ramrods_eq_bow_damper",
+      "reason": "Aggregate duplicate of EQ Bow Damper - 0.75 inch."
+    },
+    {
+      "id": "ramrods_edge_qd_small",
+      "reason": "Duplicate of EDGE Quick Disconnect - Small; wrong vbar taxonomy corrected by retaining quick_disconnect record."
+    },
+    {
+      "id": "ramrods_quick_disconnect",
+      "reason": "Duplicate standard RamRods Quick Disconnect; wrong vbar taxonomy removed."
+    },
+    {
+      "id": "ramrods_stainless_steel_weight_collection",
+      "reason": "Duplicate collection record merged into canonical Stainless Steel Weight Collection."
+    }
+  ],
+  "ramrods_category_counts": {
+    "damper": 6,
+    "extender": 4,
+    "long_rod": 8,
+    "quick_disconnect": 3,
+    "side_rod": 7,
+    "sight": 1,
+    "stabilizer_weight": 4,
+    "vbar": 6
+  },
+  "known_gaps": [
+    "RamRods EDGE G3 stabilizer family still requires authoritative archived/model-level extraction",
+    "RamRods Matterhorn generation 1 and older generations remain incomplete",
+    "RamRods XP/Beast detailed model-length extraction remains incomplete",
+    "SPECTRA Recurve Sight detailed mechanical specs remain incomplete"
+  ]
+}

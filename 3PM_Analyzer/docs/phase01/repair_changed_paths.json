@@ -1,0 +1,272 @@
+[
+  {
+    "path": "PROJECT_STATE.md",
+    "base_sha256": "8995c55d1c4a828aa57851361d89cbdeb79d97da45862fbc1272c935cae163c4",
+    "current_sha256": "da4866930b5272f6c3271fa778ba359bdf8cc591fe70c5fb398f87c2c3957ce8",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/adapters/replay/replay_adapter.js",
+    "base_sha256": "b1fd327d97d779840dac4d94c19d4b71ac609aa46f196f03ac7d9682e4aa9696",
+    "current_sha256": "e95c99fc33f9c7f3a3dda4d3ed7f1272454e71cd825f78429d20d955da5bac7b",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/archive/shadow_archive.js",
+    "base_sha256": "577234ae76706ffbafeb0c98448d72b36932aad9c5c8494692f870cff923ba20",
+    "current_sha256": "da9487f62e09251bd95b60b87b759bf9ba22cc84df29debab34e592b229b2b5f",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/clock_mapper.js",
+    "base_sha256": "8adb87c75feb401eed73943dd8e5935bda29da16a3f496360f3e22c7d69a38b0",
+    "current_sha256": "7b627fbc6d0570fb273fbc1e62c23448b9c862f31b3912c2ed4e281a8fc7cbc9",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/contract_v1.js",
+    "base_sha256": "53c924afee3cb991c13b149187656616035ce1a9c2fa37b6f243869b2d2bf248",
+    "current_sha256": "8d63f6090110e16e63cd4e3dbaa93a3b4fd120ccc7d9041829f571c59b9abac9",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/identity.js",
+    "base_sha256": "aa48c569ec1b12980a73005622abcc788dbd8de9544b1cd75f9879021b057c51",
+    "current_sha256": "7ed3e81833129fa68bed17b68f6a923cc9e86e62ddd78c00eba26aa14b014c93",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/identity_browser.js",
+    "base_sha256": "11c5ad1f1b632fea423e5a15f36fb3cddaaa4a2fc54b39d79736dfcc2ae4d85e",
+    "current_sha256": "73fdfc63381916caa548720d252d309f11421f172166de7242617b75d74d0eba",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/identity_material.js",
+    "base_sha256": "f9a52be0e7d0a5aa6ff6ccd39ab87f38d7df5157290970677ec9861edaba0344",
+    "current_sha256": "e98c5d5c439cce1d4f09655938875127c55c8f1fd789bef7efdaa2d105cbc177",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/contracts/record_validators.js",
+    "base_sha256": null,
+    "current_sha256": "d131d5e3e721fc60f58cfffa9ccbf900e6b513df70a338d859da9df5a8686343",
+    "classification": "added"
+  },
+  {
+    "path": "app/shadow/decision/shot_cycle_reducer.js",
+    "base_sha256": "ad95f7f90068f6b1cdcd31b9fad727e1c0b6b1f0332698429c177c02202ef7e9",
+    "current_sha256": "c832342a088ecf0fcf3bdc0eeb1da1e80fcfbdf66d8c16479e40d8942e5bc019",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/event_log/in_memory_event_log.js",
+    "base_sha256": "d0c0dada18ee6c25be21c63a16ea856adf30593061ca90ade2cb865e717899bd",
+    "current_sha256": "72b1be461512ea4c60f91e3d431d604b07ba5e31564ecd782e03439fc8584030",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/evidence_writer/in_memory_writer.js",
+    "base_sha256": "c54464c1da595d651430222bff708a3d12f1436bc9d7009e196ffba5a5e1d898",
+    "current_sha256": "014ea3a3e05cf37c15a90c867581b39e95bab10410e17f6793ef6ea8a786989e",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/projector/logical25.js",
+    "base_sha256": "a3410d249ec1acaede17869c6a617671dab564a5c7d1dcb8ef39db6d4b5de5d2",
+    "current_sha256": "1f10473d00017ef0a5a53c0fef6319ccc59ae3f94db0f93435d2676be48847a2",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/review/view_model.js",
+    "base_sha256": "00bfd6f45bf0eb649654030e607c619cc4a10ba05fc0a96b519d934e0ddc49a4",
+    "current_sha256": "534e8d6a6fdd2adb305a37791bda6206acf8679b0433401aeec658aed3fe4c07",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/ring/role_ring.js",
+    "base_sha256": "76ec833ebfcfdcffd556dc53350174019a23ccb065932e21925c6c5eec2999e3",
+    "current_sha256": "cb6ebef58dce40d7794d1841b2da70f71990c3e13be5a56f43351f6c30442afd",
+    "classification": "modified"
+  },
+  {
+    "path": "app/shadow/scheduler/priority_scheduler.js",
+    "base_sha256": "e973c045a67d5189e4139c36b3ec77e604c7a011685ed7f989301d372641a8da",
+    "current_sha256": "7500dcf7415a8a32ff947ce048744866fc43e028c1db4f78a8b9938039a82589",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/projector_oracle_postrepair.cjs",
+    "base_sha256": null,
+    "current_sha256": "7def5de79912fb2c352f333898af4c4e83474c8fd99a3b0aa00e41f937ceb7df",
+    "classification": "added"
+  },
+  {
+    "path": "app/tests/phase01/test_astra_p106_repairs.js",
+    "base_sha256": null,
+    "current_sha256": "ce377bcad3760001e71c242fddce4f719ad5022fca2eaf64e9c9c95ad983dd6c",
+    "classification": "added"
+  },
+  {
+    "path": "app/tests/phase01/test_p101_contract_clock.js",
+    "base_sha256": "e46f6ae13ef09a557368c964d521d2735988a63dfdc35218c6c9c7a6c0898392",
+    "current_sha256": "f21d888c1d96ffacd8ae620a9a6831e967e3380a7b923f744611b142e7fab3d2",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/test_p102_replay_identity.js",
+    "base_sha256": "e4b250d35d708b49ac052fcdd4ca3b413bc3deef14e85420c74d8dbcf431cb07",
+    "current_sha256": "9df5f92d1d523d549929545683b1e72fc9f755d5123af8fa8b1b393736584d82",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/test_p103_ring_scheduler.js",
+    "base_sha256": "5cf0fef0c3b7fac3a88b12dac87356e75b3a2653c09bb454b7c8d67be7bc4ace",
+    "current_sha256": "bc3a4e3d18e6b2baf64cfc89f6f55a77fa885c698eca376e7172265bfbd6f545",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/test_p104_decision_eventlog.js",
+    "base_sha256": "d2ea1a923da735822a083409c59b62d917a487e170db327c2011fdfba71c9783",
+    "current_sha256": "ca9a44595dde22b093c5eefdea0f176e78ca1091cd49167323591a52d51a69ee",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/test_p105_writer_projector.js",
+    "base_sha256": "f6e728d0009287fdf0571114f936398d97f3be60afe0c11e3fe4092d122e579d",
+    "current_sha256": "495e17434aee5a6d9de14c129d24e0990fe69bd76c9c8f24643bf1aab9bbec34",
+    "classification": "modified"
+  },
+  {
+    "path": "app/tests/phase01/test_p106_review_archive.js",
+    "base_sha256": "b92c8e718593874e9a3d6db04f033d425aa6371477786a2a55e9f0fcc4051b41",
+    "current_sha256": "0c4f05831d91a76085286c2d56c1fef9b359ff457b77a087acc679346c791af4",
+    "classification": "modified"
+  },
+  {
+    "path": "docs/HANDOFF_NEXT_CHAT.md",
+    "base_sha256": "0bb3fd179721e20bf294efc7497a5f39eab3296375612f148ad461d13d5c400b",
+    "current_sha256": "dba269ccd7c70191900cb4ca85f0cff33073309a582bc83d9f000419b240a817",
+    "classification": "modified"
+  },
+  {
+    "path": "docs/QA_CURRENT.md",
+    "base_sha256": "f87eca0eafdfef50d5893adfa126d4f99b3a6c406e825f43a002717a96d6e6f5",
+    "current_sha256": "31aed848efcfceb2262669188439f499083389e4e7f879fac24ba1b30cbe4834",
+    "classification": "modified"
+  },
+  {
+    "path": "docs/phase01/TEST_RESULTS_P106_REPAIR.json",
+    "base_sha256": null,
+    "current_sha256": "c84037774a373864b1294f0a282ac4475218e42886bec1e6e149b91e7e727ac2",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/diagnostic_continuations_repair.json",
+    "base_sha256": null,
+    "current_sha256": "a7f768cee481626f860fe3f41ba8890f45b3cbcd0d2068a670b56a37fb3ed8b0",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/projector_oracle_postrepair.json",
+    "base_sha256": null,
+    "current_sha256": "bfeb7bd86e02d869054b8c3b6cd613c973f5b20ea3f040e09db203b68ca1dd31",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/repair_p106/CHANGE_LOG.md",
+    "base_sha256": null,
+    "current_sha256": "31138828debcbd0ff0c48615dc87a1d28d98be57cee600dbafd0d390e52b9be6",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/repair_p106/CLOSURE_MATRIX.md",
+    "base_sha256": null,
+    "current_sha256": "804e48816c7779bcdb14a72ed49bc4a64eb154007f6bed4d50d7cfbf4672ec80",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/repair_p106/KNOWN_LIMITATIONS.md",
+    "base_sha256": null,
+    "current_sha256": "c2c71d5d48b8fdd89715fe72fc96f9f0baaad3d476edaaee292044cbc08e99d0",
+    "classification": "added"
+  },
+  {
+    "path": "docs/phase01/repair_p106/PROMPT_FOR_ASTRA.md",
+    "base_sha256": null,
+    "current_sha256": "44f128b57a5ed30214b4798faaff086889a3b1dc2a2f495908532273acda6dca",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/R8_P1_06_Astra_Review_TH.md",
+    "base_sha256": null,
+    "current_sha256": "b23dd5c461476fb1acd306db11f7522d49c307971efb48382c1f810048edf09a",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/browser_identity.cjs",
+    "base_sha256": null,
+    "current_sha256": "92c32bb01c7eb9433931f735b0466afb76270148516ff6c4d2fd5b673572aa3a",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/browser_identity_results.json",
+    "base_sha256": null,
+    "current_sha256": "f3472be757a51dcf85f419f3355b1d60f7e58af046f19710031b912911b91128",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/diagnostic_continuations.json",
+    "base_sha256": null,
+    "current_sha256": "fc28dab10c7f2b48b21b3c73357f3db2854ce1d474f8866abbeeadc71fb5bdaa",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/independent_tests.json",
+    "base_sha256": null,
+    "current_sha256": "7568792528fb09250919c52398077f947bdda7d80af54a58496f44dad098c04f",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/lineage_verification.json",
+    "base_sha256": null,
+    "current_sha256": "7956e372cb04555c0e2993ffd4be07e7732d128d673041b28ebb6947f62474a0",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/matching_oracle.cjs",
+    "base_sha256": null,
+    "current_sha256": "9219617b6e5a5871ec58a711db4ac7945a7cc649763056e74384aa282d9efc5a",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/matching_oracle_results.json",
+    "base_sha256": null,
+    "current_sha256": "a00274ba10579b1af6aa61af48cff0550b98744834adab726f5019c38b00f86b",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/no_application_changes.json",
+    "base_sha256": null,
+    "current_sha256": "286a038cc143b3517eba756c465b56fa16800221e95a31e3fa245a5618408f82",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/provenance_check.json",
+    "base_sha256": null,
+    "current_sha256": "b155511e5d7334f1b4a4ce1079d0ee5e3a3583df355173d6530253da5b9f69af",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/redteam.cjs",
+    "base_sha256": null,
+    "current_sha256": "4bd9a0dc10daa912f459da670093d673c0b8b42d775b98c5427b747e08005461",
+    "classification": "added"
+  },
+  {
+    "path": "docs/review/astra_p106_original_evidence/redteam_results.json",
+    "base_sha256": null,
+    "current_sha256": "05b8f8c5980475a1ecb77f27672195dd5793f4976de8b9d1222c292f1765ca52",
+    "classification": "added"
+  }
+]

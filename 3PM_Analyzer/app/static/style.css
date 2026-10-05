@@ -1,0 +1,1180 @@
+:root{
+  --bg:#08111d; --panel:#101c2b; --panel2:#14243a; --line:#263b55;
+  --text:#e8f0fa; --muted:#8fa5bc; --accent:#59a9ff; --good:#47d98b;
+  --warn:#f2c94c; --bad:#ff625f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);background:#0b1522;position:sticky;top:0;z-index:10}
+.brand{display:flex;gap:12px;align-items:center}.logo{font-weight:900;font-size:28px;letter-spacing:-2px}.brand-title{font-size:20px;font-weight:700}.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.5px}
+nav{display:flex;gap:6px}.nav-btn{background:transparent;color:var(--muted);border:0;padding:12px 18px;border-radius:7px}.nav-btn.active,.nav-btn:hover{background:#1a2a40;color:white}.user{color:#cad8e8;font-size:13px}
+.view{display:none}.view.active{display:grid}#view-sessions{grid-template-columns:290px 1fr;min-height:calc(100vh - 72px)}
+.card,.video-card{background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.sidebar{border-radius:0;padding:16px;overflow:auto}.sidebar h2{margin:0;font-size:18px}.sidebar h3{font-size:15px;border-top:1px solid var(--line);padding-top:14px;margin-top:18px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.small-btn,.upload-label{background:#173353;color:#dcedff;border:1px solid #31567e;border-radius:6px;padding:7px 10px;cursor:pointer}
+select,input,textarea{width:100%;background:#0b1624;border:1px solid #2b405a;color:white;border-radius:6px;padding:9px}
+.sidebar select{margin:12px 0}.info-block{color:var(--muted);font-size:13px;line-height:1.5}.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;font-size:12px}.kv div:nth-child(odd){color:var(--muted)}
+.workspace{padding:12px;min-width:0}.camera-grid{display:grid;grid-template-columns:minmax(500px,2.2fr) minmax(240px,.9fr) 280px;gap:10px}.stack{display:grid;grid-template-rows:1fr 1fr;gap:10px}
+.video-card{overflow:hidden}.video-title{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;font-weight:700}.video-wrap{background:#02070d;aspect-ratio:16/9;position:relative}.video-wrap.small{height:100%;aspect-ratio:auto;min-height:220px}
+video{width:100%;height:100%;object-fit:contain;background:#02070d}.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#52677d;pointer-events:none}
+#sideOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.shot-panel{padding:12px;display:flex;flex-direction:column;min-height:0}.shot-table-wrap{overflow:auto;max-height:430px;margin:8px 0;flex:1}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px;border-bottom:1px solid #263b55;text-align:left}tbody tr{cursor:pointer}tbody tr:hover,tbody tr.selected{background:#173a62}
+.primary{background:#1765aa;border:1px solid #4aa5f7;color:white;padding:10px 14px;border-radius:7px;cursor:pointer}.full{width:100%}
+.phase-strip{margin-top:10px;padding:12px}.phase-strip h2,.timeline-card h2,.note-card h2{font-size:15px;margin:0}.muted{color:var(--muted);font-size:12px}.phases{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:10px}.phases button{background:#12243a;color:#9db1c7;border:1px solid #263f5d;padding:12px 5px;border-radius:7px}.phases button.active{border-color:#58aaff;color:white;background:#1b4774}
+.metrics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:10px}.metric{padding:14px}.metric span,.metric small{color:var(--muted);font-size:11px;display:block}.metric strong{font-size:25px;display:block;margin:7px 0}
+.bottom-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-top:10px}.timeline-card,.note-card{padding:12px}.notes{color:#c7d4e3;font-size:13px;line-height:1.6;padding-top:10px;white-space:pre-wrap}.badge{font-size:10px;background:#203e61;padding:4px 7px;border-radius:10px}
+.form-page{padding:30px;grid-template-columns:minmax(480px,850px) minmax(260px,1fr);gap:16px}.form-card,.list-card,.about{padding:22px}.form-card.wide{max-width:900px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid label,.dialog-form label{display:flex;flex-direction:column;gap:6px;color:#aebed0;font-size:12px}.span2{grid-column:span 2}.check{flex-direction:row!important;align-items:center}.check input{width:auto}.form-grid .primary{align-self:end}.list-card{max-height:720px;overflow:auto}.person-card{padding:12px;border:1px solid var(--line);border-radius:8px;margin:8px 0}.person-card b{display:block}.person-card span{color:var(--muted);font-size:12px}
+dialog{background:#0f1b2a;color:white;border:1px solid #37506c;border-radius:10px;min-width:420px}dialog::backdrop{background:#0009}.dialog-form{display:grid;gap:10px}.dialog-form h2{margin:0 0 6px}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.dialog-actions button{padding:8px 12px;border-radius:6px;border:1px solid #39516b;background:#142339;color:white}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.about{max-width:900px;grid-column:1/-1}.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.roadmap div{background:#12243a;border:1px solid var(--line);padding:14px;border-radius:8px}.roadmap b,.roadmap span{display:block}.roadmap span{font-size:12px;color:var(--muted);margin-top:5px}
+@media(max-width:1200px){.camera-grid{grid-template-columns:1fr 300px}.stack{grid-column:1}.shot-panel{grid-column:2;grid-row:1/3}.metrics-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.topbar{height:auto;flex-wrap:wrap;padding:10px}.user{display:none}#view-sessions{grid-template-columns:1fr}.sidebar{display:none}.camera-grid{grid-template-columns:1fr}.stack,.shot-panel{grid-column:auto;grid-row:auto}.metrics-grid{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}.form-page{grid-template-columns:1fr;padding:12px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}.phases{grid-template-columns:repeat(4,1fr)}}
+
+/* V0.2 live camera controls */
+.header-status{display:flex;align-items:center;gap:12px}.status-pill{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid #31475f;background:#132233;color:#a9bdd2}.status-pill.good{border-color:#2a7755;color:#70e4a7;background:#0f2b21}.status-pill.warn{border-color:#7b6725;color:#f2d36c;background:#2b2511}.status-pill.bad{border-color:#7f3434;color:#ff8a86;background:#321718}.status-pill.checking,.status-pill.neutral{color:#b3c2d3}.status-pill.recording{border-color:#a53939;background:#3a1515;color:#ff8c87;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.62}}
+.camera-toolbar{padding:11px 13px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:14px}.camera-toolbar-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.record-btn,.danger-btn{padding:8px 11px;border-radius:6px;cursor:pointer}.record-btn{background:#522020;border:1px solid #a74343;color:#ffd8d8}.danger-btn{background:#8b2929;border:1px solid #d85b5b;color:white}.record-btn:disabled,.danger-btn:disabled,.small-btn:disabled{opacity:.4;cursor:not-allowed}.record-timer{font-variant-numeric:tabular-nums;min-width:48px;font-weight:700;color:#ccd8e6}.recording .record-timer{color:#ff7773}.permission-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 14px;margin-bottom:10px;border:1px solid #7b6725;background:#2a2411;border-radius:9px;color:#f0d886}.permission-banner span{font-size:12px;color:#c9b778}.hidden{display:none!important}.cam-title-group{display:flex;align-items:center;gap:7px}.live-badge{font-size:9px;font-weight:800;letter-spacing:.8px;background:#b42f2f;color:white;border-radius:4px;padding:3px 5px}.cam-actions{display:flex;align-items:center;gap:6px;min-width:0}.cam-actions.compact .camera-select{max-width:145px}.camera-select{width:auto;max-width:210px;min-width:115px;padding:6px 8px;font-size:11px}.cam-foot{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;border-top:1px solid #243851;color:#8298ae;font-size:10px}.cam-foot span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cam-foot span:last-child{font-weight:700;letter-spacing:.5px}.recording .video-card{box-shadow:0 0 0 1px rgba(224,76,76,.1)}
+@media(max-width:1100px){.camera-toolbar{align-items:flex-start;flex-direction:column}.camera-toolbar-actions{width:100%}.header-status .status-pill{display:none}}
+
+
+/* V0.2.2 selectable storage */
+.settings-page{padding:30px;display:none}.settings-page.active{display:block}.settings-card{max-width:920px;padding:24px;margin:0 auto}.settings-card h1{margin:0 0 4px}
+.storage-summary{display:flex;align-items:center;gap:16px;background:#0b1624;border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:20px}
+.storage-icon{font-size:30px;color:var(--accent)}.storage-main{min-width:0;display:flex;flex-direction:column;gap:5px}.storage-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}.storage-main strong{font-size:14px;word-break:break-all}
+.storage-actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 20px}.storage-actions button:disabled{opacity:.45}
+.storage-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.storage-info-box{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);background:#0d1928;border-radius:9px;padding:15px}.storage-info-box span{font-size:12px;color:var(--muted)}.storage-info-box span::before{content:"✓ ";color:var(--good)}
+.storage-note{margin-top:15px;border-left:3px solid var(--accent);background:#0d1928;padding:15px 16px;border-radius:6px}.storage-note p{margin:7px 0;font-size:13px;line-height:1.5;color:#c5d2e1}
+@media(max-width:800px){.settings-page{padding:12px}.storage-grid{grid-template-columns:1fr}.header-status #storageStatus{display:none}}
+
+
+/* V0.3 markerless pose */
+.pose-btn{
+  background:#123e32;color:#baf4da;border:1px solid #2d8065;border-radius:6px;
+  padding:7px 11px;cursor:pointer;font-weight:700
+}
+.pose-btn.off{background:#2b3440;color:#9aacbd;border-color:#4b5968}
+.pose-btn:disabled{opacity:.55;cursor:default}
+.pose-diagnostic{
+  margin-bottom:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px
+}
+.pose-diagnostic-main{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pose-diagnostic-items{display:flex;gap:18px;flex-wrap:wrap;color:#a9bacb;font-size:12px;justify-content:flex-end}
+.pose-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#6a7b8d;box-shadow:0 0 0 3px #26384a}
+.pose-dot.loading{background:#f2c94c}.pose-dot.ready{background:#47d98b}.pose-dot.bad{background:#ff625f}
+.pose-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+.cam-foot{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center}
+.cam-foot span:nth-child(2){color:#77dba8;font-size:10px;white-space:nowrap}
+.pose-metrics{grid-template-columns:repeat(7,minmax(120px,1fr))}
+.metric.live-metric{box-shadow:inset 0 0 0 1px #2c765e}
+.metric strong.pose-good{color:#79e0ae}
+.metric strong.pose-warn{color:#f2c94c}
+.metric strong.pose-bad{color:#ff7b77}
+.pose-badge-label{
+  position:absolute;left:10px;top:10px;z-index:5;background:#08111dcc;color:#dff8eb;
+  border:1px solid #3b856e;border-radius:6px;padding:5px 7px;font-size:10px;pointer-events:none
+}
+@media(max-width:1350px){.pose-metrics{grid-template-columns:repeat(4,minmax(120px,1fr))}}
+@media(max-width:800px){
+  .pose-diagnostic{align-items:flex-start;flex-direction:column}
+  .pose-diagnostic-items{justify-content:flex-start;gap:8px 14px}
+  .pose-metrics{grid-template-columns:repeat(2,1fr)}
+  .header-status #poseHeaderStatus{display:none}
+}
+
+/* V1.1 integrated UI */
+.version-badge{font-size:10px;color:#72b9ff;border:1px solid #31567e;border-radius:5px;padding:2px 5px;vertical-align:middle;letter-spacing:.4px}
+.page-shell{padding:24px;max-width:1600px;width:100%;margin:0 auto}.page-title-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}.page-title-row h1{margin:0 0 4px}.page-title-row p{margin:0}
+.dashboard-page,.analysis-page,.compare-page,.reports-page{padding:0;display:none}.dashboard-page.active,.analysis-page.active,.compare-page.active,.reports-page.active{display:block}
+.dashboard-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat-card{padding:18px}.stat-card span{display:block;color:var(--muted);font-size:12px}.stat-card strong{display:block;font-size:32px;margin-top:6px}.home-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}.panel-pad{padding:16px}.panel-pad h2{margin:0;font-size:16px}.recent-list{display:grid;gap:8px;margin-top:12px}.recent-item{display:flex;justify-content:space-between;gap:10px;padding:11px;border:1px solid var(--line);border-radius:8px;background:#0d1928;cursor:pointer}.recent-item:hover{border-color:#3c638d}.recent-item b,.recent-item span{display:block}.recent-item span{font-size:11px;color:var(--muted);margin-top:4px}.readiness-list{display:grid;gap:0;margin-top:10px}.readiness-list div{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}.readiness-list span{color:var(--muted)}
+.span-page{grid-column:1/-1}.equipment-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px;margin-top:14px}.equipment-card{background:#0d1928;border:1px solid var(--line);border-radius:8px;padding:12px}.equipment-card b,.equipment-card span{display:block}.equipment-card span{color:var(--muted);font-size:11px;margin-top:4px}
+.live-phase-badge{position:absolute;left:10px;top:10px;z-index:6;background:#07101ad9;border:1px solid #3c638d;color:#dcecff;border-radius:6px;padding:5px 8px;font-size:11px;pointer-events:none}.phases button.live-active{border-color:#57dca3;background:#174735;color:#dff9ed;box-shadow:inset 0 0 0 1px #3b8c6d}.shot-table-wrap table{min-width:360px}.ref-star{background:none;border:0;color:#6c8298;cursor:pointer;font-size:17px;padding:0}.ref-star.on{color:#ffd84d}.analysis-chip{display:inline-block;font-size:9px;border:1px solid #40536a;border-radius:999px;padding:3px 6px;white-space:nowrap}.analysis-chip.stable{color:#79e0ae;border-color:#347258}.analysis-chip.review{color:#f2c94c;border-color:#75642a}.analysis-chip.significant{color:#ff807c;border-color:#7b3939}.analysis-chip.building{color:#9eb2c7}.auto-dot{font-size:9px;color:#59a9ff;margin-left:3px}
+.inline-controls{display:flex;gap:8px;align-items:center}.inline-controls select{width:auto;min-width:170px}.analysis-hero-grid{display:grid;grid-template-columns:minmax(500px,2fr) minmax(300px,1fr);gap:12px}.analysis-video-card,.interpretation-card{padding:14px}.analysis-video-wrap{position:relative;background:#02070d;aspect-ratio:16/9;margin-top:10px;border-radius:8px;overflow:hidden}.analysis-video-wrap video{width:100%;height:100%;object-fit:contain}.panel-note{margin-top:8px}.analysis-label{font-size:11px;padding:5px 9px;border-radius:999px;border:1px solid #43566d}.analysis-label.stable{color:#79e0ae;border-color:#347258;background:#102d24}.analysis-label.review{color:#f2c94c;border-color:#75642a;background:#2b2612}.analysis-label.significant{color:#ff807c;border-color:#7b3939;background:#321818}.analysis-label.building{color:#a9bdd2}.interpretation-body{margin-top:12px;color:#c7d6e5;line-height:1.55}.interpretation-body .finding{padding:10px 0;border-bottom:1px solid var(--line)}.interpretation-body .finding b{display:block}.interpretation-body .finding span{font-size:12px;color:var(--muted)}.reference-actions{border-top:1px solid var(--line);margin-top:16px;padding-top:14px;display:grid;gap:8px}.reference-actions small{color:var(--muted);line-height:1.4}.analysis-metrics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:12px 0}.analysis-metric{padding:14px}.analysis-metric span,.analysis-metric small{display:block}.analysis-metric span{font-size:11px;color:var(--muted)}.analysis-metric strong{display:block;font-size:24px;margin:6px 0}.analysis-metric small{font-size:10px;color:#7f95ab}.baseline-table{width:100%;margin-top:10px}.baseline-table td,.baseline-table th{padding:9px}.delta-pos{color:#f2c94c}.delta-good{color:#79e0ae}
+.compare-selectors{padding:14px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end}.compare-selectors label{font-size:11px;color:var(--muted)}.vs{font-weight:900;color:#64819d;padding:8px}.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.compare-shot-card{padding:16px}.compare-shot-card h2{margin:0 0 12px}.shot-summary-kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.shot-summary-kv span:nth-child(odd){color:var(--muted)}.compare-table{width:100%}.compare-table .bar{height:5px;background:#1b3148;border-radius:99px;overflow:hidden;margin-top:5px}.compare-table .bar span{display:block;height:100%;background:#59a9ff}
+.report-header{padding:18px}.report-header h2{margin:0 0 5px}.report-header p{margin:0;color:var(--muted)}.report-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin:12px 0}.report-stats{margin-top:12px}.finding-list{display:grid;gap:8px;margin-top:10px}.finding-box{padding:11px;background:#0d1928;border:1px solid var(--line);border-radius:8px}.finding-box b{display:block}.finding-box span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.export-actions{display:flex;gap:8px;margin-top:14px}.report-table-wrap{overflow:auto;margin-top:10px}.report-table{min-width:900px}.print-only{display:none}
+.settings-grid-page{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:30px;max-width:1400px;margin:0 auto}.setting-row{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}.setting-row b,.setting-row span{display:block}.setting-row span{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.4}.switch{position:relative;display:inline-block;width:48px;height:26px;flex:none}.switch input{opacity:0;width:0;height:0}.switch span{position:absolute;inset:0;background:#26384c;border-radius:99px;cursor:pointer;transition:.2s}.switch span:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}.switch input:checked+span{background:#217558}.switch input:checked+span:before{transform:translateX(22px)}.settings-explain{margin-top:16px;padding:14px;border-left:3px solid #f2c94c;background:#211f13;border-radius:6px}.settings-explain p{color:#bdb58a;font-size:12px;line-height:1.5}
+@media(max-width:1350px){.analysis-metrics-grid{grid-template-columns:repeat(3,1fr)}.analysis-hero-grid{grid-template-columns:1fr}.settings-grid-page{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}}
+@media(max-width:1050px){.topbar nav{order:3;width:100%;overflow:auto}.topbar{height:auto;flex-wrap:wrap;padding:9px 12px}.dashboard-stats{grid-template-columns:repeat(2,1fr)}.compare-grid,.report-grid{grid-template-columns:1fr}.header-status{margin-left:auto}}
+@media(max-width:800px){.page-shell{padding:12px}.page-title-row{align-items:flex-start;flex-direction:column}.inline-controls{width:100%;flex-wrap:wrap}.inline-controls select{flex:1;min-width:140px}.dashboard-stats{grid-template-columns:1fr 1fr}.analysis-metrics-grid{grid-template-columns:1fr 1fr}.compare-selectors{grid-template-columns:1fr}.vs{text-align:center}.settings-grid-page{padding:12px}.form-page{display:block!important}.form-page>.card{margin-bottom:12px}}
+@media print{.topbar,.sidebar,.camera-toolbar,.permission-banner,.pose-diagnostic,.nav-btn,.export-actions,.page-title-row button{display:none!important}body{background:white;color:black}.view{display:none!important}#view-reports{display:block!important}.card{background:white!important;color:black!important;border:1px solid #ccc}.muted{color:#555!important}.page-shell{max-width:none;padding:0}.report-grid{grid-template-columns:1fr 1fr}.print-only{display:block}}
+
+
+/* ==========================================================
+   V1.1 completion pass: responsive camera layout, filmstrip,
+   live timeline and functional shot editor.
+   ========================================================== */
+
+.workspace{min-width:0;overflow:hidden}
+.camera-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.75fr) minmax(260px,.78fr) minmax(300px,.78fr);
+  gap:10px;
+  align-items:stretch;
+}
+.camera-grid>*{min-width:0;max-width:100%}
+.main-video,.stack,.shot-panel{min-width:0}
+.stack{min-width:0;overflow:hidden}
+.video-card{min-width:0;max-width:100%;overflow:hidden}
+.video-title{gap:10px;flex-wrap:wrap}
+.cam-title-group{flex:0 0 auto}
+.cam-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;max-width:72%;overflow:hidden}
+.cam-actions.compact{max-width:68%}
+.camera-select{min-width:0;width:min(210px,100%);max-width:100%}
+.upload-label{flex:0 0 auto}
+.video-wrap{width:100%;min-width:0;overflow:hidden}
+.video-wrap.small{min-height:0;aspect-ratio:16/9;height:auto}
+.video-wrap video{display:block;max-width:100%;max-height:100%}
+.shot-panel{overflow:hidden}
+.shot-panel .section-head{align-items:flex-start}
+.panel-subtitle{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.shot-table-wrap{width:100%;max-width:100%;overflow:auto}
+.shot-table-wrap table{min-width:520px}
+.shot-table-wrap th:last-child,.shot-table-wrap td:last-child{width:42px}
+.row-edit-btn{border:1px solid #3a5574;background:#14263a;color:#bcd0e5;border-radius:5px;padding:3px 6px;cursor:pointer;font-size:11px}
+.row-edit-btn:hover{background:#1d3b5b;color:white}
+.score-x{font-weight:800;color:#ffd84d}
+.phases{grid-template-columns:repeat(8,minmax(76px,1fr))}
+.phase-pill{
+  background:#12243a;color:#9db1c7;border:1px solid #263f5d;
+  padding:12px 5px;border-radius:7px;text-align:center;font-size:12px;
+  user-select:none;pointer-events:none
+}
+.phase-pill.live-active{border-color:#57dca3;background:#174735;color:#dff9ed;box-shadow:inset 0 0 0 1px #3b8c6d}
+
+.filmstrip-card{margin-top:10px;padding:12px;overflow:hidden}
+.filmstrip-head{align-items:flex-start}
+.filmstrip-head h2{font-size:15px;margin:0 0 3px}
+.review-controls{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.filmstrip{
+  display:grid;
+  grid-template-columns:repeat(9,minmax(110px,1fr));
+  gap:8px;
+  overflow-x:auto;
+  padding:10px 0 2px;
+  min-height:118px
+}
+.filmstrip-empty{
+  grid-column:1/-1;min-height:100px;display:flex;align-items:center;justify-content:center;
+  border:1px dashed #324960;border-radius:8px;color:#71869b;background:#0a1522
+}
+.frame-thumb{
+  min-width:110px;background:#08111c;border:1px solid #2d425a;border-radius:8px;
+  overflow:hidden;cursor:pointer;position:relative
+}
+.frame-thumb:hover,.frame-thumb.active{border-color:#59a9ff;box-shadow:0 0 0 1px #59a9ff55}
+.frame-thumb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#02070d}
+.frame-thumb .frame-caption{display:flex;justify-content:space-between;gap:5px;padding:6px 7px;font-size:10px;color:#9db0c3}
+.frame-thumb.release-frame{border-color:#e25f59}
+.frame-thumb.release-frame .frame-caption{color:#ffd1ce}
+.frame-generating{opacity:.7}
+.review-controls .small-btn.active,.timeline-controls .small-btn.active{background:#1f5687;border-color:#5aa9ef;color:white}
+
+.bottom-grid{grid-template-columns:minmax(0,2.2fr) minmax(280px,.8fr);align-items:stretch}
+.timeline-card{min-width:0;overflow:hidden}
+.timeline-card .section-head{align-items:flex-start}
+.timeline-controls{display:flex;gap:6px}
+.timeline-legend{display:flex;gap:15px;flex-wrap:wrap;color:#93a8bc;font-size:10px;padding:8px 1px 6px}
+.timeline-legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.timeline-legend .l-elbow:before{background:#ff6d68}
+.timeline-legend .l-bow:before{background:#59a9ff}
+.timeline-legend .l-shoulder:before{background:#ffe769}
+.timeline-legend .l-head:before{background:#64df9d}
+#timeline{
+  display:block;width:100%;height:220px;max-width:100%;
+  background:linear-gradient(180deg,#07101a,#0a1623);
+  border:1px solid #223851;border-radius:8px
+}
+.note-card{min-width:0}
+
+.shot-dialog{width:min(620px,calc(100vw - 28px));max-height:88vh;overflow:auto}
+.dialog-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dialog-title-row h2{margin:0}
+.score-picker{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.score-picker button{
+  border:1px solid #314b68;background:#12243a;color:#d8e6f4;
+  padding:8px 4px;border-radius:6px;cursor:pointer
+}
+.score-picker button:hover,.score-picker button.active{border-color:#59a9ff;background:#1d4f7a;color:white}
+.score-picker button[data-score="X"]{color:#ffd84d}
+.measurement-grid{border-top:1px solid var(--line);padding-top:10px;margin-top:2px}
+.split-actions{justify-content:space-between}
+.right-actions{display:flex;gap:8px}
+.danger-text{background:#3b1717!important;border-color:#7f3333!important;color:#ffaaa7!important}
+.frame-viewer-dialog{width:min(1000px,calc(100vw - 30px));background:#07101a}
+.frame-viewer{padding:4px}.frame-viewer h2{margin:0}.frame-viewer img{display:block;width:100%;max-height:75vh;object-fit:contain;background:#000;margin-top:12px;border-radius:8px}
+
+.toast-host{position:fixed;right:18px;bottom:18px;z-index:9999;display:grid;gap:8px;pointer-events:none}
+.toast{background:#0f2134;border:1px solid #3c5875;color:#dbe8f6;padding:11px 14px;border-radius:8px;box-shadow:0 8px 30px #0008;font-size:12px;max-width:360px}
+.toast.good{border-color:#347258}.toast.warn{border-color:#75642a}.toast.bad{border-color:#7b3939}
+
+@media(max-width:1550px){
+  .camera-grid{grid-template-columns:minmax(0,1.65fr) minmax(260px,.85fr)}
+  .shot-panel{grid-column:1/-1;max-height:360px}
+  .shot-table-wrap{max-height:220px}
+}
+@media(max-width:1100px){
+  .camera-grid{grid-template-columns:1fr}
+  .stack{grid-column:auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .shot-panel{grid-column:auto}
+  .cam-actions,.cam-actions.compact{max-width:76%}
+  .filmstrip{grid-template-columns:repeat(9,145px)}
+  .bottom-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .stack{grid-template-columns:1fr}
+  .cam-actions,.cam-actions.compact{max-width:100%;width:100%;justify-content:flex-start}
+  .camera-select{flex:1}
+  .video-title{align-items:flex-start}
+  .phases{grid-template-columns:repeat(4,1fr)}
+  .filmstrip-head{flex-direction:column}
+  .review-controls{justify-content:flex-start}
+  .score-picker{grid-template-columns:repeat(4,1fr)}
+}
+
+.analysis-select{min-width:210px;max-width:280px;background:#0b1624;border:1px solid #2b405a;color:#e8f0fa;border-radius:7px;padding:9px 10px}
+.setting-row .analysis-select{flex:0 0 auto}
+
+/* ==========================================================
+   V2.1 CLEAN — editable profiles, equipment context, compact
+   laptop workspace, and non-empty Analysis media panel.
+   ========================================================== */
+:root{--topbar-h:64px}
+.topbar{min-height:var(--topbar-h);height:auto;padding:7px 14px;gap:12px}
+.brand-title{white-space:nowrap}.version-badge{font-size:10px;color:#79bcff;border:1px solid #35618d;border-radius:5px;padding:3px 6px;margin-left:5px;vertical-align:2px}
+nav{min-width:0;overflow-x:auto;scrollbar-width:none}.nav-btn{padding:10px 13px;white-space:nowrap}.header-status{gap:7px;min-width:0}.header-status .status-pill{white-space:nowrap}.user{white-space:nowrap}
+
+.compact-actions,.form-actions{display:flex;gap:7px;align-items:center}.form-actions{margin-top:12px}.form-spacer{flex:1}.danger-mini{background:transparent;border:1px solid #6e3535;color:#e69591;border-radius:6px;padding:7px 9px;cursor:pointer}.danger-mini:hover{background:#351919}
+.span-page{grid-column:1/-1}.v21-profile-page{max-width:1700px;margin:0 auto;width:100%}.profile-editor-card{min-width:0}.profile-list-card{min-width:300px}.profile-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.profile-card-head b,.profile-card-head span{display:block}.profile-card-head span{color:var(--muted);font-size:11px;margin-top:3px}.profile-card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.profile-card-meta span{font-size:10px;background:#0d1928;border:1px solid #263b55;padding:4px 7px;border-radius:999px;color:#a9bfd5}.person-card.archived{opacity:.58}.empty-state{padding:22px;text-align:center;color:var(--muted);border:1px dashed #334b64;border-radius:8px;margin-top:10px}
+.equipment-editor-card{padding:20px}.equipment-editor-form{display:grid;gap:12px}.form-section{background:#0c1724;border:1px solid #263b55;border-radius:9px;padding:14px}.form-section h3{margin:0 0 5px;font-size:14px}.weight-grid{grid-template-columns:repeat(4,minmax(130px,1fr))}.computed-weight{display:flex;flex-direction:column;justify-content:center;border:1px solid #355575;border-radius:7px;padding:9px 11px;background:#112239}.computed-weight span{font-size:10px;color:var(--muted)}.computed-weight strong{font-size:16px;margin-top:5px}.equipment-profile-list{padding:18px}.equipment-card{padding:12px;border:1px solid var(--line);border-radius:8px;margin:8px 0;background:#0c1826}
+
+.workspace-mode{display:flex;border:1px solid #31506d;border-radius:7px;overflow:hidden;background:#0b1724}.mode-btn{border:0;border-right:1px solid #31506d;background:transparent;color:#8fa5bc;padding:7px 9px;cursor:pointer;font-size:11px}.mode-btn:last-child{border-right:0}.mode-btn.active{background:#1e5d8f;color:white}.camera-toolbar{position:sticky;top:var(--topbar-h);z-index:7;background:#101c2bf3;backdrop-filter:blur(8px)}
+
+/* explicit workspace focus modes */
+body[data-workspace-mode="review"] #view-sessions .stack{display:none}
+body[data-workspace-mode="review"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1.8fr) minmax(320px,.75fr)}
+body[data-workspace-mode="review"] #view-sessions .shot-panel{grid-column:2}
+body[data-workspace-mode="review"] #view-sessions .main-video{grid-column:1}
+body[data-workspace-mode="coach"] #view-sessions .main-video,
+body[data-workspace-mode="coach"] #view-sessions .stack{display:none}
+body[data-workspace-mode="coach"] #view-sessions .camera-grid{grid-template-columns:1fr}
+body[data-workspace-mode="coach"] #view-sessions .shot-panel{grid-column:1;max-height:44vh}
+body[data-workspace-mode="coach"] #view-sessions .phase-strip{margin-top:6px}
+body[data-workspace-mode="coach"] #view-sessions .metrics-grid{margin-top:6px}
+
+/* Analysis: key frame is always a real visual fallback when no video exists. */
+.analysis-shell{max-width:1700px}.v21-analysis-grid{grid-template-columns:minmax(0,1.65fr) minmax(300px,.72fr);grid-template-areas:"media interp" "media equip";align-items:stretch}.analysis-video-card{grid-area:media;min-width:0}.compact-interpretation{grid-area:interp}.equipment-context-card{grid-area:equip;padding:16px;min-width:0}.v21-analysis-media{height:min(48vh,520px);min-height:300px;position:relative;background:#050a10;display:flex;align-items:center;justify-content:center;overflow:hidden}.v21-analysis-media video,.analysis-shot-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#050a10}.v21-analysis-media video.media-behind{opacity:0;pointer-events:none}.analysis-shot-image{z-index:2}.analysis-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;color:#72879c;z-index:1}.analysis-frame-strip{display:flex;gap:7px;overflow-x:auto;padding:8px 0 1px;min-height:68px}.analysis-frame-btn{flex:0 0 96px;background:#091522;border:1px solid #294058;border-radius:7px;padding:0;overflow:hidden;color:#9fb4c8;cursor:pointer}.analysis-frame-btn.active{border-color:#5aa9ef;box-shadow:0 0 0 1px #5aa9ef66}.analysis-frame-btn img{width:100%;height:52px;display:block;object-fit:cover}.analysis-frame-btn span{display:block;font-size:9px;padding:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.equipment-context-summary{font-size:12px;line-height:1.5;color:#c5d4e3;margin:8px 0 10px}.equipment-hint-list{display:grid;gap:7px}.equipment-hint{border:1px solid #30475f;border-left-width:3px;background:#0b1826;padding:9px 10px;border-radius:7px}.equipment-hint b,.equipment-hint span{display:block}.equipment-hint b{font-size:12px}.equipment-hint span{font-size:10px;color:#93a8bd;line-height:1.45;margin-top:3px}.equipment-hint.review{border-left-color:#e6bb49}.equipment-hint.stable{border-left-color:#43cf87}.compact-metrics{grid-template-columns:repeat(6,minmax(120px,1fr));gap:7px}.compact-metrics .analysis-metric{padding:10px}.compact-metrics .analysis-metric strong{font-size:20px}.baseline-card{margin-top:8px}
+
+/* Pose validation feedback */
+#poseFramingText{max-width:560px}.pose-overlay{z-index:3}
+
+/* Laptop compact layout: preserve simultaneous context instead of forcing long scroll. */
+@media (max-width:1550px), (max-height:930px){
+  :root{--topbar-h:58px}
+  .topbar{padding:5px 10px}.brand-sub{display:none}.brand-title{font-size:17px}.logo{font-size:24px}.nav-btn{padding:8px 10px;font-size:12px}.header-status{gap:5px}.header-status .status-pill{padding:4px 7px;font-size:9px}.workspace{padding:7px}.sidebar{padding:11px}#view-sessions{grid-template-columns:235px 1fr;min-height:calc(100vh - var(--topbar-h))}.sidebar h3{margin-top:12px;padding-top:10px}.kv{gap:5px 7px;font-size:10px}.camera-toolbar{padding:7px 9px;margin-bottom:6px}.camera-toolbar-actions{gap:4px}.camera-toolbar-actions .small-btn,.camera-toolbar-actions .record-btn,.camera-toolbar-actions .danger-btn,.pose-btn{padding:6px 7px;font-size:10px}.camera-grid{gap:6px;grid-template-columns:minmax(0,1.78fr) minmax(220px,.68fr) minmax(260px,.68fr)}.video-title{padding:6px 8px;font-size:11px}.cam-foot{padding:4px 7px}.shot-panel{padding:8px}.shot-table-wrap{max-height:36vh;margin:5px 0}.phase-strip{margin-top:6px;padding:8px}.phases{gap:4px;margin-top:6px}.phase-pill{padding:7px 3px;font-size:9px}.metrics-grid{gap:5px;margin-top:6px}.metric{padding:8px}.metric strong{font-size:19px;margin:3px 0}.metric span,.metric small{font-size:9px}.filmstrip-card{margin-top:6px;padding:8px}.filmstrip{min-height:88px;padding-top:6px}.frame-thumb img{aspect-ratio:2/1}.bottom-grid{gap:6px;margin-top:6px}#timeline{height:150px!important}.timeline-card,.note-card{padding:8px}.v21-analysis-media{height:min(44vh,440px);min-height:260px}.page-shell{padding:12px}.page-title-row{margin-bottom:8px}.page-title-row h1{font-size:21px}.compact-metrics .analysis-metric{padding:8px}.compact-metrics .analysis-metric strong{font-size:18px}.analysis-frame-btn{flex-basis:82px}.analysis-frame-btn img{height:45px}
+}
+@media (max-width:1320px){
+  .header-status .status-pill:not(#poseHeaderStatus){display:none}.user{display:none}
+  #view-sessions{grid-template-columns:210px 1fr}.camera-grid{grid-template-columns:minmax(0,1.7fr) minmax(210px,.7fr)}.shot-panel{grid-column:1/-1;max-height:240px}.shot-table-wrap{max-height:130px}.compact-metrics{grid-template-columns:repeat(3,1fr)}.v21-analysis-grid{grid-template-columns:minmax(0,1.45fr) minmax(290px,.75fr)}
+}
+@media (max-width:1080px){
+  .topbar nav{order:3;width:100%}:root{--topbar-h:96px}.camera-toolbar{top:var(--topbar-h)}#view-sessions{grid-template-columns:1fr}.sidebar{display:none}.camera-grid,body[data-workspace-mode="review"] #view-sessions .camera-grid{grid-template-columns:1fr}.stack{display:grid!important;grid-template-columns:1fr 1fr;grid-column:auto}.shot-panel{grid-column:auto;max-height:none}.v21-analysis-grid{grid-template-columns:1fr;grid-template-areas:"media" "interp" "equip"}.v21-analysis-media{height:42vh}.weight-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){.weight-grid{grid-template-columns:1fr}.compact-metrics{grid-template-columns:repeat(2,1fr)}.form-actions{flex-wrap:wrap}.v21-analysis-media{min-height:220px;height:38vh}}
+
+
+/* ==========================================================
+   V2.1.1 laptop/session-panel fit fix
+   Goal: no horizontal scrolling or clipped Session controls on
+   13–15 inch laptop displays while preserving camera workspace.
+   ========================================================== */
+html,body{max-width:100%;overflow-x:hidden}
+.sidebar{overflow-y:auto;overflow-x:hidden;min-width:0}
+.sidebar .section-head{display:grid;grid-template-columns:1fr;align-items:start;gap:8px}
+.sidebar .compact-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;width:100%;min-width:0}
+.sidebar .compact-actions button{width:100%;min-width:0;padding:7px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.sidebar #sessionSelect{width:100%;min-width:0;margin:10px 0}
+.sidebar .kv{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+.sidebar .kv>div{min-width:0;overflow-wrap:anywhere}
+
+/* Use a responsive but useful session panel width rather than collapsing it
+   to ~210–235 px on common MacBook/laptop viewports. */
+@media (max-width:1550px), (max-height:930px){
+  #view-sessions{grid-template-columns:clamp(265px,19vw,292px) minmax(0,1fr)}
+  .sidebar{padding:10px}
+  .sidebar h2{font-size:16px}
+  .sidebar h3{font-size:13px;margin-top:10px;padding-top:9px}
+  .sidebar .info-block{font-size:11px;line-height:1.35}
+  .sidebar .kv{font-size:10px;gap:4px 7px}
+}
+@media (max-width:1320px){
+  #view-sessions{grid-template-columns:260px minmax(0,1fr)}
+  .sidebar .compact-actions button{font-size:10px;padding:6px 4px}
+}
+@media (max-width:1080px){
+  #view-sessions{grid-template-columns:1fr}
+}
+
+
+/* ==========================================================
+   V2.2 ONE-CAMERA PRO
+   Adaptive viewport layout + single-camera capture focus.
+   ========================================================== */
+:root{--left-session-w:278px;--right-shot-w:300px;--capture-gap:8px}
+.compact-status{white-space:nowrap}
+.readiness-chip{display:inline-flex;align-items:center;min-height:24px;padding:4px 8px;border-radius:999px;border:1px solid #334a61;font-size:10px;font-weight:700;color:#9fb2c6;background:#101d2c}
+.readiness-chip.waiting{color:#9fb2c6}.readiness-chip.warn{border-color:#7b6725;background:#2b2511;color:#f2d36c}.readiness-chip.ready{border-color:#287b56;background:#0d3021;color:#72e9ad}.readiness-chip.captured{border-color:#3d6e9c;background:#102b45;color:#80c5ff}
+.shot-capture-flash{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;min-width:190px;padding:14px 18px;text-align:center;border-radius:12px;border:1px solid #57dca3;background:#071b15e8;box-shadow:0 10px 40px #000a,0 0 0 2px #47d98b33;color:white;pointer-events:none}
+.shot-capture-flash b,.shot-capture-flash span{display:block}.shot-capture-flash b{font-size:17px;color:#81efb9;letter-spacing:.4px}.shot-capture-flash span{font-size:11px;color:#c1dfd1;margin-top:4px}.shot-capture-flash.pop{animation:shotpop .25s ease-out}@keyframes shotpop{0%{transform:translate(-50%,-50%) scale(.78);opacity:.2}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.display-diagnostics{margin-top:14px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#0b1624;color:#9fb3c7;font-size:11px;line-height:1.5}
+
+.shot-cards{display:none;gap:6px;margin:6px 0 8px;overflow-y:auto;min-height:0;flex:1}
+.shot-card-compact{display:grid;grid-template-columns:24px minmax(0,1fr) 38px auto 36px;align-items:center;gap:5px;padding:7px 6px;border:1px solid #29415a;background:#0b1724;border-radius:8px;cursor:pointer;min-width:0}
+.shot-card-compact:hover,.shot-card-compact.selected{border-color:#3e79ad;background:#102943}.shot-card-main{min-width:0}.shot-card-main b,.shot-card-main span{display:block}.shot-card-main b{font-size:12px}.shot-card-main span{font-size:9px;color:#8fa5bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shot-card-score{text-align:center;font-weight:800;font-size:14px}.shot-card-compact .analysis-chip{max-width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;padding:3px 5px}.shot-card-compact .row-edit-btn{padding:4px 5px;font-size:9px}.shot-card-empty{display:flex;align-items:center;justify-content:center;color:#71869b;border:1px dashed #30475f;border-radius:8px;min-height:72px;font-size:11px}
+
+/* Single camera is the default optimized workspace. Rear/Overhead stay available via More Views. */
+body[data-camera-focus="single"] #view-sessions .stack{display:none!important}
+body[data-camera-focus="single"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1fr) var(--right-shot-w);gap:var(--capture-gap)}
+body[data-camera-focus="single"] #view-sessions .main-video{grid-column:1}
+body[data-camera-focus="single"] #view-sessions .shot-panel{grid-column:2;grid-row:1;max-height:none}
+body[data-camera-focus="multi"] #view-sessions .stack{display:grid}
+
+/* Auto layouts use actual viewport CSS pixels and can change live. */
+body[data-layout-mode="wide"]{--left-session-w:292px;--right-shot-w:330px}
+body[data-layout-mode="standard"]{--left-session-w:274px;--right-shot-w:292px}
+body[data-layout-mode="compact"]{--left-session-w:252px;--right-shot-w:276px}
+body[data-layout-mode] #view-sessions{grid-template-columns:var(--left-session-w) minmax(0,1fr)}
+body[data-layout-mode] .workspace{padding:7px 8px}
+body[data-layout-mode] .camera-toolbar{padding:7px 9px;margin-bottom:6px}
+body[data-layout-mode] .pose-diagnostic{padding:7px 9px;margin-bottom:6px}
+body[data-layout-mode] .pose-diagnostic-items{gap:7px 12px}
+body[data-layout-mode] .camera-grid{gap:var(--capture-gap)}
+body[data-layout-mode="standard"] .main-video .video-wrap{max-height:46vh;aspect-ratio:16/9}
+body[data-layout-mode="compact"] .main-video .video-wrap{max-height:43vh;aspect-ratio:16/9}
+body[data-layout-mode="wide"] .main-video .video-wrap{max-height:56vh}
+
+body[data-layout-mode="standard"] .shot-table-wrap,
+body[data-layout-mode="compact"] .shot-table-wrap{display:none}
+body[data-layout-mode="standard"] .shot-cards,
+body[data-layout-mode="compact"] .shot-cards{display:grid}
+body[data-layout-mode="standard"] .shot-panel,
+body[data-layout-mode="compact"] .shot-panel{padding:8px}
+body[data-layout-mode="standard"] .shot-panel .panel-subtitle,
+body[data-layout-mode="compact"] .shot-panel .panel-subtitle{display:none}
+
+body[data-layout-mode="compact"] .sidebar{padding:9px}
+body[data-layout-mode="compact"] .sidebar .compact-actions{grid-template-columns:1fr 1fr 1fr}
+body[data-layout-mode="compact"] .sidebar .compact-actions button{font-size:9px;padding:6px 3px}
+body[data-layout-mode="compact"] .sidebar h3{margin-top:8px;padding-top:7px;font-size:12px}
+body[data-layout-mode="compact"] .sidebar .kv{font-size:9.5px;gap:3px 6px}
+body[data-layout-mode="compact"] .sidebar .info-block{font-size:10px}
+body[data-layout-mode="compact"] .camera-toolbar-actions{gap:4px}
+body[data-layout-mode="compact"] .camera-toolbar-actions .small-btn,
+body[data-layout-mode="compact"] .camera-toolbar-actions .record-btn,
+body[data-layout-mode="compact"] .camera-toolbar-actions .danger-btn,
+body[data-layout-mode="compact"] .pose-btn,
+body[data-layout-mode="compact"] .mode-btn{padding:5px 6px;font-size:9px}
+body[data-layout-mode="compact"] .compact-status{font-size:8.5px;padding:4px 6px}
+body[data-layout-mode="compact"] .phase-strip{padding:6px;margin-top:5px}
+body[data-layout-mode="compact"] .phases{gap:3px;margin-top:5px}
+body[data-layout-mode="compact"] .phase-pill{padding:5px 2px;font-size:8px;min-width:0}
+body[data-layout-mode="compact"] .metrics-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:5px}
+body[data-layout-mode="compact"] .metric{padding:6px 5px;min-width:0}
+body[data-layout-mode="compact"] .metric span,body[data-layout-mode="compact"] .metric small{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body[data-layout-mode="compact"] .metric strong{font-size:16px;margin:2px 0}
+body[data-layout-mode="standard"] .metrics-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+body[data-layout-mode="standard"] .metric{padding:8px}
+
+/* Capture is a real focus mode: all live essentials fit before review tools. */
+body[data-workspace-mode="capture"] #view-sessions .filmstrip-card,
+body[data-workspace-mode="capture"] #view-sessions .bottom-grid{display:none}
+body[data-workspace-mode="capture"] #view-sessions .phase-strip,
+body[data-workspace-mode="capture"] #view-sessions .metrics-grid{display:grid}
+
+/* Review gives the saved shot tools the vertical space they need. */
+body[data-workspace-mode="review"] #view-sessions .pose-diagnostic{display:none}
+body[data-workspace-mode="review"] #view-sessions .phase-strip{display:none}
+body[data-workspace-mode="review"] #view-sessions .metrics-grid{margin-top:5px}
+body[data-workspace-mode="review"] #view-sessions .filmstrip-card{display:block}
+body[data-workspace-mode="review"] #view-sessions .bottom-grid{display:grid}
+body[data-workspace-mode="review"][data-camera-focus="single"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1fr) var(--right-shot-w)!important}
+body[data-workspace-mode="review"] #view-sessions .main-video .video-wrap{max-height:34vh}
+
+/* Coach focuses on data and notes rather than blank camera real estate. */
+body[data-workspace-mode="coach"] #view-sessions .camera-grid{display:block}
+body[data-workspace-mode="coach"] #view-sessions .shot-panel{display:flex;max-height:42vh}
+body[data-workspace-mode="coach"] #view-sessions .phase-strip{display:none}
+body[data-workspace-mode="coach"] #view-sessions .filmstrip-card{display:block}
+body[data-workspace-mode="coach"] #view-sessions .bottom-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr)}
+
+/* Prevent any sidebar/shot-panel horizontal scrolling on laptop sizes. */
+.sidebar,.shot-panel,.shot-cards,.shot-card-compact{overflow-x:hidden}
+.sidebar select,.sidebar button,.shot-panel button{max-width:100%}
+
+@media(max-width:1180px){
+  body[data-layout-mode="compact"]{--left-session-w:238px;--right-shot-w:260px}
+  .topbar{padding:5px 8px}.brand-title{font-size:16px}.logo{font-size:22px}.nav-btn{padding:7px 8px;font-size:10px}
+  .header-status .user{display:none}.compact-status{display:none}
+  body[data-layout-mode="compact"] .shot-card-compact{grid-template-columns:20px minmax(0,1fr) 34px 32px}.shot-card-compact .analysis-chip{display:none}
+}
+@media(max-width:980px){
+  body[data-layout-mode] #view-sessions{grid-template-columns:1fr}.sidebar{display:none}
+  body[data-camera-focus="single"] #view-sessions .camera-grid{grid-template-columns:1fr}
+  body[data-camera-focus="single"] #view-sessions .shot-panel{grid-column:1;grid-row:auto}
+  body[data-layout-mode="compact"] .metrics-grid{grid-template-columns:repeat(4,1fr)}
+}
+
+.framing-guide{position:absolute;inset:7% 8%;z-index:6;border:1px dashed #76c7ff99;border-radius:18px;pointer-events:none;box-shadow:inset 0 0 0 9999px #06101a22}
+.framing-guide:before,.framing-guide:after{content:"";position:absolute;width:22px;height:22px;border-color:#77d5ff;border-style:solid}
+.framing-guide:before{left:-1px;top:-1px;border-width:2px 0 0 2px;border-radius:12px 0 0 0}.framing-guide:after{right:-1px;bottom:-1px;border-width:0 2px 2px 0;border-radius:0 0 12px 0}
+.framing-guide span{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);background:#06111dcc;border:1px solid #315b78;color:#a8d8f5;border-radius:999px;padding:5px 9px;font-size:9px;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+/* Keep long Shot Lists inside their own panel instead of stretching the page. */
+body[data-camera-focus="single"][data-layout-mode="standard"] #view-sessions .shot-panel{max-height:52vh}
+body[data-camera-focus="single"][data-layout-mode="compact"] #view-sessions .shot-panel{max-height:49vh}
+body[data-camera-focus="single"][data-layout-mode="wide"] #view-sessions .shot-panel{max-height:61vh}
+body[data-camera-focus="single"] #view-sessions .shot-cards{overflow-y:auto;min-height:0}
+
+.readiness-overlay{position:absolute;right:10px;top:10px;z-index:7;border:1px solid #334a61;background:#07131fd9;color:#aac0d4;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:800;pointer-events:none;backdrop-filter:blur(4px)}
+.readiness-overlay.ready{border-color:#287b56;color:#78ebb1;background:#092519df}.readiness-overlay.warn{border-color:#7b6725;color:#f2d36c;background:#2b2511df}.readiness-overlay.captured{border-color:#3d6e9c;color:#80c5ff;background:#102b45df}
+
+
+/* V3.0 Shot Intelligence · Impact Mapping */
+.impact-shell{gap:16px;}
+.impact-grid{display:grid;grid-template-columns:minmax(280px,360px) minmax(460px,1fr) minmax(280px,340px);gap:16px;align-items:start;}
+.impact-left,.impact-center,.impact-right{min-height:200px;}
+.body-impact-compact .impact-grid{grid-template-columns:1fr;}
+.impact-config-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:8px;}
+.impact-config-grid label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#bdd0e5;}
+.impact-config-grid input,.impact-config-grid select{width:100%;}
+.impact-action-row,.impact-arrow-actions,.impact-board-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.inset-card{padding:12px;margin-top:12px;background:#0b1724;border:1px solid #20364d;border-radius:14px;}
+.impact-nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.impact-nav-meta{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;}
+.impact-end-stats{margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.impact-end-stats>div,.score-summary-item{background:#0d1b2a;border:1px solid #21374d;border-radius:12px;padding:10px;}
+.impact-end-stats span,.score-summary-item span,.analysis-list span{display:block;color:#8ca3bb;font-size:12px;}
+.impact-end-stats b,.score-summary-item b{display:block;font-size:19px;color:#f4f8fc;margin-top:4px;}
+.impact-arrow-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0;}
+.impact-arrow-chip{display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid #24415d;border-radius:12px;background:#0f1d2d;color:#d9e6f3;cursor:pointer;transition:.18s;}
+.impact-arrow-chip.active{border-color:#55a4ff;box-shadow:0 0 0 1px rgba(85,164,255,.35) inset;background:#13253a;}
+.impact-arrow-chip.filled{border-color:#2e7f53;}
+.impact-arrow-chip .score{font-size:22px;font-weight:700;line-height:1;}
+.impact-arrow-chip .meta{font-size:11px;color:#89a0b8;}
+.impact-linked-shot{margin-top:10px;line-height:1.45;}
+.impact-board-wrap{position:relative;display:flex;align-items:center;justify-content:center;min-height:540px;background:radial-gradient(circle at center,#0d1a29,#09121d 74%);border:1px solid #20364d;border-radius:18px;overflow:auto;padding:10px;}
+#impactCanvas{width:min(100%,720px);height:auto;max-height:78vh;display:block;background:#ecedf0;border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.28);cursor:crosshair;transform-origin:center center;}
+.analysis-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.analysis-list>div{background:#0d1b2a;border:1px solid #21374d;border-radius:12px;padding:10px;}
+.analysis-list b{display:block;font-size:16px;color:#f3f7fc;margin-top:4px;}
+.score-summary-list{display:grid;gap:10px;}
+.score-summary-item small{color:#92aac4;display:block;margin-top:6px;line-height:1.45;}
+.note-box{background:#0d1b2a;border:1px solid #21374d;border-radius:14px;padding:14px;line-height:1.55;color:#d2dfec;}
+.mt16{margin-top:16px;}
+.impact-summary-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.impact-board-legend{margin-top:8px;}
+@media (max-width: 1380px){.impact-grid{grid-template-columns:minmax(260px,320px) 1fr;}.impact-right{grid-column:1/-1;}}
+@media (max-width: 980px){.impact-grid{grid-template-columns:1fr;}.impact-config-grid,.analysis-list,.impact-end-stats{grid-template-columns:1fr 1fr;}.impact-arrow-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width: 640px){.impact-config-grid,.analysis-list,.impact-end-stats,.impact-arrow-strip{grid-template-columns:1fr;}}
+
+
+/* V3.2 Range Intelligence */
+.condition-summary{margin-top:10px;padding:9px 11px;border:1px dashed #29445f;border-radius:10px;background:#091522;line-height:1.45;}
+.end-condition-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;margin:8px 0 10px;}
+.end-condition-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#aebfd1;}
+.end-condition-grid .span2{grid-column:1/-1;}
+.session-outdoor-fields{border:1px solid #24415d;border-radius:14px;padding:12px;background:#0b1724;}
+.session-outdoor-fields.hidden{display:none;}
+.outdoor-condition-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+.outdoor-condition-grid label{min-width:0;}
+@media(max-width:900px){.outdoor-condition-grid{grid-template-columns:1fr 1fr;}.end-condition-grid{grid-template-columns:1fr;}.end-condition-grid .span2{grid-column:auto;}}
+
+#sessionDialog{width:min(920px,94vw);max-height:88vh;overflow:auto;}
+#sessionDialog .dialog-form{gap:12px;}
+
+
+/* V3.3 stability / precision target mapping */
+.round-summary{margin-top:10px;padding:10px 12px;border-radius:12px;background:#0d1b2a;border:1px solid #27415c;color:#dce9f6;font-weight:700;line-height:1.35}
+.end-jump-label{display:flex;align-items:center;gap:7px;font-weight:700;color:#e6f0fa}
+.end-jump-label input{width:78px;text-align:center;padding:6px 8px;border-radius:8px}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+#impactCanvas{transform-origin:center center;image-rendering:auto}
+.impact-board-wrap{min-height:620px}
+.impact-board-actions{align-items:center}
+#impactScorePreview{min-width:132px;text-align:center}
+@media (max-width:1380px){.impact-board-wrap{min-height:560px}}
+
+
+/* V3.3.2 numeric entry: every numeric field remains directly editable. */
+input[type="number"]{user-select:text;-webkit-user-select:text;cursor:text;}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{opacity:1;}
+
+/* V3.4 verified shot cycle */
+.sidebar-field{display:flex;flex-direction:column;gap:5px;margin:7px 0;color:#91a8bf;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.sidebar-field select{font-size:12px;text-transform:none;letter-spacing:0}
+.analysis-intelligence-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.intelligence-body{display:grid;gap:8px}
+.intelligence-row{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(0,1.2fr);gap:10px;padding:8px 0;border-bottom:1px solid #1e3348}
+.intelligence-row:last-child{border-bottom:0}.intelligence-row span{color:#8ea5bc}.intelligence-row b{color:#edf5fc;font-weight:700}.intelligence-row small{grid-column:1/-1;color:#7890a8;line-height:1.4}
+.intelligence-note{padding:10px;border:1px solid #28425c;border-radius:10px;background:#0b1825;line-height:1.5;color:#cbd9e7}
+.intelligence-note.review{border-color:#735c29;background:#201b0f}.intelligence-note.good{border-color:#285f49;background:#0d211a}.intelligence-note.low{border-color:#5b3a42;background:#221419}
+.shot-table-wrap{display:none!important}
+.shot-cards{display:block!important;overflow-y:auto;min-height:0;max-height:100%;padding-right:2px}
+.shot-end-group{border:1px solid #294159;border-radius:10px;background:#091521;margin:0 0 7px;overflow:hidden}
+.shot-end-head{width:100%;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 9px;border:0;background:#0d1b2a;color:#dce8f4;text-align:left;cursor:pointer}
+.shot-end-head:hover{background:#112338}.shot-end-head b{font-size:12px}.shot-end-head span{font-size:10px;color:#91a7bc}.shot-end-head .end-score{font-size:12px;color:#f2f7fc;font-weight:800}
+.shot-end-body{display:none;padding:5px}.shot-end-group.open .shot-end-body{display:grid;gap:5px}.shot-end-group.current{border-color:#3c79ae}
+.shot-row-v34{display:grid;grid-template-columns:22px 42px minmax(0,1fr) auto 32px;align-items:center;gap:5px;padding:7px;border:1px solid #223b53;border-radius:8px;background:#0b1724;cursor:pointer;min-width:0}
+.shot-row-v34:hover,.shot-row-v34.selected{border-color:#4b86ba;background:#102943}.shot-row-v34 .shot-num{font-weight:800;font-size:12px}.shot-row-v34 .shot-meta{min-width:0}.shot-row-v34 .shot-meta b,.shot-row-v34 .shot-meta span{display:block}.shot-row-v34 .shot-meta b{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shot-row-v34 .shot-meta span{font-size:9px;color:#8ba0b5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shot-row-v34 .shot-score{font-size:15px;font-weight:900;text-align:center}.shot-row-v34 .row-edit-btn{padding:3px 4px;font-size:9px}
+.shot-validity{font-size:8px;padding:2px 4px;border-radius:999px;background:#17314a;color:#a9c7e3;display:inline-block}.shot-validity.problem{background:#47232a;color:#ffc1c7}.shot-validity.auto{background:#173d31;color:#a7ebc9}
+.input-help{font-size:9px;color:#788fa7;margin-top:3px}
+input[type="number"]{user-select:text;-webkit-user-select:text}
+@media(max-width:980px){.analysis-intelligence-grid{grid-template-columns:1fr}.shot-row-v34{grid-template-columns:20px 38px minmax(0,1fr) auto 30px}}
+
+/* V3.4.1 MULTI-VIEW STABLE */
+.camera-assignment-summary{font-size:10px;color:#7f98b2;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
+.review-role-tabs{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}.review-role-btn{border:1px solid #31506d;background:#0b1724;color:#8fa5bc;border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer}.review-role-btn.active{background:#1e5d8f;color:#fff;border-color:#4383b7}.review-role-btn.unavailable{opacity:.45}.review-multi-view{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.review-multi-cell{position:relative;min-height:140px;background:#050a10;border:1px solid #29415a;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}.review-multi-cell img{width:100%;height:100%;object-fit:contain;display:none}.review-multi-cell.has-frame img{display:block}.review-multi-cell span{position:absolute;inset:auto 8px 8px 8px;background:#07101acc;color:#8fa5bc;padding:5px 7px;border-radius:5px;font-size:9px;text-align:center}.review-multi-cell.has-frame span{display:none}.review-multi-title{position:absolute;top:6px;left:6px;z-index:2;background:#07101acc;color:#dce8f4;border:1px solid #2a425a;border-radius:5px;padding:3px 6px;font-size:9px;font-weight:700}
+.analysis-intelligence-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* Camera selectors remain available in every workspace mode. */
+body[data-workspace-mode="review"] #view-sessions .stack,
+body[data-workspace-mode="coach"] #view-sessions .main-video,
+body[data-workspace-mode="coach"] #view-sessions .stack{display:grid!important}
+body[data-workspace-mode="review"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);align-items:start}
+body[data-workspace-mode="review"] #view-sessions .main-video{grid-column:1}.review-mode-placeholder{display:none}
+body[data-workspace-mode="review"] #view-sessions .stack{grid-column:2;grid-row:1;display:grid!important;gap:7px}
+body[data-workspace-mode="review"] #view-sessions .shot-panel{grid-column:1/-1;grid-row:auto;max-height:34vh}
+body[data-workspace-mode="coach"] #view-sessions .camera-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}
+body[data-workspace-mode="coach"] #view-sessions .main-video{grid-column:auto}.video-card.main-video{min-width:0}
+body[data-workspace-mode="coach"] #view-sessions .stack{display:contents!important}
+body[data-workspace-mode="coach"] #view-sessions .stack>.video-card{display:block!important}
+body[data-workspace-mode="coach"] #view-sessions .shot-panel{grid-column:1/-1;max-height:38vh}
+body[data-workspace-mode="coach"] #view-sessions .filmstrip-card{display:block}
+body[data-workspace-mode="coach"] #view-sessions .bottom-grid{display:grid}
+/* In Review/Coach the user must always be able to assign Rear/Overhead, regardless of single-focus setting. */
+body[data-workspace-mode="review"][data-camera-focus="single"] #view-sessions .stack,
+body[data-workspace-mode="coach"][data-camera-focus="single"] #view-sessions .stack{display:grid!important}
+
+@media(max-width:1180px){
+  body[data-workspace-mode="coach"] #view-sessions .camera-grid{grid-template-columns:1fr 1fr}
+  body[data-workspace-mode="coach"] #view-sessions .main-video{grid-column:1/-1}
+  .analysis-intelligence-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+  body[data-workspace-mode="review"] #view-sessions .camera-grid,
+  body[data-workspace-mode="coach"] #view-sessions .camera-grid{grid-template-columns:1fr}
+  body[data-workspace-mode="review"] #view-sessions .stack{grid-column:auto;grid-row:auto}
+  body[data-workspace-mode="coach"] #view-sessions .main-video{grid-column:auto}
+  body[data-workspace-mode="coach"] #view-sessions .stack{display:grid!important;grid-template-columns:1fr!important}
+  .review-multi-view{grid-template-columns:1fr}
+  .analysis-intelligence-grid{grid-template-columns:1fr}
+}
+
+
+/* V3.4.3 REVIEW CAMERA CONTROL VISIBILITY */
+/* In Review mode the camera toolbar must not float over the Rear card header.
+   Review is an inspection workspace, so prioritize visible camera-role controls over a sticky toolbar. */
+body[data-workspace-mode="review"] #view-sessions .camera-toolbar{
+  position:relative;
+  top:auto;
+}
+/* The narrow Review-side stack gives each role its own full-width control row.
+   This prevents the selector from being clipped by the title text or Upload button. */
+body[data-workspace-mode="review"] #view-sessions .stack .video-title{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:6px;
+  align-items:start;
+  overflow:visible;
+}
+body[data-workspace-mode="review"] #view-sessions .stack .cam-actions.compact{
+  width:100%;
+  max-width:none;
+  overflow:visible;
+  justify-content:flex-start;
+}
+body[data-workspace-mode="review"] #view-sessions .stack .cam-actions.compact .camera-select{
+  flex:1 1 auto;
+  width:auto;
+  max-width:none;
+  min-width:0;
+}
+body[data-workspace-mode="review"] #view-sessions .stack .cam-actions.compact .upload-label{
+  flex:0 0 auto;
+}
+/* Keep title/control rows visually distinct from the video surface. */
+body[data-workspace-mode="review"] #view-sessions .stack .video-title,
+body[data-workspace-mode="review"] #view-sessions .main-video .video-title{
+  background:var(--panel);
+  position:relative;
+  z-index:2;
+}
+
+/* V3.5.0 VERIFIED MULTI-VIEW · 3PM Archery identity + coach/equipment UX */
+.topbar{min-height:72px;height:auto;padding-top:7px;padding-bottom:7px;gap:12px}
+.brand{gap:10px;min-width:245px;flex:0 1 auto}
+.brand-logo{display:block;width:118px;height:50px;object-fit:contain;object-position:left center;flex:0 0 auto}
+.brand-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+.brand-title{font-size:17px;white-space:nowrap}
+.version-badge{display:inline-block;margin-left:5px;padding:3px 6px;border:1px solid #315d88;border-radius:999px;background:#102b45;color:#9dcbf6;font-size:8px;letter-spacing:.04em;vertical-align:2px}
+.brand-sub{font-size:8px;color:#829ab3;letter-spacing:1.15px;white-space:nowrap}
+.topbar nav{flex:1 1 auto;justify-content:center;min-width:0}
+.topbar .nav-btn{padding:10px 11px;font-size:12px;white-space:nowrap}
+.header-status{flex:0 1 auto;gap:7px;min-width:0}
+.coach-header{appearance:none;-webkit-appearance:none;border:1px solid #314a65;background:#102033;border-radius:8px;padding:8px 10px;cursor:pointer;color:#d8e5f2;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.coach-header:hover{border-color:#4a79a7;background:#142b43}
+.coach-header #headerCoachName{font-weight:800;color:#f1f6fb}
+.coach-header-role{color:#8da5bd;font-weight:500}
+
+.bow-setup-section .computed-weight,.computed-weight.tiller-difference{display:flex;flex-direction:column;justify-content:center;gap:6px;min-height:63px;border:1px solid #2d4661;border-radius:8px;background:#0b1826;padding:10px 12px;color:#8fa5bc;font-size:11px}
+.computed-weight.tiller-difference strong{font-size:17px;color:#e9f3fc;font-variant-numeric:tabular-nums}
+.equipment-editor-form .form-section{overflow:visible}
+.equipment-editor-form input[type="number"]{min-width:0}
+
+.coach-profile-card{margin-bottom:16px}
+.coach-profile-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:16px}
+.coach-profile-form label{display:flex;flex-direction:column;gap:6px;color:#aebed0;font-size:12px;min-width:0}
+.coach-profile-form .span2{grid-column:1/-1}
+.about-brand-row{display:flex;align-items:center;gap:18px}
+.about-brand-icon{width:108px;height:108px;object-fit:contain;flex:0 0 auto}
+.about-brand-row h1{margin:0 0 5px;font-size:22px}
+.about-version{display:inline-flex;border:1px solid #315d88;background:#0f2941;color:#a7d3fa;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800}
+.license-box{margin-top:18px;border:1px solid #2c4864;background:#0a1725;border-radius:10px;padding:15px 16px;color:#c7d5e3;font-size:12px;line-height:1.55}
+.license-box b{color:#eef6fd}.license-box p{margin:8px 0 0}
+.app-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px;border-top:1px solid #1e3349;background:#08131f;color:#70879e;font-size:10px}
+
+/* Empty camera roles are deliberate states, not failed-looking video players. */
+.video-wrap:not(.has-media) video{visibility:hidden!important;pointer-events:none}
+.video-wrap:not(.has-media) .empty{display:flex;background:radial-gradient(circle at 50% 40%,#15263a 0,#0b1623 46%,#07101a 100%);z-index:2;color:#71889f;font-weight:700;letter-spacing:.01em}
+.video-wrap.has-media .empty{display:none}
+
+/* Camera role selectors must never be clipped in Capture, Review or Coach. */
+.video-title{min-width:0;overflow:visible}
+.cam-actions{overflow:visible;flex:0 1 auto}
+.camera-select{min-width:120px;max-width:min(230px,34vw)}
+body[data-workspace-mode="review"] #view-sessions .stack .video-card{overflow:visible}
+body[data-workspace-mode="review"] #view-sessions .stack .video-wrap{overflow:hidden;border-radius:0 0 9px 9px}
+body[data-workspace-mode="review"] #view-sessions .stack .camera-select{min-width:0}
+
+@media(max-width:1500px){
+  .brand{min-width:195px}.brand-logo{width:92px;height:42px}.brand-title{font-size:14px}.version-badge{display:none}.brand-sub{font-size:7px}
+  .topbar .nav-btn{padding:9px 8px;font-size:11px}.header-status .status-pill{display:none}.coach-header{max-width:145px}
+}
+@media(max-width:1120px){
+  .topbar{flex-wrap:wrap}.topbar nav{order:3;width:100%;overflow-x:auto;justify-content:flex-start}.brand{flex:1}.header-status{margin-left:auto}
+}
+@media(max-width:800px){
+  .brand-logo{width:88px}.brand-copy{display:none}.coach-header{display:flex!important}.coach-header-role{display:none}.coach-header{max-width:130px}
+  .coach-profile-form{grid-template-columns:1fr}.coach-profile-form .span2{grid-column:auto}.about-brand-row{align-items:flex-start}.about-brand-icon{width:76px;height:76px}.app-footer{flex-direction:column;align-items:flex-start}
+}
+
+/* RC5 adaptive-camera integrity */
+#cameraQualityText{max-width:360px}.analysis-media-switch{display:flex;gap:6px;flex-wrap:wrap}
+
+/* V4.0 A1 · Range Intelligence + unified workspace layout contract */
+.position-guide{position:absolute;left:10px;bottom:10px;z-index:8;max-width:calc(100% - 20px);padding:6px 9px;border-radius:999px;border:1px solid #3a536b;background:#07131fe8;color:#b8c9d9;font-size:9px;font-weight:750;line-height:1.25;pointer-events:none;backdrop-filter:blur(5px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.position-guide.good{border-color:#2f8b61;color:#8ff0bc;background:#09241be8}.position-guide.warn{border-color:#8c7426;color:#f2d575;background:#2a2511e8}.position-guide.bad{border-color:#9d4545;color:#ffaaa5;background:#311515e8}.position-guide.waiting{opacity:.86}
+
+/* Capture: camera area first, Shot List always below. No reserved/dead right column. */
+body[data-workspace-mode="capture"] #view-sessions .camera-grid{align-items:start}
+body[data-workspace-mode="capture"][data-camera-focus="single"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1fr)!important}
+body[data-workspace-mode="capture"][data-camera-focus="single"] #view-sessions .main-video{grid-column:1!important;grid-row:auto!important}
+body[data-workspace-mode="capture"][data-camera-focus="single"] #view-sessions .shot-panel{grid-column:1/-1!important;grid-row:auto!important;max-height:42vh}
+body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .camera-grid{grid-template-columns:minmax(0,1.65fr) minmax(260px,.72fr)!important}
+body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .main-video{grid-column:1;grid-row:1}
+body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .stack{grid-column:2;grid-row:1;display:grid!important}
+body[data-workspace-mode="capture"] #view-sessions .shot-panel{grid-column:1/-1!important;grid-row:auto!important;width:100%;max-height:36vh}
+
+/* Review and Coach share the same rule: camera evidence above, Shot List below. */
+body[data-workspace-mode="review"] #view-sessions .shot-panel,
+body[data-workspace-mode="coach"] #view-sessions .shot-panel{grid-column:1/-1!important;grid-row:auto!important;width:100%}
+
+@media(max-width:980px){
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .camera-grid,
+  body[data-workspace-mode="review"] #view-sessions .camera-grid,
+  body[data-workspace-mode="coach"] #view-sessions .camera-grid{grid-template-columns:1fr!important}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .stack{grid-column:1;grid-row:auto}
+  .position-guide{white-space:normal;border-radius:8px;max-width:88%}
+}
+
+/* V4 A3: framing guide is consistent on every live camera role. */
+.role-framing-guide{inset:8% 7%;}
+.framing-guide.warn{border-color:#e5ba52aa}.framing-guide.warn:before,.framing-guide.warn:after{border-color:#e5ba52}
+.framing-guide.bad{border-color:#e66b68bb}.framing-guide.bad:before,.framing-guide.bad:after{border-color:#e66b68}
+.framing-guide.good{border-color:#55cf92aa}.framing-guide.good:before,.framing-guide.good:after{border-color:#55cf92}
+
+/* V4 A5: persistent, non-blocking framing safe-area. It is guidance only, not the pose ROI. */
+.framing-guide{transition:border-color .16s ease,box-shadow .16s ease,opacity .16s ease;opacity:.82}
+.framing-guide.good{border-color:#51d69299;box-shadow:inset 0 0 0 9999px #06101a12}
+.framing-guide.warn{border-color:#e1b83d99;box-shadow:inset 0 0 0 9999px #2a22080d}
+.framing-guide.bad{border-color:#ef777799;box-shadow:inset 0 0 0 9999px #30080810}
+
+/* BLE4.3.8.2: safe-area copy is contextual, never a permanent instruction to move back. */
+.ble4382-field-polish .framing-guide span{transition:opacity .22s ease,transform .22s ease,background .22s ease}
+.ble4382-field-polish .framing-guide.framing-ready span{opacity:0;transform:translateX(-50%) translateY(2px);font-size:8px;padding:3px 7px;background:#06111d77}
+.ble4382-field-polish .framing-guide.framing-ready:hover span{opacity:0}
+.ble4382-field-polish .framing-guide.framing-waiting span{opacity:.48}
+
+
+/* V5.0 Dev1 · Fixed workspace + swappable Coach Focus View. Display-only; streams are never restarted. */
+.camera-focus-btn{padding:4px 7px;border:1px solid #304b67;background:#102033;color:#9db2c6;border-radius:6px;font-size:9px;font-weight:800;cursor:pointer;white-space:nowrap}
+.camera-focus-btn:hover,.camera-focus-btn.active{border-color:#55cf92;color:#baf4d5;background:#123126}
+body[data-workspace-mode="capture"] #view-sessions [data-camera-card]{display:flex;flex-direction:column;min-height:0}
+body[data-workspace-mode="capture"] #view-sessions [data-camera-card] .video-wrap{flex:1;min-height:0;max-height:none!important;aspect-ratio:auto!important}
+body[data-workspace-mode="capture"] #view-sessions [data-camera-card] video{width:100%;height:100%;object-fit:contain;background:#02070d}
+@media(min-width:981px){
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .camera-grid{
+    display:grid;grid-template-columns:minmax(0,1.85fr) minmax(250px,.72fr)!important;grid-template-rows:minmax(190px,1fr) minmax(190px,1fr) auto;min-height:clamp(500px,66vh,760px);align-items:stretch!important
+  }
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .stack{display:contents!important}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions [data-camera-card]{grid-column:2}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions [data-camera-card="side"]{grid-row:1}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions [data-camera-card="rear"]{grid-row:1}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions [data-camera-card="overhead"]{grid-row:2}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="side"] #view-sessions [data-camera-card="side"],
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="rear"] #view-sessions [data-camera-card="rear"],
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="overhead"] #view-sessions [data-camera-card="overhead"]{grid-column:1;grid-row:1/3}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="side"] #view-sessions [data-camera-card="rear"]{grid-column:2;grid-row:1}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="side"] #view-sessions [data-camera-card="overhead"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="rear"] #view-sessions [data-camera-card="side"]{grid-column:2;grid-row:1}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="rear"] #view-sessions [data-camera-card="overhead"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="overhead"] #view-sessions [data-camera-card="side"]{grid-column:2;grid-row:1}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"][data-focus-role="overhead"] #view-sessions [data-camera-card="rear"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="capture"][data-camera-focus="multi"] #view-sessions .shot-panel{grid-column:1/-1!important;grid-row:3!important;align-self:start}
+  body[data-workspace-mode="capture"] #view-sessions [data-camera-card].coach-focus{box-shadow:0 0 0 1px #4b9d79,0 8px 30px #0005}
+}
+@media(max-width:980px){.camera-focus-btn{display:none}}
+
+
+/* V5 passive 3PM Biomechanics Matrix */
+.biomechanics-matrix-card{grid-column:1/-1}.biomatrix-phase-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:9px;padding:8px;border:1px solid #263c53;border-radius:8px;background:#091522}.biomatrix-phase-line span{padding:5px 7px;border-radius:6px;background:#102238;color:#bfd3e6;font-size:10px}.biomatrix-phase-line small{color:#7892aa}.biomatrix-phase-line i{color:#52728e;font-style:normal}.biomatrix-note{font-size:10px;color:#8fa7bd;margin:4px 0 8px}.biomatrix-table-wrap{overflow:auto}.biomatrix-table{width:100%;border-collapse:collapse;font-size:10px}.biomatrix-table th,.biomatrix-table td{padding:7px 8px;border-bottom:1px solid #20364a;text-align:left;white-space:nowrap}.biomatrix-table th{color:#8199b0;font-size:9px;text-transform:uppercase;letter-spacing:.04em}.matrix-confidence{font-size:9px}.matrix-confidence.measured{color:#7fe3ab}.matrix-confidence.limited{color:#e5c567}.matrix-confidence.unavailable{color:#7890a5}
+
+
+/* V5.0 Dev2 · session archive and shared Review Focus View. */
+.session-archive-card{margin-top:14px;padding-top:12px;border-top:1px solid #20364a}.session-archive-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.session-archive-head h3{margin:0!important;padding:0!important;border:0!important}.session-archive-summary{display:flex;flex-direction:column;gap:3px;margin:8px 0;padding:8px;border:1px solid #263e55;border-radius:8px;background:#091522;font-size:10px;min-width:0}.session-archive-summary b,.session-archive-summary span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.session-archive-summary span{color:#8fa6bc}.session-archive-actions{display:grid;gap:6px}.session-archive-actions .small-btn{width:100%;text-align:left}.archive-remove-btn{border-color:#8a6330!important;color:#f0c77f!important}.session-archive-note{margin:7px 0 0;color:#738aa1;font-size:9px;line-height:1.4}.archive-progress-dialog{border:0;background:transparent;padding:0;max-width:min(560px,92vw);width:100%}.archive-progress-dialog::backdrop{background:#02070dcc;backdrop-filter:blur(3px)}.archive-progress-card{background:#0b1724;color:#dce8f4;border:1px solid #31506d;border-radius:12px;padding:18px;box-shadow:0 22px 70px #0009}.archive-progress-bar{width:100%;height:12px;margin:16px 0 8px;accent-color:#55cf92}.archive-progress-note{color:#8aa1b7;font-size:10px;line-height:1.5}
+@media(min-width:981px){
+  body[data-workspace-mode="review"] #view-sessions .camera-grid{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(250px,.72fr)!important;grid-template-rows:minmax(190px,1fr) minmax(190px,1fr) auto;min-height:clamp(500px,66vh,760px);align-items:stretch!important}
+  body[data-workspace-mode="review"] #view-sessions .stack{display:contents!important}
+  body[data-workspace-mode="review"] #view-sessions [data-camera-card]{display:flex!important;flex-direction:column;min-height:0;grid-column:2}
+  body[data-workspace-mode="review"] #view-sessions [data-camera-card] .video-wrap{flex:1;min-height:0;max-height:none!important;aspect-ratio:auto!important}
+  body[data-workspace-mode="review"] #view-sessions [data-camera-card] video{width:100%;height:100%;object-fit:contain;background:#02070d}
+  body[data-workspace-mode="review"][data-focus-role="side"] #view-sessions [data-camera-card="side"],body[data-workspace-mode="review"][data-focus-role="rear"] #view-sessions [data-camera-card="rear"],body[data-workspace-mode="review"][data-focus-role="overhead"] #view-sessions [data-camera-card="overhead"]{grid-column:1;grid-row:1/3}
+  body[data-workspace-mode="review"][data-focus-role="side"] #view-sessions [data-camera-card="rear"]{grid-column:2;grid-row:1}body[data-workspace-mode="review"][data-focus-role="side"] #view-sessions [data-camera-card="overhead"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="review"][data-focus-role="rear"] #view-sessions [data-camera-card="side"]{grid-column:2;grid-row:1}body[data-workspace-mode="review"][data-focus-role="rear"] #view-sessions [data-camera-card="overhead"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="review"][data-focus-role="overhead"] #view-sessions [data-camera-card="side"]{grid-column:2;grid-row:1}body[data-workspace-mode="review"][data-focus-role="overhead"] #view-sessions [data-camera-card="rear"]{grid-column:2;grid-row:2}
+  body[data-workspace-mode="review"] #view-sessions .shot-panel{grid-column:1/-1!important;grid-row:3!important;max-height:34vh}body[data-workspace-mode="review"] #view-sessions [data-camera-card].coach-focus{box-shadow:0 0 0 1px #4b9d79,0 8px 30px #0005}
+}
+
+/* V5 Dev4 Full Shot Evidence Replay / Coach Review */
+.shot-replay-panel{margin-top:10px;border:1px solid #29415a;border-radius:10px;background:#050a10;overflow:hidden}.shot-replay-stage{position:relative;min-height:240px;max-height:54vh;display:flex;align-items:center;justify-content:center;background:#02070d;overflow:hidden}.shot-replay-stage img{display:block;width:100%;height:100%;max-height:54vh;object-fit:contain;background:#02070d;transform-origin:center center;transition:transform .12s ease;will-change:transform}.shot-replay-stage img.zoomed{cursor:zoom-out}.shot-replay-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7f93a8;padding:24px;text-align:center}.shot-replay-panel:not(.replay-empty) .shot-replay-empty{display:none}.shot-replay-slider{display:block;width:calc(100% - 24px);margin:10px 12px 4px;accent-color:#65d39a}.shot-replay-footer{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:6px 12px 10px;font-size:10px;color:#dce8f4}.shot-replay-footer .muted{text-align:right}.replay-speed{min-width:70px;background:#0b1724;color:#dce8f4;border:1px solid #31506d;border-radius:6px;padding:5px 7px}.review-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}@media(max-width:760px){.shot-replay-stage{min-height:190px}.shot-replay-footer{flex-direction:column;align-items:flex-start}.shot-replay-footer .muted{text-align:left}}
+
+/* V5 Dev4 · easier frame-by-frame coaching scrubber */
+.shot-replay-scrub-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 12px 2px}
+.shot-replay-scrub-row .shot-replay-slider{width:100%;margin:0;height:28px;cursor:pointer}
+.shot-replay-slider::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:#1d3850}
+.shot-replay-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;margin-top:-7px;background:#dce8f4;border:3px solid #31506d;box-shadow:0 0 0 2px rgba(101,211,154,.25)}
+.shot-replay-slider::-moz-range-track{height:8px;border-radius:999px;background:#1d3850}
+.shot-replay-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#dce8f4;border:3px solid #31506d}
+.replay-step-btn{min-width:42px;font-weight:800}
+
+/* X2.8 settled Anchor / Replay zoom controls */
+.replay-zoom-group{display:inline-flex;gap:4px;align-items:center}.replay-zoom-group .small-btn{min-width:34px}.replay-zoom-label{min-width:58px!important;font-variant-numeric:tabular-nums}
+
+/* X2.8 settled-Anchor review + pan controls */
+.replay-pan-group{display:inline-flex;gap:4px;align-items:center}.replay-pan-group .small-btn{min-width:34px}.replay-pan-group .small-btn:disabled{opacity:.38;cursor:not-allowed}.shot-replay-stage img.zoomed{cursor:move}
+
+
+/* X2.8.2 unified replay toolbar + read-only consistency layer */
+.filmstrip-head{display:block}
+.review-control-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #20384f;justify-content:flex-start}
+.replay-frame-group{display:inline-flex;align-items:center;gap:5px;padding:0 2px}
+.review-control-bar .replay-speed{width:auto;min-width:74px;max-width:86px;flex:0 0 auto}
+.review-control-bar .small-btn{white-space:nowrap}
+.consistency-card{margin-top:12px}
+.consistency-panel{display:grid;gap:12px}
+.consistency-overview{display:grid;grid-template-columns:minmax(120px,.6fr) minmax(240px,1.4fr);gap:8px 12px;padding:10px;border:1px solid #27425b;border-radius:10px;background:#0a1723}
+.consistency-overview div{display:flex;flex-direction:column;gap:3px}.consistency-overview .span2{grid-column:1/-1}.consistency-overview span{font-size:10px;color:#8ea5bc}.consistency-overview b{font-size:12px;color:#e8f2fb}
+.consistency-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.consistency-metric{border:1px solid #263f57;border-radius:10px;background:#0a1622;padding:10px;display:grid;gap:7px}
+.consistency-metric-head{display:flex;align-items:flex-start;gap:8px;justify-content:space-between}.consistency-metric-head b{font-size:11px;color:#edf5fc}
+.consistency-state{font-size:9px;border:1px solid #35536e;border-radius:999px;padding:3px 6px;color:#9fb5c9;white-space:nowrap}.consistency-state.tight{border-color:#2d6b52;color:#9ee4c5;background:#0d211a}.consistency-state.similar{border-color:#355b7d;color:#add2f3;background:#0d1c2b}.consistency-state.wide{border-color:#795d2d;color:#f0d29a;background:#231b0e}.consistency-state.building{opacity:.8}
+.consistency-values{display:grid;gap:3px;font-size:10px;color:#8ea5bc}.consistency-values strong{color:#dce8f4;font-size:11px}.consistency-metric small,.consistency-footnote{font-size:9px;color:#7890a8;line-height:1.45}.consistency-empty{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px dashed #35536e;border-radius:10px;color:#9db0c2}.consistency-empty b{color:#dce8f4}
+@media(max-width:980px){.consistency-grid{grid-template-columns:1fr}.consistency-overview{grid-template-columns:1fr}.consistency-overview .span2{grid-column:auto}}
+
+/* 3PM Bow Sensor BLE2 integration — isolated from frozen analysis core */
+.devices-page{padding:0}.ecosystem-shell{padding-bottom:34px}.ecosystem-status-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.ecosystem-notice{margin:12px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#0d1928;color:#b8c9db;font-size:12px}.ecosystem-notice.good{border-color:#2a7755;color:#82e8b4;background:#0f2b21}.ecosystem-notice.warn{border-color:#7b6725;color:#f2d36c;background:#2b2511}.ecosystem-notice.bad{border-color:#7f3434;color:#ff8a86;background:#321718}
+.ecosystem-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}.eco-lower-grid{grid-template-columns:1.5fr .85fr;margin-top:12px}.eco-device-card h2,.eco-context-card h2,.eco-chart-card h2{margin:0 0 4px}.eco-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.eco-safety-note{display:grid;gap:5px;margin-top:14px;padding:12px;border-left:3px solid var(--good);background:#0c1d1a;border-radius:6px}.eco-safety-note span{font-size:12px;color:#a9c8bb;line-height:1.45}.eco-context{display:grid;gap:5px;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:8px;background:#0c1725}.eco-context span,.eco-context small{color:var(--muted);font-size:12px}.eco-recording-state{display:grid;gap:4px;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:8px;background:#0c1725}.eco-recording-state span,.eco-recording-state small{font-size:12px;color:var(--muted)}.eco-marker-box{margin-top:12px}.eco-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}.eco-marker-box>div{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.eco-marker-box>div>span:not(.muted){font-size:11px;border:1px solid #35506d;border-radius:999px;padding:4px 7px;background:#12243a;color:#cfe0f2}
+.eco-device-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.eco-device-summary>div{padding:10px;border:1px solid var(--line);border-radius:8px;background:#0c1725}.eco-device-summary span,.eco-device-summary b{display:block}.eco-device-summary span{color:var(--muted);font-size:10px}.eco-device-summary b{font-size:12px;margin-top:4px;overflow-wrap:anywhere}.eco-fallback{margin-top:12px;padding:10px;border:1px solid #725f25;background:#29230f;border-radius:8px;display:flex;gap:10px;align-items:center;justify-content:space-between}.eco-fallback span{font-size:11px;color:#ead983}.eco-fallback.hidden{display:none}
+.eco-stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}.eco-stat{padding:13px}.eco-stat span,.eco-stat small{display:block;color:var(--muted);font-size:10px}.eco-stat strong{display:block;font-size:20px;margin:5px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eco-chart-card canvas{display:block;width:100%;height:260px;margin-top:10px;background:#07111c;border:1px solid #21364e;border-radius:8px}.eco-live-values{display:grid;gap:8px;margin-top:12px}.eco-live-values>div{padding:10px;border:1px solid var(--line);border-radius:7px;background:#0c1725}.eco-live-values span,.eco-live-values b{display:block}.eco-live-values span{color:var(--muted);font-size:10px}.eco-live-values b{font-size:12px;margin-top:4px}.eco-protocol-note{margin-top:14px;padding:12px;border-left:3px solid var(--accent);background:#0d1928;border-radius:6px}.eco-protocol-note p{font-size:12px;color:#b7c6d6;line-height:1.5;margin:6px 0 0}.eco-protocol-note code{color:#cfe4fb;background:#091422;padding:1px 4px;border-radius:4px}
+.eco-events-card{margin-top:12px}.eco-events-list{display:grid;gap:7px;margin-top:10px}.eco-event{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:#0c1725}.eco-event-kind{font-weight:700}.eco-event.release .eco-event-kind{color:#7ed7ff}.eco-event.letdown .eco-event-kind{color:#f2d36c}.eco-event-meta{font-size:11px;color:var(--muted)}.eco-event-time{font-size:11px;color:#b9c9d8;white-space:nowrap}
+@media(max-width:1200px){.eco-stats-grid{grid-template-columns:repeat(3,1fr)}.ecosystem-grid,.eco-lower-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.ecosystem-status-row{justify-content:flex-start}.eco-stats-grid{grid-template-columns:repeat(2,1fr)}.eco-actions button{flex:1 1 auto}.eco-chart-card canvas{height:220px}.eco-device-summary{grid-template-columns:1fr}.eco-event{grid-template-columns:1fr}.eco-event-time{white-space:normal}}
+
+/* 3PM Bow Sensor BLE3 optional evidence layer. Kept outside frozen analysis logic. */
+.eco-shot-records,.eco-linked-records{display:grid;gap:9px;margin-top:8px}.eco-shot-record{width:100%;border:1px solid var(--line,#28435a);background:#0b1a28;color:inherit;border-radius:14px;padding:12px;display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,1.3fr);gap:12px;text-align:left;cursor:pointer}.eco-shot-record:hover{border-color:#3c6b91}.eco-shot-record>div:first-child{display:grid;gap:3px}.eco-shot-record>div:first-child span,.eco-linked-row>div:first-child span{color:var(--muted);font-size:12px}.eco-shot-metrics{display:grid;grid-template-columns:repeat(4,minmax(74px,1fr));gap:7px}.eco-shot-metrics span{background:#102337;border:1px solid #24425d;border-radius:10px;padding:7px;color:var(--muted);font-size:11px}.eco-shot-metrics b{display:block;color:var(--text);font-size:14px;margin-top:2px}.eco-sensor-shot-detail{margin-top:10px}.eco-detail-grid{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:8px}.eco-detail-grid>div{border:1px solid #24425d;background:#0b1a28;border-radius:12px;padding:9px}.eco-detail-grid span{display:block;color:var(--muted);font-size:11px}.eco-detail-grid b{display:block;margin-top:3px}.eco-linked-row{display:grid;grid-template-columns:minmax(180px,.9fr) minmax(280px,1.3fr);gap:10px;align-items:center;border:1px solid #24425d;background:#0b1a28;border-radius:13px;padding:11px}.eco-linked-row>div:first-child{display:grid;gap:3px}.eco-linked-row>div:last-child{display:grid;grid-template-columns:repeat(4,minmax(70px,1fr));gap:6px;color:var(--muted);font-size:11px}.eco-linked-row>div:last-child span{background:#102337;border-radius:9px;padding:7px}.eco-evidence-grid{align-items:start}.bow-sensor-analysis-card{margin-top:12px}.bow-evidence-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.bow-evidence-columns>div{border:1px solid #24425d;background:#0b1a28;border-radius:14px;padding:12px}.bow-evidence-columns h3{margin:0 0 7px;font-size:15px}.bow-kv{display:grid;grid-template-columns:1fr auto;gap:10px;padding:7px 0;border-bottom:1px solid #1d354b}.bow-kv:last-child{border-bottom:0}.bow-kv span{color:var(--muted);font-size:12px}.bow-kv b{font-size:12px}.bow-fusion-note,.bow-link-empty{margin-top:10px;border-left:3px solid #399cf8;background:#0b1a28;border-radius:10px;padding:10px 12px;color:var(--muted);font-size:12px;line-height:1.45}.bow-fusion-note b{color:var(--text)}.bow-sensor-timeline{width:100%;height:170px;margin-top:10px;background:#081522;border:1px solid #203b53;border-radius:12px;display:block}
+@media(max-width:900px){.eco-shot-record,.eco-linked-row{grid-template-columns:1fr}.eco-detail-grid{grid-template-columns:repeat(2,minmax(100px,1fr))}.bow-evidence-columns{grid-template-columns:1fr}.eco-shot-metrics,.eco-linked-row>div:last-child{grid-template-columns:repeat(2,minmax(80px,1fr))}}
+
+/* ===== 3PM Bow Sensor BLE4 integration panels ===== */
+.ble4-shell{--eco-blue:#39baff;--eco-green:#47de91;--eco-amber:#ffca52;--eco-red:#ff6573}
+.eco-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px;padding:6px;border:1px solid var(--line);border-radius:13px;background:#091522;position:sticky;top:0;z-index:4;backdrop-filter:blur(10px)}
+.eco-tab{appearance:none;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:9px;padding:9px 13px;font-weight:700;cursor:pointer}.eco-tab:hover{color:var(--text);background:#102136}.eco-tab.active{color:#eaf7ff;background:#173451;border-color:#2f5d83;box-shadow:0 0 0 1px rgba(57,186,255,.08) inset}
+.eco-tab-panel{display:none}.eco-tab-panel.active{display:block}.eco-overview-grid{align-items:stretch}.ble4-stats{margin-bottom:12px}
+.eco-latest-card{margin-top:12px}.eco-latest-shot{min-height:96px}.eco-latest-hero{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(220px,1fr);gap:12px;margin-bottom:10px}.eco-latest-hero>div{border:1px solid #264861;border-radius:14px;background:linear-gradient(145deg,#102538,#0a1825);padding:13px}.eco-latest-hero span,.eco-latest-hero small{display:block;color:var(--muted);font-size:11px}.eco-latest-hero strong{display:block;color:var(--eco-green);font-size:36px;line-height:1;margin:6px 0}.eco-latest-hero b{display:block;font-size:18px;margin:6px 0}.eco-latest-metrics{display:grid;grid-template-columns:repeat(6,minmax(105px,1fr));gap:8px}.eco-metric-tile{border:1px solid #24425d;border-radius:12px;background:#0b1a28;padding:10px}.eco-metric-tile span,.eco-metric-tile small{display:block;color:var(--muted);font-size:10px}.eco-metric-tile b{display:block;font-size:15px;margin:4px 0}
+.eco-link-explain{margin-top:12px}.eco-link-flow{display:grid;grid-template-columns:1fr auto 1fr;gap:13px;align-items:center}.eco-link-flow>div:not(.eco-link-arrow){border:1px solid #24425d;border-radius:14px;padding:14px;background:#0b1a28;display:grid;gap:6px}.eco-link-flow b{font-size:15px}.eco-link-flow span{font-size:12px;color:var(--muted);line-height:1.45}.eco-link-arrow{font-size:27px;color:var(--eco-blue)}.eco-link-note{margin:10px 0 0;line-height:1.5}
+.eco-shot-record.selected,.eco-linked-row.selected{border-color:#4baef5;box-shadow:0 0 0 1px rgba(57,186,255,.22) inset;background:#0d2133}.eco-shot-record{transition:border-color .15s,background .15s}.eco-shot-metrics{align-self:center}
+.eco-sensor-shot-detail,.eco-linked-detail{margin-top:12px;border-top:1px solid #1d3348;padding-top:12px}.eco-linked-detail:empty{display:none}.eco-linked-evidence{display:grid;grid-template-columns:1fr 1fr;gap:12px}.eco-linked-evidence>div{border:1px solid #24425d;border-radius:14px;background:#0b1a28;padding:12px}.eco-linked-evidence h3{margin:0 0 8px}.eco-linked-list{display:grid;gap:9px}.eco-linked-row{cursor:pointer;transition:border-color .15s,background .15s}
+.eco-live-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr);gap:12px;align-items:start}.eco-diagnostics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.eco-diagnostics-grid>.card{height:100%}
+.bow-linked-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:10px 0 12px}.bow-linked-summary>div{border:1px solid #24425d;border-radius:12px;background:#0b1a28;padding:10px}.bow-linked-summary span,.bow-linked-summary small{display:block;color:var(--muted);font-size:10px}.bow-linked-summary strong{display:block;font-size:22px;margin:4px 0;color:#dff3ff}.bow-sensor-analysis-card{border-color:#294d69}.bow-sensor-analysis-card .status-pill.compact-status{white-space:nowrap}.bow-evidence-columns{margin-top:10px}
+@media(max-width:1250px){.eco-latest-metrics{grid-template-columns:repeat(3,minmax(105px,1fr))}.eco-live-layout,.eco-diagnostics-grid{grid-template-columns:1fr}}
+@media(max-width:820px){.eco-tabs{position:static;overflow:auto;flex-wrap:nowrap}.eco-tab{white-space:nowrap}.eco-latest-hero,.eco-link-flow,.eco-linked-evidence{grid-template-columns:1fr}.eco-link-arrow{transform:rotate(90deg);justify-self:center}.eco-latest-metrics{grid-template-columns:repeat(2,minmax(100px,1fr))}.bow-linked-summary{grid-template-columns:1fr}}
+
+/* ===== 3PM Bow Sensor BLE4.2 Visual Evidence ===== */
+.bow-visual-head{align-items:center}.bow-head-pills{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.bow-visual-hero{display:grid;grid-template-columns:minmax(190px,.72fr) minmax(360px,1.28fr);gap:12px;margin:12px 0}
+.bow-motion-hero{border:1px solid #2a506b;border-radius:16px;background:linear-gradient(145deg,#10283b,#091826);padding:15px;min-height:132px;display:flex;flex-direction:column;justify-content:center}
+.bow-motion-hero span,.bow-motion-hero small{color:var(--muted);font-size:11px}.bow-motion-hero strong{font-size:48px;line-height:1;color:#dff3ff;margin:6px 0;letter-spacing:-1px}
+.bow-phase-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.bow-phase-score{border:1px solid #24425d;background:#0b1a28;border-radius:16px;padding:12px;display:grid;grid-template-columns:1fr 42px;min-height:132px;gap:10px}
+.bow-phase-score>div:first-child{display:flex;flex-direction:column;justify-content:space-between;gap:8px}.bow-phase-score span{font-size:11px;color:var(--muted)}.bow-phase-score strong{font-size:26px}.bow-phase-bar{align-self:stretch;border:1px solid #203c53;background:#07121d;border-radius:10px;padding:4px;display:flex;align-items:flex-end}.bow-phase-bar i{display:block;width:100%;height:0;border-radius:6px;background:var(--bar,#3db9ff);min-height:2px;box-shadow:0 0 16px color-mix(in srgb,var(--bar,#3db9ff) 35%,transparent)}
+.bow-visual-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.8fr);gap:12px}.bow-chart-panel{border:1px solid #24425d;background:#081522;border-radius:16px;padding:12px;min-width:0}.bow-chart-title{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}.bow-chart-title b,.bow-chart-title span{display:block}.bow-chart-title b{font-size:14px}.bow-chart-title span{font-size:10px;color:var(--muted);margin-top:3px}.bow-chart-panel canvas{display:block;width:100%;height:220px;border-radius:10px;background:linear-gradient(180deg,#07131e,#081827)}
+.bow-legend{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:9px;white-space:nowrap}.bow-legend i{width:13px;height:3px;border-radius:4px;display:inline-block;margin-left:5px}.bow-legend i.blue{background:#3db9ff}.bow-legend i.orange{background:#ff9f43}.bow-legend i.red{background:#ff5164}
+.bow-chart-empty{min-height:220px;border:1px dashed #2a4961;border-radius:10px;display:grid;place-items:center;padding:20px;text-align:center;color:var(--muted);font-size:11px;line-height:1.5}
+.bow-key-grid{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:8px;margin-top:12px}.bow-key-grid>div{border:1px solid #24425d;background:#0b1a28;border-radius:12px;padding:10px}.bow-key-grid span,.bow-key-grid b{display:block}.bow-key-grid span{font-size:10px;color:var(--muted)}.bow-key-grid b{font-size:14px;margin-top:5px}
+@media(max-width:1180px){.bow-visual-hero,.bow-visual-grid{grid-template-columns:1fr}.bow-phase-score{min-height:112px}.bow-key-grid{grid-template-columns:repeat(2,minmax(110px,1fr))}}
+@media(max-width:720px){.bow-phase-scores{grid-template-columns:1fr}.bow-phase-score{grid-template-columns:1fr 48px;min-height:94px}.bow-key-grid{grid-template-columns:1fr 1fr}.bow-chart-title{flex-direction:column}.bow-legend{white-space:normal;flex-wrap:wrap}}
+
+/* ===== 3PM Bow Sensor BLE4.3 Cockpit + Context Sync ===== */
+#view-analyze .analysis-hero-grid.v21-analysis-grid{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(390px,.88fr);grid-template-areas:"video sensor" "interpret equipment";gap:14px;align-items:stretch}
+#view-analyze .analysis-video-card{grid-area:video}
+#view-analyze .bow-sensor-hero-card{grid-area:sensor;border-color:#315b78;background:linear-gradient(155deg,#0e2233,#091521 72%);min-width:0;overflow:hidden}
+#view-analyze .interpretation-card{grid-area:interpret}
+#view-analyze .equipment-context-card{grid-area:equipment}
+.bow-cockpit-head,.bow-detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.bow-cockpit-head>div:first-child{display:grid;gap:4px}.bow-cockpit-head b{font-size:15px}.bow-eyebrow{font-size:9px;letter-spacing:1.25px;color:#6e92ad;font-weight:800}.bow-motion-top{display:grid;grid-template-columns:minmax(150px,.85fr) minmax(150px,1.15fr);gap:12px;align-items:end;margin:13px 0 11px;padding:12px 13px;border:1px solid #24465e;border-radius:14px;background:#091827}.bow-motion-number span,.bow-motion-number small{display:block;color:var(--muted)}.bow-motion-number span{font-size:11px}.bow-motion-number strong{display:block;font-size:52px;line-height:.94;letter-spacing:-1.5px;margin:6px 0;color:#eaf8ff}.bow-motion-number small{font-size:9px}.bow-mini-trend{display:block;width:100%;height:54px}.bow-phase-scores.compact{grid-template-columns:repeat(3,minmax(0,1fr))}.bow-phase-scores.compact .bow-phase-score{min-height:104px;grid-template-columns:1fr 34px;padding:10px}.bow-phase-scores.compact .bow-phase-score strong{font-size:23px}.bow-context-mini{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.bow-context-mini span{font-size:9px;color:#93aec2;border:1px solid #27465e;background:#0a1926;border-radius:999px;padding:5px 8px}.bow-hero-empty,.bow-detail-empty{min-height:120px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;border:1px dashed #2a4961;border-radius:14px;padding:18px}.bow-sensor-detail-card{margin-top:14px;border-color:#315b78;background:linear-gradient(180deg,#0c1c2a,#08131e)}.bow-detail-head{margin-bottom:12px}.bow-detail-head h2{margin:4px 0 0;font-size:20px}.bow-visual-grid.cockpit-detail{grid-template-columns:minmax(0,1.6fr) minmax(300px,.75fr)}.cockpit-keys{grid-template-columns:repeat(8,minmax(95px,1fr));overflow-x:auto;padding-bottom:2px}.cockpit-keys>div{min-width:95px}.bow-evidence-timeline{margin-top:12px;border:1px solid #24425d;border-radius:14px;background:#091622;padding:12px}.bow-timeline-title{display:flex;justify-content:space-between;gap:12px;align-items:center}.bow-timeline-title b{font-size:12px}.bow-timeline-title span{font-size:9px;color:var(--muted)}.bow-timeline-track{height:26px;position:relative;margin-top:9px;border-radius:8px;background:#102436;overflow:visible;border:1px solid #28465d}.bow-timeline-track i{position:absolute;top:0;bottom:0}.bow-timeline-track .pre{left:0;background:linear-gradient(90deg,#215c91,#36a3dd)}.bow-timeline-track .release{background:linear-gradient(90deg,#c96a23,#ff9f43)}.bow-timeline-track .follow{background:linear-gradient(90deg,#4b3a92,#7c64d7)}.bow-timeline-track em{position:absolute;top:-6px;bottom:-6px;width:2px;background:#ff5365;color:#ff7a87;font-style:normal;font-size:9px;font-weight:900;transform:translateX(-1px)}.bow-timeline-track em:after{content:"";position:absolute;top:-1px;left:-3px;width:8px;height:8px;border-radius:50%;background:#ff5365}.bow-timeline-labels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:7px;color:#7895ab;font-size:9px}.bow-timeline-labels span:nth-child(2){text-align:center}.bow-timeline-labels span:last-child{text-align:right}
+@media(max-width:1260px){#view-analyze .analysis-hero-grid.v21-analysis-grid{grid-template-columns:1fr;grid-template-areas:"video" "sensor" "interpret" "equipment"}.bow-visual-grid.cockpit-detail{grid-template-columns:1fr}.cockpit-keys{grid-template-columns:repeat(4,minmax(105px,1fr))}}
+@media(max-width:760px){.bow-motion-top{grid-template-columns:1fr}.bow-phase-scores.compact{grid-template-columns:1fr}.cockpit-keys{grid-template-columns:repeat(2,minmax(100px,1fr))}.bow-timeline-title{align-items:flex-start;flex-direction:column}}
+
+/* ===== BLE4.3.2 Visual Match — mockup-faithful Bow Sensor evidence layout ===== */
+#view-analyze .analysis-shell{max-width:1760px;padding-top:16px}
+#view-analyze .compact-title-row{padding:2px 2px 10px;border-bottom:1px solid #20364a;margin-bottom:14px}
+#view-analyze .compact-title-row h1{font-size:30px;letter-spacing:-.6px;margin:0}
+#view-analyze .compact-title-row .muted{font-size:11px;margin-top:4px}
+#view-analyze .inline-controls select{background:#0a1825;border:1px solid #29465e;border-radius:10px;box-shadow:inset 0 1px 0 #ffffff08}
+
+#view-analyze .analysis-hero-grid.v21-analysis-grid{
+  display:grid;grid-template-columns:minmax(620px,1.52fr) minmax(420px,.92fr);
+  grid-template-areas:"video sensor";gap:14px;align-items:stretch
+}
+#view-analyze .analysis-video-card{grid-area:video;padding:12px;border:1px solid #29485f;border-radius:15px;background:linear-gradient(180deg,#0c1c2a,#07131e);box-shadow:0 16px 36px #0004}
+#view-analyze .bow-sensor-hero-card{grid-area:sensor;padding:14px;border:1px solid #315f7d;border-radius:15px;background:radial-gradient(circle at 92% 0,#153a5140,transparent 36%),linear-gradient(160deg,#0e2233,#081521 72%);box-shadow:0 16px 36px #0004}
+#view-analyze .v21-analysis-media{height:min(43vh,420px);min-height:330px;border:1px solid #2a506d;border-radius:11px;margin-top:8px;background:#04090e}
+#view-analyze .analysis-frame-strip{min-height:60px;padding-top:7px}
+#view-analyze #analysisVideoHint{font-size:9px;line-height:1.35;margin-top:6px}
+
+.bow-cockpit-head{padding-bottom:9px;border-bottom:1px solid #213d52}
+.bow-cockpit-head b{font-size:17px;color:#edf8ff}
+.bow-head-pills{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.bow-motion-top{margin:12px 0 10px;padding:13px 14px;min-height:104px;grid-template-columns:minmax(145px,.82fr) minmax(190px,1.18fr);background:linear-gradient(135deg,#0b1a29,#091621);border-color:#294d67;box-shadow:inset 0 1px 0 #ffffff08}
+.bow-motion-number strong{font-size:58px;line-height:.9;color:#f3fbff;text-shadow:0 0 24px #3db9ff1f}
+.bow-motion-number span{font-size:12px;color:#c9d8e5;font-weight:700}
+.bow-motion-number small{font-size:9px;line-height:1.35}
+.bow-mini-trend{height:62px!important}
+.bow-phase-scores.compact{gap:8px}
+.bow-phase-scores.compact .bow-phase-score{min-height:106px;grid-template-columns:1fr;padding:10px 11px;border-radius:12px;background:linear-gradient(180deg,#0c1d2c,#091522);position:relative;overflow:hidden}
+.bow-phase-scores.compact .bow-phase-score>div:first-child{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;gap:6px}
+.bow-phase-scores.compact .bow-phase-score span{font-size:10px;line-height:1.2}
+.bow-phase-scores.compact .bow-phase-score strong{font-size:24px;line-height:1}
+.bow-phase-spark{height:48px;display:flex;align-items:flex-end;gap:3px;margin-top:8px;padding-top:4px;border-top:1px solid #1c3549}
+.bow-phase-spark i{display:block;flex:1;min-width:3px;border-radius:3px 3px 1px 1px;background:var(--bar,#3db9ff);opacity:.35;min-height:4px}
+.bow-phase-spark i.current{opacity:1;box-shadow:0 0 9px color-mix(in srgb,var(--bar,#3db9ff) 45%,transparent)}
+.bow-context-mini{margin-top:8px}
+
+.bow-sensor-detail-card{margin-top:14px;padding:13px!important;border-radius:15px!important;border:1px solid #315f7d!important;background:linear-gradient(180deg,#0b1b29,#06121d)!important;box-shadow:0 16px 38px #0003}
+.bow-detail-head{padding:0 2px 10px;margin-bottom:0;border-bottom:1px solid #20394e}
+.bow-detail-head h2{font-size:19px}
+.bow-visual-grid.cockpit-detail{display:grid;grid-template-columns:minmax(0,1.78fr) minmax(330px,.78fr);gap:10px;margin-top:10px}
+.bow-chart-panel{padding:11px;border-radius:12px;background:#07131e;border-color:#25445c;box-shadow:inset 0 1px 0 #ffffff06}
+.bow-chart-panel canvas{height:252px;background:linear-gradient(180deg,#06111b,#071725);border:1px solid #17364e;border-radius:9px}
+.bow-chart-empty{min-height:252px}
+.bow-chart-title{margin-bottom:7px}
+.bow-chart-title b{font-size:13px}
+.bow-chart-title span{font-size:9px}
+.bow-key-grid.cockpit-keys{display:grid;grid-template-columns:repeat(8,minmax(105px,1fr));gap:0;margin-top:10px;border:1px solid #24445d;border-radius:12px;background:#081622;overflow:hidden;padding:0}
+.bow-key-grid.cockpit-keys>div{min-width:105px;border:0;border-right:1px solid #203b51;border-radius:0;background:transparent;padding:11px 12px}
+.bow-key-grid.cockpit-keys>div:last-child{border-right:0}
+.bow-key-grid.cockpit-keys span{font-size:9px}
+.bow-key-grid.cockpit-keys b{font-size:15px;color:#eaf6ff}
+.bow-evidence-timeline{margin-top:10px;border-radius:12px;padding:10px 12px;background:#071520}
+.bow-timeline-track{height:24px;margin-top:8px}
+.bow-fusion-note{margin-top:10px!important;font-size:10px!important;background:#071520!important}
+
+.analysis-support-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.analysis-support-grid .interpretation-card,.analysis-support-grid .equipment-context-card{padding:14px;min-width:0}
+#view-analyze .analysis-metrics-grid{margin-top:12px}
+
+@media(max-width:1260px){
+  #view-analyze .analysis-hero-grid.v21-analysis-grid{grid-template-columns:1fr;grid-template-areas:"video" "sensor"}
+  #view-analyze .v21-analysis-media{height:40vh;min-height:280px}
+  .bow-visual-grid.cockpit-detail{grid-template-columns:1fr}
+  .bow-key-grid.cockpit-keys{grid-template-columns:repeat(4,1fr)}
+  .analysis-support-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  #view-analyze .compact-title-row h1{font-size:23px}
+  .bow-motion-top{grid-template-columns:1fr}
+  .bow-phase-scores.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .bow-phase-scores.compact .bow-phase-score{min-height:96px;padding:8px}
+  .bow-phase-scores.compact .bow-phase-score span{font-size:8px}
+  .bow-phase-scores.compact .bow-phase-score strong{font-size:20px}
+  .bow-phase-spark{height:38px;gap:2px}
+  .bow-key-grid.cockpit-keys{grid-template-columns:repeat(2,1fr)}
+}
+.analysis-support-grid .compact-interpretation,.analysis-support-grid .equipment-context-card{grid-area:auto!important}
+
+/* ===== BLE4.3.3 Selected Shot UX — static saved evidence, compact shot rail ===== */
+.eco-shot-records{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:3px 2px 9px;margin-top:8px;scrollbar-width:thin;scroll-snap-type:x proximity}
+.eco-shot-chip{flex:0 0 132px;min-height:78px;border:1px solid #27465d;background:linear-gradient(180deg,#0c1d2b,#091622);color:inherit;border-radius:14px;padding:10px 11px;text-align:left;cursor:pointer;scroll-snap-align:start;display:grid;grid-template-rows:auto 1fr auto;gap:3px;transition:border-color .15s,background .15s,transform .15s}
+.eco-shot-chip:hover{border-color:#4384ad;transform:translateY(-1px)}
+.eco-shot-chip.selected{border-color:#3db9ff;background:linear-gradient(180deg,#0d2a40,#0a1d2c);box-shadow:0 0 0 1px rgba(61,185,255,.18) inset,0 8px 20px rgba(0,0,0,.16)}
+.eco-shot-chip.letdown{border-style:dashed}
+.eco-shot-chip span{font-size:10px;color:#9ab4c7;font-weight:750}.eco-shot-chip strong{font-size:25px;line-height:1;color:#eef9ff}.eco-shot-chip small{font-size:9px;color:#6f8ca3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eco-sensor-shot-detail{margin-top:12px;border-top:1px solid #1e394f;padding-top:14px}
+.selected-shot-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}.selected-shot-head h3{margin:3px 0 2px;font-size:22px}.selected-shot-head p{margin:0;color:var(--muted);font-size:10px}.selected-shot-hero{display:grid;grid-template-columns:minmax(170px,.7fr) minmax(220px,1fr) minmax(410px,1.65fr);gap:10px;align-items:stretch;margin-bottom:10px}.selected-shot-hero>.bow-motion-number,.selected-shot-hero>.bow-mini-trend,.selected-shot-hero>.bow-phase-scores{border:1px solid #24445d;border-radius:14px;background:#091827;padding:12px}.selected-shot-hero>.bow-mini-trend{height:100%;min-height:104px;padding:16px 10px 10px}.selected-shot-hero>.bow-phase-scores{margin:0}.selected-shot-visuals{grid-template-columns:minmax(0,1.55fr) minmax(330px,.85fr)}.selected-shot-keys{margin-top:10px}.selected-shot-visuals .bow-chart-panel canvas{height:235px}
+@media(max-width:1250px){.selected-shot-hero{grid-template-columns:minmax(160px,.7fr) minmax(200px,1fr);}.selected-shot-hero>.bow-phase-scores{grid-column:1/-1}.selected-shot-visuals{grid-template-columns:1fr}}
+@media(max-width:760px){.selected-shot-head{flex-direction:column}.selected-shot-hero{grid-template-columns:1fr}.selected-shot-hero>.bow-phase-scores{grid-column:auto}.eco-shot-chip{flex-basis:116px}}
+.bow-key-grid.cockpit-keys{grid-template-columns:repeat(6,minmax(112px,1fr))}
+@media(max-width:1260px){.bow-key-grid.cockpit-keys{grid-template-columns:repeat(3,minmax(112px,1fr))}}
+@media(max-width:760px){.bow-key-grid.cockpit-keys{grid-template-columns:repeat(2,minmax(100px,1fr))}}
+
+/* BLE4.3.4 review UX / stability: shot rail must never widen selected-shot evidence. */
+#view-ecosystem .eco-tab-panel,#view-ecosystem .card,#view-ecosystem .eco-sensor-shot-detail{min-width:0;max-width:100%}
+.eco-shot-records{max-width:100%;contain:inline-size}
+.selected-shot-hero{grid-template-columns:minmax(170px,.62fr) minmax(260px,1.38fr)!important;max-width:100%;min-width:0}
+.selected-shot-hero>.bow-phase-scores{grid-column:1/-1!important;min-width:0}
+.selected-shot-hero>.bow-mini-trend{min-width:0}
+.selected-shot-hero .bow-phase-score{min-width:0}
+.selected-shot-visuals{min-width:0;max-width:100%}
+.selected-shot-visuals>*{min-width:0}
+.analysis-view-availability{font-size:10px;color:#7898af;white-space:nowrap;padding:0 4px;align-self:center}
+@media(max-width:900px){.analysis-view-availability{flex-basis:100%;white-space:normal}.selected-shot-hero{grid-template-columns:1fr!important}.selected-shot-hero>.bow-phase-scores{grid-column:auto!important}}
+
+/* BLE4.3.6.1 · Multi-camera Focus controls must remain reachable in every role.
+   Presentation-only hotfix. No camera stream, phase, pose or analysis logic changes. */
+.camera-focus-btn{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  min-width:62px;
+  min-height:30px;
+  padding:5px 8px;
+  font-size:10px;
+  line-height:1;
+  position:relative;
+  z-index:4;
+}
+
+/* A non-focused camera lives in the narrow rail. Give controls their own row
+   instead of making Focus compete with the selector and Upload for one line. */
+@media(min-width:981px){
+  body[data-camera-focus="multi"] #view-sessions [data-camera-card]:not(.coach-focus) .video-title{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:6px;
+    align-items:start;
+    overflow:visible;
+  }
+  body[data-camera-focus="multi"] #view-sessions [data-camera-card]:not(.coach-focus) .cam-actions{
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    max-width:none;
+    min-width:0;
+    overflow:visible;
+  }
+  body[data-camera-focus="multi"] #view-sessions [data-camera-card]:not(.coach-focus) .camera-select{
+    width:100%;
+    min-width:0;
+    max-width:none;
+  }
+  body[data-camera-focus="multi"] #view-sessions [data-camera-card]:not(.coach-focus) .upload-label{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+}
+
+/* The earlier workspace stylesheet hid Focus below 980 px. Focus is a primary
+   camera navigation control, so keep it visible and let the control row wrap. */
+@media(max-width:980px){
+  .camera-focus-btn{display:inline-flex!important}
+  #view-sessions [data-camera-card] .video-title{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:6px;
+    align-items:start;
+  }
+  #view-sessions [data-camera-card] .cam-actions{
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    width:100%;
+    max-width:none;
+    min-width:0;
+  }
+  #view-sessions [data-camera-card] .camera-select{
+    width:100%;
+    min-width:0;
+    max-width:none;
+  }
+}
+
+/* Very narrow windows: preserve Focus first, move Upload to the next line if needed. */
+@media(max-width:620px){
+  #view-sessions [data-camera-card] .cam-actions{
+    grid-template-columns:auto minmax(0,1fr);
+  }
+  #view-sessions [data-camera-card] .cam-actions .upload-label{
+    grid-column:1/-1;
+    justify-self:end;
+  }
+}
+
+/* BLE4.3.6.2 · Auxiliary visual skeleton fallback.
+   Display-only: never feeds analysis, saved frames, phase or shot authority. */
+.pose-visual-fallback-overlay{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;
+}
+.pose-visual-fallback-badge{
+  position:absolute;right:9px;bottom:9px;z-index:6;pointer-events:none;
+  padding:4px 7px;border-radius:999px;border:1px solid #386f82;
+  background:#081723d9;color:#9bd9e8;font-size:9px;font-weight:800;letter-spacing:.03em;
+  box-shadow:0 2px 12px #0007;
+}
+.pose-visual-fallback-badge.hidden{display:none!important}
+
+/* BLE4.3.7 Capture Integrity: display stability is presentation-only and never feeds Capture. */
+.capture-integrity-stable [data-camera-card] .video-wrap{contain:layout paint;overflow:hidden}
+.capture-integrity-stable [data-camera-card] .cam-foot{min-height:26px;white-space:nowrap;overflow:hidden}
+.capture-integrity-stable [data-camera-card] .video-title{min-height:38px}
+.capture-geometry-frozen [data-camera-card] .video-wrap{transition:none!important}
+.capture-integrity-camera-chip{position:absolute;right:10px;bottom:10px;z-index:9;max-width:72%;padding:4px 7px;border-radius:999px;border:1px solid #3b526a;background:#07131fe8;color:#b9cad9;font-size:8px;font-weight:800;letter-spacing:.02em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+.capture-integrity-camera-chip.good{border-color:#2f8b61;color:#8ff0bc;background:#09241be8}.capture-integrity-camera-chip.warn{border-color:#8c7426;color:#f2d575;background:#2a2511e8}.capture-integrity-camera-chip.bad{border-color:#9d4545;color:#ffaaa5;background:#311515e8}.capture-integrity-camera-chip.off{opacity:.72;color:#8093a7}
+.capture-evidence-contract{margin-top:7px;padding:9px 11px;border:1px solid #294157;border-radius:9px;background:#09131d;display:grid;gap:7px}
+.ci-contract-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px}.ci-contract-head .good{color:#79e0ae}.ci-contract-head .warn,.ci-contract-missing{color:#f2c94c}
+.ci-phase-row{display:flex;gap:6px;flex-wrap:wrap}.ci-phase{border:1px solid #3d536a;background:#101c28;color:#b8cadb;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:750;cursor:pointer}.ci-phase.ok{border-color:#347258;color:#8be7b8;background:#102d24}.ci-phase.optional{border-color:#526271;color:#9aabba;background:#111b24}.ci-phase.missing{border-color:#74494a;color:#ffaaa5;background:#2b1718}.ci-phase:disabled{opacity:.64;cursor:not-allowed}
+
+/* BLE4.3.7.1 · UI/Layout stability. Presentation-only; Capture/Pose timing is untouched. */
+.ble4371-ui-stability #poseDiagnostic{
+  display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr);align-items:center;
+  min-height:66px;max-height:66px;overflow:hidden;contain:layout paint;
+}
+.ble4371-ui-stability #poseDiagnostic .pose-diagnostic-main{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ble4371-ui-stability #poseDiagnostic .pose-diagnostic-main b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ble4371-ui-stability #poseDiagnostic .pose-diagnostic-items{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,18px);
+  gap:4px 12px;align-items:center;min-width:0;width:100%;overflow:hidden
+}
+.ble4371-ui-stability #poseDiagnostic .pose-diagnostic-items>span{
+  display:block;min-width:0;max-width:100%;height:18px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.ble4371-ui-stability .camera-toolbar-left{min-width:230px;max-width:420px;overflow:hidden}
+.ble4371-ui-stability .camera-toolbar-left .muted,
+.ble4371-ui-stability #cameraAssignmentSummary{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:14px;line-height:14px}
+.ble4371-ui-stability #shotSaveStatus{width:144px;min-width:144px;max-width:144px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.ble4371-ui-stability #captureIntegrityBadge{width:176px;min-width:176px;max-width:176px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.ble4371-ui-stability [data-camera-card] .video-title{overflow:hidden}
+.ble4371-ui-stability [data-camera-card] .video-title>*{min-width:0}
+.ble4371-ui-stability [data-camera-card] .cam-foot{height:26px;min-height:26px;max-height:26px;overflow:hidden}
+.ble4371-ui-stability .position-guide{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;max-height:28px}
+.ble4371-ui-stability .metric strong{font-variant-numeric:tabular-nums}
+
+/* Selected Shot owns the review metric cards. Live Pose may continue updating its hidden text,
+   but the visible value is the immutable snapshot captured when the shot is selected. */
+.selected-shot-snapshot-banner{margin:6px 0 0;padding:7px 10px;border:1px solid #315b7d;border-radius:8px;background:#0b1a28;color:#a9c9e5;font-size:10px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.selected-shot-metrics-locked .pose-metrics .metric.live-metric{box-shadow:none}
+.selected-shot-metrics-locked .pose-metrics strong[data-shot-value]{font-size:0!important;color:transparent!important}
+.selected-shot-metrics-locked .pose-metrics strong[data-shot-value]::after{content:attr(data-shot-value);font-size:19px;color:#edf5fc;font-weight:800;font-variant-numeric:tabular-nums}
+.selected-shot-metrics-locked .pose-metrics strong[data-shot-tone="good"]::after{color:#79e0ae}
+.selected-shot-metrics-locked .pose-metrics strong[data-shot-tone="warn"]::after{color:#f2c94c}
+.selected-shot-metrics-locked .pose-metrics strong[data-shot-tone="bad"]::after{color:#ff7b77}
+
+/* Main coach UI shows one stable process path. Frame-by-frame matrix detail stays available on demand. */
+.ci-coach-process-line{display:flex;align-items:center;gap:7px;min-height:36px;max-height:36px;overflow-x:auto;overflow-y:hidden;padding:5px 7px;border:1px solid #263c53;border-radius:8px;background:#091522;scrollbar-width:thin}
+.ci-coach-process-line span{flex:0 0 auto;padding:5px 9px;border-radius:6px;background:#102238;color:#bfd3e6;font-size:10px;font-weight:750;white-space:nowrap}
+.ci-coach-process-line i{flex:0 0 auto;color:#52728e;font-style:normal}
+.ci-engineering-details{margin-top:8px;border-top:1px solid #20364a;padding-top:7px}
+.ci-engineering-details>summary{cursor:pointer;color:#8fa7bd;font-size:10px;font-weight:750;user-select:none;list-style-position:inside}
+.ci-engineering-details>.biomatrix-table-wrap{margin-top:7px;max-height:300px;overflow:auto}
+
+@media(max-width:800px){
+  .ble4371-ui-stability #poseDiagnostic{grid-template-columns:1fr;grid-template-rows:20px 72px;min-height:104px;max-height:104px;gap:4px}
+  .ble4371-ui-stability #poseDiagnostic .pose-diagnostic-items{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,15px);gap:3px 8px}
+  .ble4371-ui-stability #poseDiagnostic .pose-diagnostic-items>span{height:15px;line-height:15px}
+  .ble4371-ui-stability .camera-toolbar-left{max-width:100%;width:100%}
+}
+body.ble4371-ui-stability[data-workspace-mode="capture"][data-camera-focus="single"] #view-sessions [data-camera-card="side"] .video-wrap{
+  flex:0 0 auto!important;height:clamp(320px,56vh,680px)!important;min-height:320px!important;max-height:680px!important;aspect-ratio:auto!important
+}
+body.ble4371-ui-stability #view-sessions [data-camera-card] .video-title{flex-wrap:nowrap}
+
+/* BLE4.3.8.4 Foundation Guard · automatic activity detection + phase confirmation UI */
+.phase-section-head{align-items:flex-start;gap:12px}
+.activity-mode-wrap{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;min-width:0}
+.activity-mode-pill{white-space:nowrap}
+.activity-mode-pill.neutral{background:#10243a!important;border-color:#315d88!important;color:#a9d3fb!important}
+.activity-mode-pill.good{background:#123d2f!important;border-color:#2e8b64!important;color:#9ff0c6!important}
+.activity-mode-pill.warn{background:#3b3117!important;border-color:#8a7026!important;color:#f0d378!important}
+.activity-mode-pill.bad{background:#3a1b22!important;border-color:#71343d!important;color:#ff9da3!important}
+.activity-mode-help{margin:7px 0 0;color:#7690a9;font-size:9px;line-height:1.35}
+.phase-pill.phase-pending{background:#3a1b22;color:#ff9da3;border-color:#71343d}
+.phase-pill.phase-confirmed{background:#123d2f;color:#9ff0c6;border-color:#2e8b64}
+.phase-pill.phase-current{outline:2px solid #56aef8;outline-offset:2px;box-shadow:0 0 0 1px #56aef855 inset}
+.phase-guard-reason{margin-top:9px;border:1px solid #29445f;background:#0b1826;color:#b8cadb;border-radius:8px;padding:8px 10px;font-size:10px;line-height:1.35}
+body[data-activity-mode="hand_only"] .activity-mode-pill{background:#281f0e!important;border-color:#8a7026!important;color:#f0d378!important}
+/* Keep the real-frame scrubber visible even when the replay stage grows on shorter laptop viewports. */
+.shot-replay-scrub-row{position:relative;z-index:3;background:#07111c;min-height:44px}
+.shot-replay-slider{min-width:80px}
+@media(max-width:980px){.phase-section-head{flex-direction:column}.activity-mode-wrap{justify-content:flex-start}}
+
+/* BLE4.3.8.6 Capture Truth UI · live detector progress + persisted evidence truth */
+.phase-section-head{align-items:flex-start;gap:12px}
+.phase-pill.phase-upcoming{background:#12243a;color:#7f96ad;border-color:#263f5d;box-shadow:none;outline:none}
+.phase-pill.phase-complete{background:#102d26;color:#77caa6;border-color:#285f4b;box-shadow:none;outline:none}
+.phase-pill.phase-live-current{background:#16633f;color:#effff7;border-color:#5ee6a6;box-shadow:0 0 0 1px #5ee6a666 inset,0 0 15px #39c98528;outline:none;font-weight:800}
+.phase-guard-reason{margin-top:9px;border:1px solid #29445f;background:#0b1826;color:#b8cadb;border-radius:8px;padding:8px 10px;font-size:10px;line-height:1.35}
+.live-evidence-panel{margin-top:10px;padding-top:10px;border-top:1px solid #294157;display:grid;gap:7px}
+.live-evidence-panel.hidden{display:none}
+.live-evidence-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px}
+.live-evidence-row{display:grid;grid-template-columns:repeat(7,minmax(86px,1fr));gap:6px}
+.live-evidence-stage{border:1px solid #2a4057;border-radius:7px;padding:8px 5px;text-align:center;font-size:10px;line-height:1.15;user-select:none}
+.live-evidence-stage.waiting{background:#111d2a;color:#74899e;border-color:#263b50}
+.live-evidence-stage.collecting{background:#3b3117;color:#f0d378;border-color:#8a7026}
+.live-evidence-stage.saved{background:#123d2f;color:#9ff0c6;border-color:#2e8b64;font-weight:700}
+.live-evidence-stage.missing{background:#3a1b22;color:#ff9da3;border-color:#71343d;font-weight:700}
+.live-evidence-legend{color:#6f879f;font-size:9px;line-height:1.3}
+@media(max-width:1100px){.live-evidence-row{grid-template-columns:repeat(4,minmax(90px,1fr))}}
+@media(max-width:720px){.live-evidence-row{grid-template-columns:repeat(2,minmax(90px,1fr))}}
+
+
+/* BLE4.3.8.7 Review Truth UI — current phase is unmistakably green; evidence stays one horizontal rail. */
+.phase-pill.phase-complete{background:#123d2f!important;color:#a7e9c8!important;border-color:#2f825f!important}
+.phase-pill.phase-live-current{background:#117a47!important;color:#ffffff!important;border-color:#6df0ad!important;box-shadow:0 0 0 2px #6df0ad55 inset,0 0 20px #42df923d!important;font-weight:900!important}
+.live-evidence-row{display:flex!important;grid-template-columns:none!important;gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;scrollbar-width:thin}
+.live-evidence-stage{flex:1 0 118px;min-width:118px}
+@media(max-width:1100px){.live-evidence-row{display:flex!important;grid-template-columns:none!important}}
+@media(max-width:720px){.live-evidence-row{display:flex!important;grid-template-columns:none!important}.live-evidence-stage{flex-basis:112px;min-width:112px}}
+
+/* BLE4.3.8.8 · Baseline / Calibration + monotonic phase truth */
+.baseline-calibration{margin-top:10px;border:1px solid #29445b;background:#091723;border-radius:9px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:14px}.baseline-calibration-copy{min-width:0}.baseline-calibration-copy b,.baseline-calibration-copy span{display:block}.baseline-calibration-copy b{font-size:12px;color:#d8e7f4}.baseline-calibration-copy span{margin-top:3px;font-size:10px;color:#8ea6bb;line-height:1.35}.baseline-calibration-dots{display:flex;gap:6px;flex:0 0 auto}.baseline-dot{width:25px;height:25px;border-radius:999px;border:1px solid #40586d;display:grid;place-items:center;font-size:10px;color:#71879a;background:#0b1620}.baseline-dot.done{border-color:#2b9564;background:#123927;color:#7ff0ae}.baseline-calibration[data-state="ready"]{border-color:#39775c}.baseline-calibration[data-state="refining"]{border-color:#92782f}.baseline-calibration[data-state="refined"]{border-color:#2b9564;box-shadow:inset 0 0 0 1px #1c5d40}.phase-pill.phase-live-current{background:#118a4f!important;border-color:#63f0a3!important;color:#f4fff8!important;box-shadow:0 0 0 1px #63f0a355,0 0 16px #22bd6c55!important}.phase-pill.phase-complete{background:#0d5434!important;border-color:#2ca66b!important;color:#bff7d5!important}.phase-pill.phase-upcoming{background:#101820!important;border-color:#30404d!important;color:#6f8291!important}
+@media(max-width:760px){.baseline-calibration{align-items:flex-start;flex-direction:column}.baseline-calibration-dots{width:100%;justify-content:space-between}}
+
+/* BLE4.3.8.9.4.1 Live-phase no-reflow contract. Text/state changes must not move the camera workspace. */
+.phase-strip .section-head{align-items:flex-start;min-height:38px}
+.phase-guard-reason{box-sizing:border-box;min-height:43px;max-height:43px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.phase-pill{box-sizing:border-box;min-height:34px;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.readiness-chip{box-sizing:border-box;width:min(340px,38vw);max-width:340px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;justify-content:flex-start}
+.readiness-overlay{box-sizing:border-box;max-width:min(48vw,380px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live-phase-badge{box-sizing:border-box;min-width:126px;max-width:min(48vw,360px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:800px){.readiness-chip{width:min(250px,56vw);max-width:250px}.phase-guard-reason{min-height:48px;max-height:48px}.phase-pill{min-height:31px}}
+.component-weight-row{display:grid;grid-template-columns:minmax(90px,140px) 1fr;gap:8px;align-items:center;margin-top:6px}.component-weight-row small,.computed-weight small{color:var(--muted,#8fa3b8);font-size:11px;line-height:1.25}.component-inline{display:flex;gap:8px;align-items:center;margin-top:6px}.component-inline input{max-width:84px}.equipment-form-grid label>select[data-component-picker]{margin-top:6px}
+
+/* Equipment Lab EL4 advisor polish */
+.equipment-advisor-card{display:grid;gap:4px;padding:12px 14px;margin:8px 0 14px;border:1px solid var(--line,#2d3542);border-radius:12px;background:rgba(255,255,255,.025)}
+.equipment-advisor-card strong{font-size:.95rem}.equipment-advisor-card span{font-size:.88rem}.equipment-advisor-card small,.computed-weight small,label small{display:block;opacity:.72;font-size:.75rem;margin-top:3px}

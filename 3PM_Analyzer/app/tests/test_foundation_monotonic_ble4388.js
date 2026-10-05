@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('assert');
+const G=require('../static/foundation_guard_core.js');
+const base=(t,o={})=>Object.assign({epochMs:t,detected:true,identityAmbiguous:false,phaseQuality:.98,metricConfidence:{drawElbow:.98,bowArm:.98},debugSetReady:false,debugPhaseShootingPosture:false,debugPhaseBowExtended:false,debugPhaseFaceDist:1.25,drawSpeed:.02,faceHandSpeed:.02,armed:false,releaseConfirmed:false,releaseInvalidated:false,postReleaseEvidence:false,sequenceQualified:false,shotComplete:false,releaseEpochMs:null,phaseTimeline:[]},o);
+let s=G.fresh('verified_shot');
+for(const t of [1000,1055,1110,1165])G.update(s,base(t),'verified_shot',t);
+assert.equal(s.currentPhase,'Setup');
+for(const t of [1220,1280,1340])G.update(s,base(t,{phase:'Set',debugSetReady:true}),'verified_shot',t);
+assert(s.confirmed.Set,'real Set edge should confirm');
+for(let i=0;i<5;i++){const t=1400+i*60;G.update(s,base(t,{phase:'Draw',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:1.15-i*.07,drawSpeed:.18,faceHandSpeed:.18}),'verified_shot',t);}
+for(const t of [1720,1780,1840])G.update(s,base(t,{phase:'Anchor',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:.70,phaseTimeline:[{phase:'Set',epochMs:1220},{phase:'Draw',epochMs:1400},{phase:'Anchor',epochMs:1720}]}),'verified_shot',t);
+for(const t of [1900,1960])G.update(s,base(t,{phase:'Aim / Hold',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:.68,armed:true,holdTimeS:.2,phaseTimeline:[{phase:'Set',epochMs:1220},{phase:'Draw',epochMs:1400},{phase:'Anchor',epochMs:1720},{phase:'Aim / Hold',epochMs:1900}]}),'verified_shot',t);
+assert(s.confirmed['Aim / Hold'],'Hold must confirm independent of a long fixed duration');
+const before=s.currentPhase;
+G.update(s,base(2020,{phase:'Set',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:.69,armed:true,phaseTimeline:[{phase:'Set',epochMs:1220},{phase:'Draw',epochMs:1400},{phase:'Anchor',epochMs:1720},{phase:'Aim / Hold',epochMs:1900}]}),'verified_shot',2020);
+assert.equal(s.currentPhase,before,'one regressive core frame must not move live progress backwards');
+G.update(s,base(2080,{phase:'Expansion',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:.68,armed:true,phaseTimeline:[{phase:'Set',epochMs:1220},{phase:'Draw',epochMs:1400},{phase:'Anchor',epochMs:1720},{phase:'Aim / Hold',epochMs:1900},{phase:'Expansion',epochMs:2080}]}),'verified_shot',2080);
+assert.equal(s.currentPhase,'Expansion');
+G.update(s,base(2140,{phase:'Set',debugSetReady:true,debugPhaseShootingPosture:true,debugPhaseBowExtended:true,debugPhaseFaceDist:.68,armed:true,phaseTimeline:[{phase:'Set',epochMs:1220},{phase:'Draw',epochMs:1400},{phase:'Anchor',epochMs:1720},{phase:'Aim / Hold',epochMs:1900},{phase:'Expansion',epochMs:2080}]}),'verified_shot',2140);
+assert.equal(s.currentPhase,'Expansion','Expansion must stay monotonic through tracking/core jitter');
+const held=s.currentPhase;
+for(const t of [2300,2900,3700,4700])G.update(s,base(t,{detected:false,phase:null,identityAmbiguous:false}),'verified_shot',t);
+assert.equal(s.currentPhase,held,'long tracking loss inside an active shot must preserve the highest confirmed phase');
+assert(s.confirmed.Expansion,'tracking loss must not clear confirmed progress');
+console.log('BLE4.3.8.8 monotonic live phase QA PASS');

@@ -1,0 +1,958 @@
+{
+  "stage": "working frozen-pose engineering package before final clean-extraction verification",
+  "regressions": [
+    {
+      "test": "app/tests/test_activity_classifier_ble4384.js",
+      "pass": true,
+      "output": "BLE4.3.8.5 automatic activity classifier QA PASS { bow: '1.00', elastic: '1.00', backgroundBow: '0.11' }\n"
+    },
+    {
+      "test": "app/tests/test_activity_classifier_ble4385_trace_regression.js",
+      "pass": true,
+      "output": "BLE4.3.8.5 trace regression QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_adaptive_release_ble4388.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.5 adaptive release safety QA PASS \u00b7 no double capture \u00b7 early/unarmed motion 0 \u00b7 let-down 0 \u00b7 strong fresh Hold-only release 1\n"
+    },
+    {
+      "test": "app/tests/test_anchor_settle_pan_x28.js",
+      "pass": true,
+      "output": "X2.8 settled Anchor + Replay pan QA: PASS {\n  cycle: {\n    releaseEpochMs: 100000,\n    setAt: 97233,\n    drawAt: 97619,\n    anchorAt: 98584,\n    holdAt: 99120,\n    expansionAt: null,\n    anchorFocusAt: 99120,\n    startEpochMs: 97053\n  },\n  zones: {\n    draw: 8,\n    'anchor-focus': 15,\n    'release-focus': 40,\n    'follow-summary': 5,\n    'recovery-end': 1\n  },\n  total: 69,\n  zones15: {\n    draw: 8,\n    'anchor-focus': 15,\n    'release-focus': 20,\n    'follow-summary': 5,\n    'recovery-end': 1\n  },\n  total15: 49,\n  nearest_settled_anchor_ms: 12\n}\n"
+    },
+    {
+      "test": "app/tests/test_ble431_connection_stability.js",
+      "pass": true,
+      "output": "BLE4.3.4 Analyzer connection-stability QA: PASS \u00b7 native/browser reconnect arbitration \u00b7 notification readiness \u00b7 paced context writes\n"
+    },
+    {
+      "test": "app/tests/test_ble4388_integration.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 integration/static contract QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_ble43894_ground_truth_replay_ble438941.js",
+      "pass": true,
+      "output": "BLE43894 ground-truth replay PASS \u00b7 scratch/head/face false motion remains Set \u00b7 0 verified cycles\n"
+    },
+    {
+      "test": "app/tests/test_bow_sensor_link_ble41.js",
+      "pass": true,
+      "output": "BLE4.1 linker/product-evidence QA: PASS \u00b7 let-down excluded \u00b7 nearest release \u039427 ms \u00b7 stored metrics/UI present \u00b7 camera isolation preserved\n"
+    },
+    {
+      "test": "app/tests/test_camera60_ble438941.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Camera60 QA PASS \u00b7 capability-aware 720p60 \u00b7 multi-cam budget \u00b7 repeated-strike safe fallback \u00b7 no mid-shot constraint change\n"
+    },
+    {
+      "test": "app/tests/test_camera_timeline_hv3.js",
+      "pass": true,
+      "output": "HV3 camera timeline core PASS\n"
+    },
+    {
+      "test": "app/tests/test_canvas_wake_ble436.js",
+      "pass": true,
+      "output": "BLE4.3.6 canvas wake QA: PASS \u00b7 static shot evidence redraws only on wake/focus/resize/layout change\n"
+    },
+    {
+      "test": "app/tests/test_capture_complete_ble43882.js",
+      "pass": false,
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: 2 == 1\n    at Object.<anonymous> (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_capture_complete_ble43882.js:14:8)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 2,\n  expected: 1,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "app/tests/test_capture_integrity_ble437.js",
+      "pass": true,
+      "output": "BLE4.3.7 capture integrity core QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_capture_integrity_integration_ble437.js",
+      "pass": true,
+      "output": "BLE4.3.7 Side authority integration QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_capture_session_guard_953.js",
+      "pass": true,
+      "output": "PASS capture session guard 9.5.3\n"
+    },
+    {
+      "test": "app/tests/test_capture_transaction_ble43884.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.6 legacy field transaction regression PASS \u00b7 native 1 \u00b7 trace-backed release-edge adaptive 5 \u00b7 unsupported candidate 0 \u00b7 no double Capture\n"
+    },
+    {
+      "test": "app/tests/test_capture_truth_ble4386.js",
+      "pass": true,
+      "output": "BLE4.3.8.6 Capture Truth + classifier-decoupling QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_compact_release_observability_r6.js",
+      "pass": true,
+      "output": "Compact observability matrix: 6 supported releases captured once; 12 negatives capture zero; 6 low-reaction ambiguous cases remain unconfirmed (known coverage limit, NOT verified real-release detection)\n"
+    },
+    {
+      "test": "app/tests/test_consistency_x282.js",
+      "pass": true,
+      "output": "X2.8.2 consistency QA: PASS {\n  reference_anchor_spread: 1.4142135623730945,\n  current_anchor_spread: 1.4142135623730965,\n  release_spread: 1\n}\n"
+    },
+    {
+      "test": "app/tests/test_context_sync_ble43.js",
+      "pass": true,
+      "output": "BLE4.3 Analyzer context sync QA: PASS \u00b7 athlete/session/equipment UTF-8 payload \u00b7 native/browser BLE paths \u00b7 cockpit UI present\n"
+    },
+    {
+      "test": "app/tests/test_continuity_guard_ble4381.js",
+      "pass": true,
+      "output": "BLE4.3.8.2 continuity guard QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_equipment_binding_el12.js",
+      "pass": true,
+      "output": "PASS equipment binding EL12\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el11.js",
+      "pass": true,
+      "output": "Equipment Catalog EL11 architecture PASS 683\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el15.js",
+      "pass": true,
+      "output": "PASS Equipment Catalog EL15 683 records\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el17.js",
+      "pass": true,
+      "output": "PASS Equipment Catalog EL18 monotonic merge 683 RamRods 39\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el5.js",
+      "pass": true,
+      "output": "EL5 equipment catalog PASS 683 verified/seed records\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el6.js",
+      "pass": true,
+      "output": "EL6 market catalog coverage PASS 65 brands\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el7.js",
+      "pass": true,
+      "output": "PASS equipment catalog EL7\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el8.js",
+      "pass": true,
+      "output": "EL8 catalog coverage + shared-data binding PASS\n"
+    },
+    {
+      "test": "app/tests/test_equipment_catalog_el9.js",
+      "pass": true,
+      "output": "Equipment Catalog EL9 expansion PASS 683\n"
+    },
+    {
+      "test": "app/tests/test_equipment_form_el15.js",
+      "pass": true,
+      "output": "PASS Equipment form EL15 catalog wiring\n"
+    },
+    {
+      "test": "app/tests/test_equipment_form_el17.js",
+      "pass": true,
+      "output": "PASS Equipment form EL17 normalized UX\n"
+    },
+    {
+      "test": "app/tests/test_equipment_form_el18.js",
+      "pass": true,
+      "output": "PASS Equipment Form EL18 one-fact-once behavior\n"
+    },
+    {
+      "test": "app/tests/test_equipment_lab_ble438952.js",
+      "pass": true,
+      "output": "PASS equipment lab core\n"
+    },
+    {
+      "test": "app/tests/test_equipment_lab_el4.js",
+      "pass": true,
+      "output": "Equipment Lab EL4 core PASS\n"
+    },
+    {
+      "test": "app/tests/test_evidence_budget_layer_r3.js",
+      "pass": true,
+      "output": "PASS test_evidence_budget_layer_r3 \u00b7 every shotEvidence IDB put is normalized before persistence\n"
+    },
+    {
+      "test": "app/tests/test_evidence_budget_r3.js",
+      "pass": true,
+      "output": "PASS test_evidence_budget_r3 \u00b7 fixed 25 budget \u00b7 deterministic \u00b7 chronological \u00b7 no fabrication\n"
+    },
+    {
+      "test": "app/tests/test_evidence_identity_writer_r8c.js",
+      "pass": false,
+      "output": "R8C evidence identity/writer regression FAIL\n - preserve: cross-pipeline duplicate (sparse w/o identity vs worker) still merges, worker kept, tags union: 2 == 1\n - preserve: same decoded frame (same mediaTime) from two paths merges: 2 == 1\n"
+    },
+    {
+      "test": "app/tests/test_evidence_integrity_hv2.js",
+      "pass": false,
+      "output": "/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_evidence_integrity_hv2.js:2\nfunction assert(c,m){if(!c)throw new Error(m);}\n                           ^\n\nError: camera chronology must beat epoch correction\n    at assert (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_evidence_integrity_hv2.js:2:34)\n    at Object.<anonymous> (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_evidence_integrity_hv2.js:11:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "app/tests/test_evidence_plan_x25.js",
+      "pass": true,
+      "output": "X2.5 coach evidence-plan QA: PASS \u00b7 12 requested keyframes\n"
+    },
+    {
+      "test": "app/tests/test_evidence_timeline_baseline_ble43889.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.9 Evidence Timeline + Baseline UX QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_field_e2e_ble43885.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.5 REAL-LAYER E2E PASS \u00b7 latest field trace 3 genuine Capture / 1 let-down 0 \u00b7 orphan release recovery PASS \u00b7 terminal Draw-bounce blocked\n"
+    },
+    {
+      "test": "app/tests/test_field_e2e_ble43886.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.6 REAL-LAYER FIELD E2E PASS \u00b7 exact rolling trace window: 5 Capture exactly-once + weak/aborted actions remain zero-capture \u00b7 ShotIntent + Foundation + CaptureIntegrity + commit + TemporalEvidence handoff \u00b7 Capture precedes Recovery\n"
+    },
+    {
+      "test": "app/tests/test_field_e2e_ble43887.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.7 CURRENT-FIELD REAL-LAYER E2E PASS \u00b7 missed genuine release rescued 1 \u00b7 Expansion false-Capture 0 \u00b7 later real Release 1 \u00b7 deliberate/unsupported let-down 0 \u00b7 ShotIntent + Foundation + CaptureIntegrity + commit + TemporalEvidence handoff\n"
+    },
+    {
+      "test": "app/tests/test_field_e2e_ble43893.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.3 CURRENT-FIELD REAL-LAYER E2E PASS \u00b7 2 trace-backed real-bow misses rescued exactly once \u00b7 deep deliberate let-down 0 \u00b7 ShotIntent + Foundation + CaptureIntegrity + commit + TemporalEvidence handoff\n"
+    },
+    {
+      "test": "app/tests/test_field_polish_ble4382.js",
+      "pass": true,
+      "output": "BLE4.3.8.2 field polish static contract: PASS\n"
+    },
+    {
+      "test": "app/tests/test_field_resilience_ble43894.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 field resilience QA PASS \u00b7 monotonic Live \u00b7 let-down Ready \u00b7 pending Release \u00b7 T0 fixed \u00b7 frozen runtime intact\n"
+    },
+    {
+      "test": "app/tests/test_filmstrip_r7.js",
+      "pass": true,
+      "output": "R7 filmstrip rendered-DOM PASS: 25 clickable frames, 3 roles, 15+10 Missing, reused-id isolation, async selection and URL cleanup\n"
+    },
+    {
+      "test": "app/tests/test_foundation_guard_ble4383.js",
+      "pass": true,
+      "output": "BLE4.3.8.6 foundation verified-shot guard QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_foundation_monotonic_ble4388.js",
+      "pass": true,
+      "output": "BLE4.3.8.8 monotonic live phase QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_foundation_restore_ble4383.js",
+      "pass": true,
+      "output": "BLE4.3.8.6 mature UI + Capture Truth regression QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_frame_chronology_ble438952.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.5.2 frame chronology QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_keyframe15_ble4387.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.0 Release-focused 15-keyframe plan QA: PASS \u00b7 7 Release \u00b7 2 Follow\n"
+    },
+    {
+      "test": "app/tests/test_keyframe25_ble438941.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.5.3 KF25 QA PASS \u00b7 fixed 25 per role \u00b7 T0 13/25 \u00b7 real-frame-only enrichment \u00b7 no late tail\n"
+    },
+    {
+      "test": "app/tests/test_lifecycle_authority_ble43891.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Lifecycle Authority QA PASS \u00b7 rearm first frame kept \u00b7 terminal trace authority \u00b7 Recovery metadata coherent \u00b7 Release readiness scoped to adaptive overlay\n"
+    },
+    {
+      "test": "app/tests/test_mac_preflight_r5.js",
+      "pass": true,
+      "output": "Mac launcher preflight executed: PASS (native runtime not executed)\n"
+    },
+    {
+      "test": "app/tests/test_missing_evidence_review.js",
+      "pass": true,
+      "output": "Missing-evidence regression PASS: unknown FPS fallback, missing timestamps, genuine zero, numeric imports.\n"
+    },
+    {
+      "test": "app/tests/test_mixed_backend_release_hv3.js",
+      "pass": true,
+      "output": "HV3 mixed browser/native release PASS\n"
+    },
+    {
+      "test": "app/tests/test_multicamera_admission_ble4363.js",
+      "pass": true,
+      "output": "BLE4.3.6.3 multi-camera admission guard: PASS\n[3PM admission guard] Rear is synchronized evidence only; waiting for Side shot confirmation\n[3PM admission guard] Side tracking incomplete \u2014 keep torso reference and both arms visible\n[3PM admission guard] Release vetoed: sequence was still waiting_anchor\n"
+    },
+    {
+      "test": "app/tests/test_multicamera_foundation_hv3.js",
+      "pass": true,
+      "output": "HV3 multi-camera foundation layer PASS\n"
+    },
+    {
+      "test": "app/tests/test_multicamera_skeleton_ble4362.js",
+      "pass": true,
+      "output": "BLE4.3.6.2 multi-camera skeleton/focus static QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_multiview_corroboration_ble43895.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.5.1.1 multi-view corroboration core QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_multiview_corroboration_integration_ble43895.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.5.1 multi-view corroboration integration QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_multiview_corroboration_stress_ble43895.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.5.1 multi-view corroboration stress QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_native_capture_facade_ble438.js",
+      "pass": true,
+      "output": "BLE4.3.8 native capture facade PASS\n"
+    },
+    {
+      "test": "app/tests/test_native_capture_timeline_hv3.js",
+      "pass": true,
+      "output": "HV3 native capture timeline contract PASS\n"
+    },
+    {
+      "test": "app/tests/test_native_vision_shadow_hv1.js",
+      "pass": true,
+      "output": "Native Vision Shadow HV1: PASS \u00b7 passive A/B only \u00b7 no shot authority\n"
+    },
+    {
+      "test": "app/tests/test_p108_astra_probes.js",
+      "pass": false,
+      "output": "P1-08 Astra probes FAIL\n - core ID-CLONE: expected 1 got 2\n\nfalse !== true\n\n - core WORKER-NULL-MAPPING: Expected values to be strictly equal:\n\ntrue !== false\n\n - production control: no duplicated persisted frame\n\n6 !== 7\n\n - production mixed-clock: no duplicated persisted frame\n\n6 !== 7\n\n - production generation-switch: no duplicated persisted frame\n\n6 !== 7\n\n"
+    },
+    {
+      "test": "app/tests/test_p108_h01_chronology.js",
+      "pass": false,
+      "output": "P1-08 H-01 chronology FAIL\n - mixed native+browser (Recovery during native download): mixed native+browser (Recovery during native download): duplicate real frame sparse-jpeg|99100\n - late Recovery after native bundle: late Recovery after native bundle: duplicate real frame sparse-jpeg|99100\n - native bundle retried: native bundle retried: duplicate real frame sparse-jpeg|99100\n - browser-only worker bundle + sparse frames + Recovery: browser-only: duplicate real frame sparse-jpeg|98500\n - native-only domain keeps camera order under epoch jitter: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    1,\n+   3,\n    2,\n-   3,\n    4\n  ]\n\n"
+    },
+    {
+      "test": "app/tests/test_p108_h02_identity.js",
+      "pass": false,
+      "output": "P1-08 H-02 identity FAIL\n - structuredClone of one frame is one frame (Astra ID-CLONE): Expected values to be strictly equal:\n\n2 !== 1\n\n - IndexedDB round trip + re-merge keeps identity stable: no duplicates after readback/retry\n\n18 !== 6\n\n - native writer control: no duplicated sparse frame after late Recovery merge (Astra control): native control: duplicate real frame sparse-jpeg|99100|4\n - fixed 25 with clones/readbacks: only unique real frames, Missing slots for the rest: Expected values to be strictly equal:\n\n25 !== 10\n\n - fixed 25 keeps distinct frames that share an epoch (native vs browser, no seq/media): equal-epoch: duplicate real frame sparse-jpeg|99300|3\n - preserved: browser pipeline duplicate (sparse w/o identity vs worker <=8 ms) still folds, worker kept: Expected values to be strictly equal:\n\n2 !== 1\n\n"
+    },
+    {
+      "test": "app/tests/test_p108_h03_native_generation.js",
+      "pass": true,
+      "output": "P1-08 H-03 native generation PASS: stale open success/error, late close, rapid reopen, device switch, stale diag, backend ack, session switch\n"
+    },
+    {
+      "test": "app/tests/test_p108_m01_fps_scope.js",
+      "pass": true,
+      "output": "P1-08 M-01 FPS scope PASS (integration 25/25 at 30/60/120/240; frozen sampler characterized OPEN): {\"30\":{\"integrationPath\":25,\"frozenInitialSampler\":25},\"60\":{\"integrationPath\":25,\"frozenInitialSampler\":25},\"120\":{\"integrationPath\":25,\"frozenInitialSampler\":25},\"240\":{\"integrationPath\":25,\"frozenInitialSampler\":13}}\n"
+    },
+    {
+      "test": "app/tests/test_p108_m02_alignment_anchor.js",
+      "pass": true,
+      "output": "P1-08 M-02 alignment/Anchor PASS: unknown targets fail closed, numeric zero valid\n"
+    },
+    {
+      "test": "app/tests/test_p108_m04_bridge_exposure.js",
+      "pass": false,
+      "output": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: M-04 fact changed (listener_no_interface_constraint): listener now constrains interface/endpoint (loopback hardening landed) -> update test_p108_m04_bridge_exposure.js, KNOWN_LIMITATIONS M-04 and FIELD_TEST_INSTRUCTIONS prerequisite\n    at pin (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_p108_m04_bridge_exposure.js:12:48)\n    at Object.<anonymous> (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_p108_m04_bridge_exposure.js:14:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "app/tests/test_p108_m05_launcher_profile.js",
+      "pass": true,
+      "output": "P1-08 M-05 launcher profile PASS: field class isolates the browser profile; dev class and opt-out unchanged\n"
+    },
+    {
+      "test": "app/tests/test_p108_m05_migration_compat.js",
+      "pass": false,
+      "output": "P1-08 M-05 migration compat FAIL\n - characterization: legacy 0/0 pair collapses exactly as under P1-07: Expected values to be strictly equal:\n\n2 !== 1\n\n"
+    },
+    {
+      "test": "app/tests/test_persistence_r7.js",
+      "pass": true,
+      "output": "R7 persistence PASS: frozen queue + temporal writer, stale overwrite, null media, reused id, early/late Recovery, role isolation, failed-write retry\n[3PM Recovery persistence] 1 Error: injected disk failure\n    at ctx.extendFullShotEvidenceToRecovery (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_persistence_r7.js:42:85)\n    at attempt (evalmachine.<anonymous>:176:13)\n    at completeRecovery (evalmachine.<anonymous>:186:9)\n    at Object.finalizeFollowEvidenceFromMetrics (evalmachine.<anonymous>:204:58)\n    at /workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_persistence_r7.js:45:6\n"
+    },
+    {
+      "test": "app/tests/test_phase_truth_guard_ble438954.js",
+      "pass": true,
+      "output": "BLE438954 Phase Truth Guard QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_post_p108_ack.js",
+      "pass": true,
+      "output": "Post-P108 M06 PASS 6 acknowledgement cases (JS facade + HTTP test double)\n"
+    },
+    {
+      "test": "app/tests/test_post_p108_identity.js",
+      "pass": true,
+      "output": "Post-P108 identity PASS 9 groups; high FPS is core-only, not production sampler/camera acceptance\n"
+    },
+    {
+      "test": "app/tests/test_post_p108_lifecycle_model.js",
+      "pass": true,
+      "output": "Post-P108 lifecycle MODEL/source fences PASS 6 groups; Swift compile/runtime NOT RUN\n"
+    },
+    {
+      "test": "app/tests/test_r8_lineage_merge.js",
+      "pass": false,
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: camera chronology must beat corrected epoch order\n    at Object.<anonymous> (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_r8_lineage_merge.js:23:8)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [ 1, 3, 2, 4 ],\n  expected: [ 1, 2, 3, 4 ],\n  operator: 'deepEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "app/tests/test_real_bow_anchor_bridge_ble43892.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.2 Real-Bow Anchor Bridge QA PASS \u00b7 compact stable Anchor assisted \u00b7 armed Release raw restored \u00b7 lowering/jitter 0 assist\n"
+    },
+    {
+      "test": "app/tests/test_real_bow_release_readiness_ble43893.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Real-Bow Release Pending QA PASS \u00b7 6/6 prior real misses rescued \u00b7 no visible Expansion required \u00b7 deep let-down 0 \u00b7 stale pre-shot context expires\n"
+    },
+    {
+      "test": "app/tests/test_rearm_pinned_ble4382.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4 neutral-confirmed let-down + pinned diagnostics: PASS\n"
+    },
+    {
+      "test": "app/tests/test_reconnect_recovery_ble435.js",
+      "pass": true,
+      "output": "BLE4.3.5 reconnect recovery QA: PASS \u00b7 history catch-up \u00b7 selected-trace replay \u00b7 native launcher ownership \u00b7 browser reload recovery\n"
+    },
+    {
+      "test": "app/tests/test_release_arbitration_ble43887.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.7 release arbitration QA PASS \u00b7 field fast-release rescue 1 \u00b7 field Expansion false-Capture 0 \u00b7 later true release 1 \u00b7 tentative native Release hidden \u00b7 deliberate let-down 0\n"
+    },
+    {
+      "test": "app/tests/test_release_audit_r5.js",
+      "pass": true,
+      "output": "R5 release audit: 36/36 cases passed\n"
+    },
+    {
+      "test": "app/tests/test_release_multisignal_ble43890.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.0 release multi-signal QA PASS \u00b7 compact terminal rescue 1 \u00b7 aborted Hold/return 0 \u00b7 prior hard-negative 0 \u00b7 deep let-down 0\n"
+    },
+    {
+      "test": "app/tests/test_release_pipeline_r5.js",
+      "pass": true,
+      "output": "R5 actual frozen Core -> Adaptive release-segment integration: 120 genuine 1/each, 120 let-down 0/each (synthetic geometry; starts at verified Hold)\n"
+    },
+    {
+      "test": "app/tests/test_release_proof_x24.js",
+      "pass": true,
+      "output": "X2.4 release-proof directed QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_review_precision_ble43888.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.8 Review Precision QA PASS \u00b7 baseline semantics + forward verified Anchor\n"
+    },
+    {
+      "test": "app/tests/test_review_truth_ble4387.js",
+      "pass": true,
+      "output": "BLE4.3.8.7 review truth integration QA: PASS\n"
+    },
+    {
+      "test": "app/tests/test_review_ux_ble434.js",
+      "pass": true,
+      "output": "BLE4.3.4 Review UX QA: PASS \u00b7 100Hz ingest decoupled from UI \u00b7 bounded buffer display \u00b7 non-clipping phase row \u00b7 crisp canvas sizing \u00b7 camera-view hint\n"
+    },
+    {
+      "test": "app/tests/test_runtime_truth_ble43881.js",
+      "pass": true,
+      "output": "R8 merge runtime truth QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_selected_shot_ble433.js",
+      "pass": true,
+      "output": "BLE4.3.4 Selected Shot UX regression QA: PASS \u00b7 clickable shot rail \u00b7 static saved evidence \u00b7 Release + Hold charts \u00b7 key numbers\n"
+    },
+    {
+      "test": "app/tests/test_set_admission_ble4372.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.4 shot-plane Set admission QA PASS \u00b7 generic fallback removed \u00b7 fresh lateral bow plane required\n"
+    },
+    {
+      "test": "app/tests/test_set_admission_ble4383.js",
+      "pass": true,
+      "output": "BLE4.3.8.3 both-hands Set + false-Draw integration QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_shot_list_ux_ble43892.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.2 Shot List UX QA PASS \u00b7 End/Shot chronological \u00b7 latest follow only \u00b7 old-shot review scroll stable\n"
+    },
+    {
+      "test": "app/tests/test_shot_truth_ble43883.js",
+      "pass": true,
+      "output": "BLE4.3.8.8.7 Shot Truth Guard QA PASS \u00b7 genuine fast release 1 \u00b7 body twist 0 \u00b7 face touch 0 \u00b7 hold settle 0 \u00b7 fresh Draw intent enforced\n"
+    },
+    {
+      "test": "app/tests/test_side_lifecycle_ble43890.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Side Lifecycle QA PASS \u00b7 provisional false-start guard \u00b7 verified Setup/Draw \u00b7 terminal authority \u00b7 clean next shot\n"
+    },
+    {
+      "test": "app/tests/test_stress_ble438941.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Stress QA PASS \u00b7 500 false-motion bursts \u00b7 120 monotonic shots \u00b7 100 transient-load runs \u00b7 sustained fallback\n"
+    },
+    {
+      "test": "app/tests/test_summary_protocol_ble41.js",
+      "pass": true,
+      "output": "BLE4.1 authoritative summary protocol QA: PASS \u00b7 exact S3 metrics preserved\n"
+    },
+    {
+      "test": "app/tests/test_temporal_evidence_ble4373.js",
+      "pass": true,
+      "output": "BLE4.3.7.3 temporal evidence core QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_temporal_fallback_ble4374.js",
+      "pass": true,
+      "output": "BLE4.3.7.4 temporal fallback static contract: PASS\n"
+    },
+    {
+      "test": "app/tests/test_temporal_integration_ble4373.js",
+      "pass": true,
+      "output": "BLE4.3.8 native + browser temporal integration static QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_torture_gate_ble438955.js",
+      "pass": true,
+      "output": "BLE438955 TORTURE GATE PASS \u00b7 5k moving-phase attacks \u00b7 2k violent let-downs \u00b7 1k immediate re-arms \u00b7 KF25 deterministic\n"
+    },
+    {
+      "test": "app/tests/test_trace_protocol_ble42.js",
+      "pass": true,
+      "output": "BLE4.2 S3 visual trace protocol QA: PASS \u00b7 exact saved trace reconstructed and attached to summary record\n"
+    },
+    {
+      "test": "app/tests/test_transaction_r7.js",
+      "pass": false,
+      "output": "R7 transaction/contract PASS: stale-proof contradictions, positive control, Hold zones, missing evidence stays missing\nnode:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: same real media frame must not count twice\n    at Object.<anonymous> (/workspace/scratch/3e50c3ee8e51/stage/3PM_Analyzer_R8_POST_P108_MAC_BENCH_UNPROMOTED/app/tests/test_transaction_r7.js:56:8)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 2,\n  expected: 1,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "app/tests/test_trust_first_ble438941.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 Trust-First QA PASS \u00b7 scratch/head movement stays Set \u00b7 provisional cancel \u00b7 monotonic verified shot \u00b7 neutral Plan B \u00b7 tracking hold\n"
+    },
+    {
+      "test": "app/tests/test_ui_no_reflow_ble438941.js",
+      "pass": true,
+      "output": "BLE4.3.8.9.4.1 UI Stability QA PASS \u00b7 bounded dynamic text \u00b7 fixed phase footprint \u00b7 background enrichment/governor wired\n"
+    },
+    {
+      "test": "app/tests/test_ui_stability_ble4371.js",
+      "pass": true,
+      "output": "BLE4.3.7.1 UI stability QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_ui_stability_integration_ble4371.js",
+      "pass": true,
+      "output": "BLE4.3.7.1 selected-shot isolation integration QA PASS\n"
+    },
+    {
+      "test": "app/tests/test_user_handdown_falsecap_r4.js",
+      "pass": true,
+      "output": "R4 user hand-down false-CAP regression PASS\n"
+    },
+    {
+      "test": "app/tests/test_visual_match_ble432.js",
+      "pass": true,
+      "output": "BLE4.3.4 Analyzer visual-match regression QA: PASS \u00b7 Video+Sensor cockpit \u00b7 release/aim charts \u00b7 real-history spark bars \u00b7 key strip\n"
+    },
+    {
+      "test": "app/tests/stress_release_proof_x24.js",
+      "pass": true,
+      "output": "X2.4 randomized stress: PASS \u00b7 seed 0x3A2F24 \u00b7 400 let-downs \u00b7 300 genuine releases \u00b7 300 tracking-drop cases\n"
+    }
+  ],
+  "phase01": [
+    {
+      "test": "test_artifact_class_policy.js",
+      "returncode": 0,
+      "output": "P-06 artifact class pose policy: PASS (development_not_release: 8 cases run)\n"
+    },
+    {
+      "test": "test_astra_p106_repairs.js",
+      "returncode": 0,
+      "output": "Astra P1-06 repair regressions: PASS\n"
+    },
+    {
+      "test": "test_browser_portable_bundle.js",
+      "returncode": 0,
+      "output": "Browser-portable shadow bundle VM (no require/Buffer/process): PASS\n"
+    },
+    {
+      "test": "test_claude_r8_repairs.js",
+      "returncode": 0,
+      "output": "Claude R8 C01-C20 converted regressions: PASS\n"
+    },
+    {
+      "test": "test_claude_round2_repairs.js",
+      "returncode": 0,
+      "output": "S-01: PASS\nS-02: PASS\nS-03: PASS\nS-04: PASS\nS-05: PASS\nS-06: PASS\nS-07: PASS\nS-08: PASS\nS-09: PASS\nS-10: PASS\nS-11: PASS\nS-12: PASS\nS-13: PASS\nClaude round-2 repairs: PASS (13 blocks)\n"
+    },
+    {
+      "test": "test_contract_foundation.js",
+      "returncode": 0,
+      "output": "Phase01 contract foundation: PASS\n"
+    },
+    {
+      "test": "test_p101_contract_clock.js",
+      "returncode": 0,
+      "output": "P1-01 contract + clock hardened: PASS\n"
+    },
+    {
+      "test": "test_p102_replay_identity.js",
+      "returncode": 0,
+      "output": "P1-02 replay identity/discontinuity: PASS\n"
+    },
+    {
+      "test": "test_p103_ring_scheduler.js",
+      "returncode": 0,
+      "output": "P1-03 ring + descriptor scheduler hardened: PASS\n"
+    },
+    {
+      "test": "test_p104_decision_eventlog.js",
+      "returncode": 0,
+      "output": "P1-04 scoped immutable event log hardened: PASS\n"
+    },
+    {
+      "test": "test_p105_writer_projector.js",
+      "returncode": 0,
+      "output": "P1-05 writer/projector hardened: PASS\n"
+    },
+    {
+      "test": "test_p106_review_archive.js",
+      "returncode": 0,
+      "output": "P1-06 review/archive hardened: PASS\n"
+    },
+    {
+      "test": "test_pose_narrow_thaw.js",
+      "returncode": 0,
+      "output": "Phase 0 pose narrow-thaw seam: PASS\n"
+    },
+    {
+      "test": "test_qa_browser_discovery.js",
+      "returncode": 0,
+      "output": "Q-02 browser discovery: PARTIAL \u2014 no Chromium on this machine; positive cases NOT RUN\n"
+    },
+    {
+      "test": "test_qa_runner_isolation.js",
+      "returncode": 0,
+      "output": "Q-01 QA runner isolation: PASS (3 runners, contract green after run, in-package output refused)\n"
+    }
+  ],
+  "browser": {
+    "status": "PASS",
+    "scope": "Linux headless Chromium + backend test double; not Mac backend/camera acceptance",
+    "checks": {
+      "reachedLoad": true,
+      "requiredModulesLoaded": true,
+      "p108CoresActive": true,
+      "expectedBackendStateVisible": true,
+      "rail25": true,
+      "keyControlsExist": true,
+      "anchorSingleOwnerAtLoad": true,
+      "idleObserverSettles": true,
+      "idbReadbackMergeNoDuplicates": true,
+      "idbMixedClockPhysicalOrder": true,
+      "shotOpens25Slots": true,
+      "reviewChronology": true,
+      "prevNext": true,
+      "play": true,
+      "anchorConsistentNoTarget": true,
+      "roleSwitch": true,
+      "shotSwitchNoStaleFrames": true,
+      "shotSwitchPhysicalOrder": true,
+      "panelRebuildRail25": true,
+      "anchorSingleOwnerAfterRebuild": true,
+      "noObjectUrlLeak": true,
+      "idleObserverSettlesAfterInteraction": true,
+      "noPageErrors": true,
+      "noUnhandledBackendRequests": true,
+      "onlyExpectedConsoleErrors": true
+    },
+    "detail": {
+      "requiredModulesLoaded": {
+        "FrameIdentityCore": true,
+        "TemporalEvidenceCore": true,
+        "EvidenceBudgetCore": true,
+        "CameraTimelineCore": true,
+        "NativeCaptureLayer": true,
+        "EvidenceIntegrityRepairLayer": true,
+        "EvidenceBudgetLayer": true,
+        "FormAnalyzer": true,
+        "budgetVersion": "R8-P1-08-fixed25-domain-chronology-durable-identity-v2",
+        "identity": "R8-Post-P1-08-frame-identity-v3"
+      },
+      "p108CoresActive": {
+        "budget": "R8-P1-08-fixed25-domain-chronology-durable-identity-v2",
+        "identity": "R8-Post-P1-08-frame-identity-v3"
+      },
+      "expectedBackendStateVisible": {
+        "bridge": {
+          "available": false,
+          "error": "Failed to fetch"
+        },
+        "storage": "/stub-backend (test double)"
+      },
+      "rail25": 25,
+      "keyControlsExist": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "idleObserverSettles": {
+        "rail": 3,
+        "maxPerSecond": 60,
+        "by": {
+          "field_polish_layer.js:26#5": 120,
+          "field_polish_layer.js:26#6": 120,
+          "field_polish_layer.js:26#7": 120,
+          "evidence_integrity_repair_layer.js:69#3": 3
+        }
+      },
+      "idbReadbackMergeNoDuplicates": 10,
+      "idbMixedClockPhysicalOrder": [
+        [
+          -60,
+          "release-focus"
+        ],
+        [
+          -27,
+          "release-focus"
+        ],
+        [
+          6,
+          "release-focus"
+        ],
+        [
+          39,
+          "release-focus"
+        ],
+        [
+          900,
+          "follow-summary"
+        ],
+        [
+          2000,
+          "recovery-end"
+        ]
+      ],
+      "shotOpens25Slots": {
+        "sel": 11,
+        "role": "side",
+        "n": 10,
+        "idx": 5,
+        "playing": false,
+        "real": 10,
+        "missing": 15,
+        "offs": [
+          -3000,
+          -2200,
+          -2000,
+          -1500,
+          -100,
+          0,
+          100,
+          800,
+          1300,
+          2000
+        ],
+        "anchorDisabled": true,
+        "urls": 11
+      },
+      "reviewChronology": [
+        -3000,
+        -2200,
+        -2000,
+        -1500,
+        -100,
+        0,
+        100,
+        800,
+        1300,
+        2000
+      ],
+      "prevNext": {
+        "i0": 5,
+        "after": 5
+      },
+      "play": {
+        "playing": true
+      },
+      "anchorConsistentNoTarget": {
+        "disabled": true,
+        "handler": {
+          "r": false,
+          "moved": false
+        }
+      },
+      "roleSwitch": {
+        "sel": 11,
+        "role": "rear",
+        "n": 5,
+        "idx": 2,
+        "playing": false,
+        "real": 5,
+        "missing": 20,
+        "offs": [
+          -200,
+          -100,
+          0,
+          100,
+          200
+        ],
+        "anchorDisabled": true,
+        "urls": 6
+      },
+      "shotSwitchNoStaleFrames": {
+        "sel": 12,
+        "role": "side",
+        "n": 6,
+        "idx": 2,
+        "playing": false,
+        "real": 6,
+        "missing": 19,
+        "offs": [
+          -60,
+          -27,
+          6,
+          39,
+          900,
+          2000
+        ],
+        "anchorDisabled": true,
+        "urls": 7
+      },
+      "shotSwitchPhysicalOrder": [
+        -60,
+        -27,
+        6,
+        39,
+        900,
+        2000
+      ],
+      "panelRebuildRail25": {
+        "sel": 12,
+        "role": "side",
+        "n": 6,
+        "idx": 2,
+        "playing": false,
+        "real": 6,
+        "missing": 19,
+        "offs": [
+          -60,
+          -27,
+          6,
+          39,
+          900,
+          2000
+        ],
+        "anchorDisabled": true,
+        "urls": 7
+      },
+      "noObjectUrlLeak": {
+        "liveObjectUrls": 7,
+        "currentFrames": 6
+      },
+      "idleObserverSettlesAfterInteraction": {
+        "rail": 2,
+        "maxPerSecond": 60,
+        "by": {
+          "field_polish_layer.js:26#5": 120,
+          "field_polish_layer.js:26#6": 120,
+          "field_polish_layer.js:26#7": 120,
+          "evidence_integrity_repair_layer.js:69#3": 2
+        }
+      },
+      "noPageErrors": [],
+      "noUnhandledBackendRequests": [],
+      "onlyExpectedConsoleErrors": {
+        "unexpected": [],
+        "refusedHosts": [
+          "127.0.0.1:48735"
+        ]
+      }
+    }
+  },
+  "browserPost": {
+    "status": "PASS",
+    "scope": "Linux Chromium; persisted real Blob bytes from synthetic fixtures; backend test double; no Mac/camera claim",
+    "checks": {
+      "analysis6Impact3": true,
+      "readbackRetry": true,
+      "browserRestartBytesIdentityRestore": true,
+      "sessionIsolation": true,
+      "restoredRail25": true,
+      "thirtyFPSSeparateCounts": true,
+      "noRuntimeErrors": true
+    },
+    "grouping": {
+      "ends": [
+        {
+          "end": 1,
+          "shots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "end": 2,
+          "shots": [
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        }
+      ],
+      "scoring": 3,
+      "links": [
+        3,
+        4
+      ],
+      "chips": 3
+    },
+    "fullCounts": {
+      "received": 30,
+      "unique": 30,
+      "persisted": 25,
+      "selected": 25,
+      "slots": 25
+    },
+    "counts": {
+      "received": 10,
+      "unique": 10,
+      "persisted": 10,
+      "selected": 10,
+      "logicalSlots": 25,
+      "missing": 15
+    }
+  }
+}
