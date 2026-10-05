@@ -16,13 +16,17 @@ function load(staticDir){
 const blob=(tag,size=3)=>new Blob([String(tag).padEnd(size,'.')]);
 
 // One evidence store + frozen queue + both capture layers. Bridge behaviour is supplied by `bridge(path,body)`.
-function env(staticDir,{bridge=null,sessionId=1}={}){
+// Post-P108 R2: index.html loads evidence_identity_persistence_layer.js between app.js and the capture layers, and that
+// layer stamps every read of the evidence store (IDBObjectStore/IDBIndex get+getAll hooks). The doubles below apply the
+// same read hook, exactly as the put double already applies the evidence_budget_layer put normalization.
+// identityLayer:false reproduces the pre-adapter stack (characterization only).
+function env(staticDir,{bridge=null,sessionId=1,identityLayer=true}={}){
   const {read,T,B,C}=load(staticDir);
   const records=new Map(),key=(s,id,r)=>`${s}:${id}:${r}`;
   const clone=x=>structuredClone(x);
   const log=[];let currentSession=sessionId;
   const fakeIDB={open(){const req={};setTimeout(()=>{req.result={transaction(){const tx={objectStore(){return{
-      index(){return{getAll(s){const r={};setTimeout(()=>{r.result=[...records.values()].filter(x=>Number(x.sessionId)===Number(s)).map(clone);r.onsuccess&&r.onsuccess();},0);return r;}};},
+      index(){return{getAll(s){const r={};setTimeout(()=>{r.result=readHook([...records.values()].filter(x=>Number(x.sessionId)===Number(s)).map(clone));r.onsuccess&&r.onsuccess();},0);return r;}};},
       put(v){records.set(v.key,clone(v));setTimeout(()=>tx.oncomplete&&tx.oncomplete(),0);}};}};return tx;}};req.onsuccess&&req.onsuccess();},0);return req;}};
   const json=(data,status=200)=>({ok:status<300,status,json:async()=>data});
   const fetchMock=async(url,opt={})=>{
@@ -35,7 +39,8 @@ function env(staticDir,{bridge=null,sessionId=1}={}){
     throw new Error('unexpected '+p);
   };
   const events=[];
-  const ctx={console,Promise,Map,Set,Date,Math,Number,Array,Object,JSON,String,Error,Blob,queueMicrotask,AbortController,structuredClone,
+  const readHook=rows=>{const L=ctx.window.EvidenceIdentityPersistenceLayer;return L&&typeof L.stampStoredResult==='function'?L.stampStoredResult(rows):rows;};
+  const ctx={console,Promise,Map,Set,Date,Math,Number,Array,Object,JSON,String,Error,Blob,queueMicrotask,AbortController,structuredClone,crypto:globalThis.crypto,
     document:{readyState:'loading',addEventListener(){}},navigator:{userAgent:'p108'},
     window:{EvidenceBudgetCore:B,TemporalEvidenceCore:T,CameraTimelineCore:C,FrameIdentityCore:safeFI(staticDir),dispatchEvent(e){events.push(e);},FormAnalyzer:{getCurrentSessionId:()=>currentSession}},
     CustomEvent:function(t,o){this.type=t;this.detail=o?.detail;},setTimeout,clearTimeout,setInterval:()=>0,fetch:fetchMock,indexedDB:fakeIDB,
@@ -48,6 +53,8 @@ function env(staticDir,{bridge=null,sessionId=1}={}){
   const app=read('app.js'),start=app.indexOf('const evidenceWriteChains=new Map();'),end=app.indexOf('async function evidenceDbDeleteShot(',start);
   if(!(start>0&&end>start))throw new Error('frozen evidence queue not found in app.js');
   vm.runInContext(app.slice(start,end),ctx);                         // shipped frozen queue
+  const idLayer=path.join(staticDir,'evidence_identity_persistence_layer.js');
+  if(identityLayer&&fs.existsSync(idLayer))vm.runInContext(read('evidence_identity_persistence_layer.js'),ctx); // shipped writer adapter (index.html order)
   vm.runInContext(read('temporal_evidence_layer.js'),ctx);           // shipped R7 temporal layer
   const browserLayer=ctx.window.TemporalEvidenceLayer;
   ctx.window.TemporalEvidenceLayer={...browserLayer,openRole(){return true;},closeRole(){},diagnostics(){return{};},browserInfo(){return{};}};

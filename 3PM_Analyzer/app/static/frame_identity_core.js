@@ -7,24 +7,35 @@
 //       never compared with each other. The only clock comparable across domains is epochMs (capture wall
 //       clock on the same machine). Physical order = each domain in its own camera order, domains merged by
 //       epochMs. Unknown clocks are never invented (null/undefined/''/boolean are UNKNOWN, never 0).
-// H-02  Identity layers: durable FrameUID > stream generation > same-domain camera identity (mediaTime or
-//       frameSeq) in an explicitly identified source/device/generation domain, or same payload object.
-//       Persisted copies must carry FrameUID. Timestamp/size/proximity do not prove identity.
-//       Anything else stays distinct: different FrameUIDs, generations, devices or native-vs-browser frames
-//       are never merged because of equal mediaTime, equal frameSeq or near epochs.
+// H-02  Identity layers (Post-P108 R2): durable FrameUID > stream generation fence > camera identity (mediaTime or
+//       frameSeq) inside one EXPLICIT clock domain = known source AND known generation (and the same device when
+//       either names one) > the same payload object (one Blob instance) corroborated by an agreeing camera label.
+//       Persisted copies must carry FrameUID (stamped before the R7 writer and on readback of historical rows by
+//       evidence_identity_persistence_layer.js). Timestamp, payload size and epoch proximity never prove identity.
+//       Different FrameUIDs, generations, devices or native-vs-browser frames are never merged.
+// R2 history: v3 additionally required a device/stream id for any camera identity or camera order. No capture
+//       pipeline in this tree emits one (frozen app.js, worker, native bridge), so v3 turned every re-delivery of
+//       one frame into a new row and ordered native frames by jittered callback epoch. v4 keeps the v3 negatives
+//       (equal time/size, unknown source or generation never merge) and restores the P1-08 domain definition.
 (function(root,factory){const api=factory();if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.FrameIdentityCore=api;})(typeof window!=='undefined'?window:globalThis,function(){
 'use strict';
-const VERSION='R8-Post-P1-08-frame-identity-v3';
+const VERSION='R8-Post-P1-08-frame-identity-v4';
 const objectKeys=new WeakMap();let nextObjectKey=0;
 function objectKey(f){if(!objectKeys.has(f))objectKeys.set(f,'object:'+ ++nextObjectKey);return objectKeys.get(f);}
-function explicitDomain(f){return !!sourceOf(f)&&generationOf(f)!==null&&!!(text(f.deviceID)||text(f.deviceId)||text(f.streamID));}
+// Payload identity: a shallow copy ({...f}) keeps the same Blob instance, a structuredClone/IndexedDB copy does not.
+const payloadKeys=new WeakMap();let nextPayloadKey=0;
+function payloadOf(f){const b=f?.blob;return b&&typeof b==='object'?b:null;}
+function payloadKey(b){if(!payloadKeys.has(b))payloadKeys.set(b,'payload:'+ ++nextPayloadKey);return payloadKeys.get(b);}
+function deviceOf(f){return text(f?.deviceID)||text(f?.deviceId)||text(f?.streamID);}
+// Explicit clock domain = known source pipeline AND known stream generation (P1-08 contract D-108-04).
+function explicitDomain(f){return !!sourceOf(f)&&generationOf(f)!==null;}
 function domainMatches(a,b,A){
   if(!explicitDomain(a)||!explicitDomain(b))return false;
-  const da=text(a.deviceID)||text(a.deviceId)||text(a.streamID),db=text(b.deviceID)||text(b.deviceId)||text(b.streamID);
-  if((da||db)&&(!da||!db||da!==db))return false;
+  const da=deviceOf(a),db=deviceOf(b);
+  if((da||db)&&da!==db)return false;                                          // one-sided or different device: not comparable
   return sourceOf(a)===sourceOf(b)&&generationOf(a)===generationOf(b)&&A.domain(a)===A.domain(b);
 }
-const PIPELINE_FOLD_MS=8;
+const PIPELINE_FOLD_MS=8;                                                   // API compatibility only: epoch proximity is not identity (v4)
 const SAME_MEDIA_S=0.0008;
 const known=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v))?Number(v):null;
 const text=v=>typeof v==='string'&&v.trim()!==''?v.trim():null;
@@ -43,22 +54,41 @@ function sameFrame(a,b,o){
   if(!a||!b)return false;if(a===b)return true;
   const ua=frameUIDOf(a),ub=frameUIDOf(b);if(ua&&ub)return ua===ub;            // durable identity decides
   const ga=generationOf(a),gb=generationOf(b);if(ga!==null&&gb!==null&&ga!==gb)return false;
-  const A=accessors(o),ea=A.epoch(a),eb=A.epoch(b),sa=sourceOf(a),sb=sourceOf(b),sameDomain=domainMatches(a,b,A);
-  const ma=A.media(a),mb=A.media(b),qa=A.seq(a),qb=A.seq(b);
-  const mediaKnown=sameDomain&&ma!==null&&mb!==null,seqKnown=sameDomain&&qa!==null&&qb!==null;
-  // Camera identity inside one clock domain (R7 contract: the same real media frame never counts twice).
-  if(seqKnown){if(qa!==qb)return false;return !mediaKnown||Math.abs(ma-mb)<SAME_MEDIA_S;}
-  if(mediaKnown)return ma===mb;
-  const near=ea!==null&&eb!==null&&Math.abs(ea-eb)<=PIPELINE_FOLD_MS;
-  // Conservative fallback: object identity is evidence only inside the SAME explicit source/domain.
-  // Timestamp, payload size, generic browser-family labels, or a near epoch are NOT identity proof.
-  // After IndexedDB/structuredClone, if durable UID/media/seq identity is unavailable we intentionally
-  // preserve both rows rather than risk deleting a real frame (false-negative dedupe is safer than false merge).
-  if(sa&&sa===sb&&ga===gb&&a.blob&&a.blob===b.blob)return near;
+  // Camera identity inside one explicit clock domain decides first, both ways: equal frameSeq/mediaTime is one frame
+  // (R7 contract: the same real media frame never counts twice); a contradictory one is two frames even when the
+  // rows share a payload object (a labelling conflict is kept visible, never resolved by deleting a row).
+  const A=accessors(o);
+  if(domainMatches(a,b,A)){
+    const ma=A.media(a),mb=A.media(b),qa=A.seq(a),qb=A.seq(b);
+    const mediaKnown=ma!==null&&mb!==null,seqKnown=qa!==null&&qb!==null;
+    if(seqKnown){if(qa!==qb)return false;return !mediaKnown||Math.abs(ma-mb)<SAME_MEDIA_S;}
+    if(mediaKnown)return Math.abs(ma-mb)<SAME_MEDIA_S;
+  }
+  // The same Blob instance arriving through two evidence paths is one encoded capture (R7/BLE43882 contract) when a
+  // camera label from one pipeline corroborates it (equal frameSeq, or equal mediaTime). A shared Blob without any
+  // agreeing label is not merged (placeholder/fixture payloads; production rows already carry a provenance FrameUID).
+  // Native and browser rows never fold. Labels alone, outside an explicit domain, are never identity proof.
+  const pa=payloadOf(a);
+  if(pa&&pa===payloadOf(b)){
+    const fa=deviceFamily(a),fb=deviceFamily(b);if(fa!=='unknown'&&fb!=='unknown'&&fa!==fb)return false;
+    const sa=sourceOf(a),sb=sourceOf(b);if(sa&&sb&&sa!==sb)return false;
+    const ma=A.media(a),mb=A.media(b),qa=A.seq(a),qb=A.seq(b);
+    if(qa!==null&&qb!==null)return qa===qb&&(ma===null||mb===null||Math.abs(ma-mb)<SAME_MEDIA_S);
+    return ma!==null&&mb!==null&&Math.abs(ma-mb)<SAME_MEDIA_S;
+  }
+  // Equal epochs, equal payload sizes, near epochs, source labels alone: NOT identity proof. Keep both rows
+  // (a retained duplicate is visible and recoverable; a false merge silently deletes a real frame).
   return false;
 }
 
-function idKey(f,o){const A=accessors(o),u=frameUIDOf(f);if(u)return 'uid:'+u;return objectKey(f);}
+// Selection key of an already-unique row: stable across shallow copies ({...f} keeps the Blob instance and labels),
+// never shared by two rows that sameFrame keeps apart (labels and epoch disambiguate a shared placeholder payload),
+// and never an epoch-only or media-only key across domains.
+function idKey(f,o){
+  const u=frameUIDOf(f);if(u)return 'uid:'+u;
+  const A=accessors(o),p=payloadOf(f);
+  return `${p?payloadKey(p):objectKey(f)}|${A.domain(f)}|q${A.seq(f)??'?'}|m${A.media(f)??'?'}|e${A.epoch(f)??'?'}`;
+}
 
 // Deterministic physical order. A clock domain is split into continuous segments wherever its local clock and
 // the capture epoch disagree by more than DISCONTINUITY_MS (a media clock reset / stream restart without a new
@@ -79,7 +109,7 @@ function segments(rows,A){
 }
 function physicalOrder(frames=[],o){
   const A=accessors(o),groups=new Map();
-  (frames||[]).forEach((f,i)=>{if(!f||A.epoch(f)===null)return;const d=explicitDomain(f)?A.domain(f):objectKey(f);if(!groups.has(d))groups.set(d,[]);groups.get(d).push({f,i});});
+  (frames||[]).forEach((f,i)=>{if(!f||A.epoch(f)===null)return;const d=A.domain(f)+'|dev:'+(deviceOf(f)||'');if(!groups.has(d))groups.set(d,[]);groups.get(d).push({f,i});});
   const lanes=[];
   for(const [d,rows] of [...groups.entries()].sort((x,y)=>x[0]<y[0]?-1:x[0]>y[0]?1:0)){
     segments(rows,A).forEach((seg,k)=>{
@@ -116,5 +146,5 @@ function uniqueFrames(frames=[],{rank=()=>0,merge=null,...o}={}){
 function isPhysicalOrder(frames=[],o){const p=physicalOrder(frames,o);return p.length===(frames||[]).length&&p.every((f,i)=>f===frames[i]);}
 function nativeFrameUID({role,generation,frameSeq,epochMs}){const g=known(generation),q=known(frameSeq),e=known(epochMs);return g===null||q===null||e===null?null:`n1/${String(role||'side')}/${g}/${q}/${e}`;}
 function workerFrameUID({role,generation,frameSeq,epochMs,source}){const g=known(generation),q=known(frameSeq),e=known(epochMs);return g===null||q===null||e===null?null:`w1/${String(role||'side')}/${String(source||'worker')}/${g}/${q}/${e}`;}
-return Object.freeze({VERSION,PIPELINE_FOLD_MS,DISCONTINUITY_MS,known,sourceOf,generationOf,frameUIDOf,deviceFamily,clockDomain,mediaComparable,sameFrame,idKey,physicalOrder,uniqueFrames,isPhysicalOrder,nativeFrameUID,workerFrameUID});
+return Object.freeze({VERSION,PIPELINE_FOLD_MS,DISCONTINUITY_MS,known,sourceOf,generationOf,frameUIDOf,deviceOf,deviceFamily,clockDomain,explicitDomain,mediaComparable,sameFrame,idKey,physicalOrder,uniqueFrames,isPhysicalOrder,nativeFrameUID,workerFrameUID});
 });

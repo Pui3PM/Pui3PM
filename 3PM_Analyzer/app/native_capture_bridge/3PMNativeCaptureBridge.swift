@@ -483,6 +483,9 @@ private final class CaptureManager {
     private var roles: [String:RoleCapture] = [:]
     private var releaseRequests: [String:[String:Any]] = [:]
     private var bundles: [String:CaptureBundle] = [:]
+    // Every HTTP connection runs on its own serial queue and the JS facade downloads bundle frames 8-way in parallel.
+    // Swift dictionaries are not thread-safe: releaseRequests/bundles are only touched while holding tableLock.
+    private let tableLock = NSLock()
 
     init() { for r in ["side","rear","overhead"] { roles[r]=RoleCapture(role:r) } }
     func devices() -> [[String:Any]] {
@@ -530,6 +533,7 @@ private final class CaptureManager {
     func requestRelease(_ body:[String:Any]) -> [String:Any] {
         let release=(body["release_epoch_ms"] as? NSNumber)?.doubleValue ?? epochMs(), pre=(body["pre_ms"] as? NSNumber)?.doubleValue ?? 1250, post=(body["post_ms"] as? NSNumber)?.doubleValue ?? 1350
         var tokens:[String:String]=[:]
+        tableLock.lock(); defer { tableLock.unlock() }
         for (role,c) in roles where c.isActive() {
             let id="\(role)-\(Int(release.rounded()))-\(UUID().uuidString.prefix(8))"
             releaseRequests[id]=["role":role,"release":release,"pre":pre,"post":post,"generation":c.currentGeneration(),"created":epochMs()]
@@ -538,6 +542,7 @@ private final class CaptureManager {
         return ["ok":true,"release_epoch_ms":release,"tokens":tokens]
     }
     func bundle(id:String) -> CaptureBundle? {
+        tableLock.lock(); defer { tableLock.unlock() }
         cleanup()
         if let b=bundles[id] { return b }
         guard let req=releaseRequests[id], let role=req["role"] as? String, let c=roles[role], let release=req["release"] as? Double, let pre=req["pre"] as? Double, let post=req["post"] as? Double else { return nil }
@@ -547,7 +552,7 @@ private final class CaptureManager {
         let b=c.bundle(releaseEpoch:release,preMs:pre,postMs:post,id:id); bundles[id]=b; return b
     }
     func frame(bundleID:String,index:Int) -> Data? { guard let b=bundle(id:bundleID), index>=0, index<b.frames.count else { return nil }; return b.frames[index].data }
-    private func cleanup() {
+    private func cleanup() { // caller holds tableLock
         let cutoff=epochMs()-maxBundleAgeMs
         releaseRequests=releaseRequests.filter{ (($0.value["created"] as? Double) ?? 0) >= cutoff }
         bundles=bundles.filter{ $0.value.createdEpoch >= cutoff }

@@ -66,8 +66,11 @@ async function nativeWriterScenario(){
   const BASE='http://127.0.0.1:48735';
   let recoveryInjected=false,nativeEvents=0;
   // Minimal IndexedDB double backed by the same records map that the frozen queue uses.
+  // Post-P108 R2: the shipped evidence_identity_persistence_layer.js hooks every evidence-store read (IDB get/getAll);
+  // this double applies the same hook, like the put double below applies the evidence_budget_layer normalization.
+  const readHook=rows=>{const L=ctx&&ctx.window.EvidenceIdentityPersistenceLayer;return L&&typeof L.stampStoredResult==='function'?L.stampStoredResult(rows):rows;};
   const fakeIDB={open(){const req={};setTimeout(()=>{req.result={transaction(){const tx={objectStore(){return{
-      index(){return{getAll(s){const r={};setTimeout(()=>{r.result=[...records.values()].filter(x=>Number(x.sessionId)===Number(s)).map(clone);r.onsuccess&&r.onsuccess();},0);return r;}};},
+      index(){return{getAll(s){const r={};setTimeout(()=>{r.result=readHook([...records.values()].filter(x=>Number(x.sessionId)===Number(s)).map(clone));r.onsuccess&&r.onsuccess();},0);return r;}};},
       put(v){records.set(v.key,clone(v));setTimeout(()=>tx.oncomplete&&tx.oncomplete(),0);}
     };}};return tx;}};req.onsuccess&&req.onsuccess();},0);return req;}};
   const frameRows=[0,1,2,3].map(i=>({index:i,frame_seq:i<2?null:i+10,epoch_ms:rel-60+i*33,capture_epoch_ms:rel-60+i*33,master_time_ms:null,media_time_ms:i<2?null:5000+i*33,url:`${BASE}/frame/${i}`}));
@@ -104,6 +107,10 @@ async function nativeWriterScenario(){
   const app=read('app.js'),start=app.indexOf('const evidenceWriteChains=new Map();'),end=app.indexOf('async function evidenceDbDeleteShot(',start);
   assert(start>0&&end>start,'frozen evidence queue not found in app.js');
   vm.runInContext(app.slice(start,end),ctx); // shipped frozen queue, not a reimplementation
+  if(fs.existsSync(path.join(root,'evidence_identity_persistence_layer.js'))){                     // shipped writer adapter (index.html order)
+    ctx.window.FrameIdentityCore=require(path.join(root,'frame_identity_core.js'));                // loaded by index.html before every evidence module
+    vm.runInContext(read('evidence_identity_persistence_layer.js'),ctx);
+  }
   vm.runInContext(read('temporal_evidence_layer.js'),ctx);
   ctx.window.TemporalEvidenceLayer={...ctx.window.TemporalEvidenceLayer,openRole(){return true;},closeRole(){},diagnostics(){return{};},browserInfo(){return{};}};
   vm.runInContext(read('native_capture_layer.js'),ctx);
