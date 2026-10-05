@@ -1,8 +1,19 @@
-CURRENT 2026-10-05 POST-P108: UNPROMOTED ENGINEERING PACKAGE. Mandatory legacy regression gate is FAIL; Mac/Swift/camera NOT RUN. Do not use for live shooting. Read docs/post_p108/DELIVERY_REPORT.md. Older readiness text below is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. Post-P108 duplicate-frame/chronology defects repaired; mandatory regression gate blocked ONLY by owner policy decision D-R2-01 (docs/post_p108_r2/OWNER_DECISION_REQUIRED.md); Mac/Swift compile/camera NOT RUN. Do not use for live shooting. Read docs/post_p108_r2/DELIVERY_REPORT.md. Older readiness text below (incl. Post-P108 docs/post_p108/) is HISTORICAL.
 
 # 3PM Analyzer — R8 Project State
 
-## CURRENT — 2026-10-03 R8 P1-08 Narrow Integration Repair (Claude Code)
+## CURRENT — 2026-10-05 Post-P108 R2 (Claude Code)
+**Status: UNPROMOTED engineering package — NOT a field candidate, NOT production.**
+- Input: delivered Post-P108 build (Codex `42a24800`), clean-unzip regressions 106/116.
+- Repaired real Post-P108 defects R2-01..R2-04 (repeated frame in fixed-25; device-id requirement broke camera order/identity; random FrameUID per object duplicated re-encodes/readbacks; historical rows multiplied) and R2-05 Swift `CaptureManager` dictionary race (source only).
+- Fresh unzip, field class: regressions 112/117 — the 5 red files are exactly owner decision **D-R2-01** (7 legacy identity assertions vs the Post-P108 H02 rule); phase01 15/15; contract/static/preflight PASS; 8 Chromium 141 gates PASS (incl. new R2 identity gate).
+- NOT RUN: Swift compile, macOS runtime/browser, camera, BLE, Windows, archer, labeled data. M-01 and M-04 OPEN.
+- Source: GitHub `Pui3PM/Pui3PM` branch `claude/magical-rubin-bovhje` folder `3PM_Analyzer/`. Read `docs/post_p108_r2/` first.
+
+## HISTORICAL — 2026-10-05 Post-P108 (Codex, superseded by R2): see `docs/post_p108/` (UNPROMOTED, 106/116).
+
+
+## HISTORICAL — 2026-10-03 R8 P1-08 Narrow Integration Repair (Claude Code)
 **Status: Software Candidate Ready for Restricted Field Validation — NOT Production Ready** (valid only if the packaging gates in `docs/phase01/claude_code_r8_p1_08_20261003/TEST_RESULTS.md` passed on the fresh unzip). Restricted scope: macOS, Side camera only, 30 FPS, isolated/disposable data, isolated network bench, Legacy Shot Decision authority. No Windows / high-FPS / multi-camera claims.
 - Base: audited P1-07 (`511cfdb`, field ZIP `b6f0220e…`), independent audit 2026-10-03 verdict **BLOCKED BEFORE FIELD TEST** → that build must not be used for field validation.
 - H-01 (Recovery before Release), H-02 (frame identity), H-03 (stale native open) **CLOSED in software**; M-02, M-03, L-01 closed; M-05 mitigated (isolated profile + migration compatibility; Mac export/restore pending); **M-01 and M-04 OPEN** (frozen `app.js` sampler; Swift bridge exposure) → scope restriction + field prerequisite.

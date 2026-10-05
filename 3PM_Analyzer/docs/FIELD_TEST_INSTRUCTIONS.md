@@ -1,31 +1,33 @@
-# FIELD TEST INSTRUCTIONS — 3PM Analyzer R8 P1-08 FIELD TEST BUILD (NOT PRODUCTION)
+# FIELD TEST INSTRUCTIONS — 3PM Analyzer R8 Post-P108 R2 MAC BENCH (UNPROMOTED — NOT PRODUCTION)
 
-สถานะ: **Software Candidate Ready for Restricted Field Validation — NOT Production Ready**
-ผ่าน software gates บน Linux/Chromium แล้ว แต่ **ยังไม่เคยรันบน Mac, กล้องจริง หรือนักยิงจริง** · ไม่มีการอ้างความแม่นยำ · Legacy Shot Decision เป็นผู้ตัดสินช็อตเพียงตัวเดียว · shadow ไม่เขียนอะไรลงช็อตจริง
+สถานะปัจจุบัน (2026-10-05): **UNPROMOTED engineering package** — ใช้ได้เฉพาะ *engineering bench* บน Mac ด้วยข้อมูลทดสอบที่ทิ้งได้ **ห้ามยิงจริง/ห้ามใช้ข้อมูลนักกีฬาจริง** จนกว่า owner ตัดสิน D-R2-01 (`docs/post_p108_r2/OWNER_DECISION_REQUIRED.md`) และ §0–§1 ผ่านบน Mac จริง
+ผ่าน software gates บน Linux/Chromium แล้ว แต่ **ยังไม่เคยรันบน Mac, ยังไม่เคย compile Swift, ยังไม่เคยใช้กล้องจริงหรือนักยิงจริง** · ไม่มีการอ้างความแม่นยำ · Legacy Shot Decision เป็นผู้ตัดสินช็อตเพียงตัวเดียว
 
-**ขอบเขตที่อนุญาตในรอบนี้เท่านั้น:** macOS · กล้อง **Side ตัวเดียว** · **30 FPS** · ข้อมูลทดสอบที่ทิ้งได้ (isolated/disposable) · เครื่องอยู่ในเครือข่ายที่แยก (engineering bench)
-**ห้าม:** Windows · 60/120/240 FPS · หลายกล้อง · ใช้ข้อมูลนักกีฬาจริงก่อนผ่าน §0 ครบ
+**ขอบเขตที่อนุญาตในรอบนี้เท่านั้น:** macOS · กล้อง **Side ตัวเดียว** · **30 FPS** · ข้อมูลทดสอบที่ทิ้งได้ · engineering bench
+**ห้าม:** Windows · 60/120/240 FPS · หลายกล้อง · ข้อมูลนักกีฬาจริง
 
 ## 0. Prerequisites (ต้องผ่านทุกข้อก่อนยิง — ถ้าไม่ผ่าน ให้หยุดและส่งผลกลับ)
-1. แตก ZIP เป็นโฟลเดอร์ใหม่ใน path ที่มีช่องว่าง เช่น `~/Desktop/3PM Field Test P108/` — **อย่าลบ/ทับ R7** และอย่าลบ sessions เดิม
-2. ตรวจ SHA-256: `shasum -a 256 3PM_Analyzer_R8_P1_08_FIELD_TEST_20261003.zip` ต้องตรงกับรายงานส่งมอบ
+1. แตก ZIP เป็นโฟลเดอร์ใหม่ใน path ที่มีช่องว่าง เช่น `~/Desktop/3PM Bench R2/` — **อย่าลบ/ทับ R7, P1-08 หรือ Post-P108 เดิม** และอย่าลบ sessions เดิม
+2. ตรวจ SHA-256: `shasum -a 256 3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005.zip` ต้องตรงกับ `3PM_POST_P108_R2_SHA256SUMS.txt`
 3. **สำรองข้อมูล backend ก่อนเปิดครั้งแรก:** ปิดแอป 3PM ทุกตัว แล้วคัดลอกโฟลเดอร์ข้อมูลของ runtime ที่ R7 ใช้อยู่ (ดู path ได้ในหน้า Settings → Storage ของ R7 หรือหาด้วย `mdfind -name 3PM_FormAnalyzer_Data`) ไปเก็บเป็นสำเนา เช่น `cp -R "<โฟลเดอร์ข้อมูล>" ~/Desktop/3PM_Data_BACKUP_$(date +%Y%m%d)`
    - เมื่อเปิด field build แล้ว ให้ดู Settings → Storage (ช่อง path): ต้องเป็นโฟลเดอร์ของแอปตัวนี้ (app folder) **ไม่ใช่** โฟลเดอร์/ไดรฟ์ภายนอกที่ R7 ใช้เก็บข้อมูลจริง ถ้าชี้ไปที่ของ R7 ให้กด app folder (internal) ก่อนสร้างข้อมูลใด ๆ และจดไว้
 4. **Browser profile แยก (M-05):** ดับเบิลคลิก `START_3PM.command` แล้วดูใน Terminal ต้องมีบรรทัด
-   `3PM UI browser: Google Chrome (isolated field-test profile: ~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_P1_08_FIELD_TEST)`
-   และ banner ต้องแสดง `3PM_Analyzer_R8_P1_08_FIELD_TEST [field_test_not_production]`
+   `3PM UI browser: Google Chrome (isolated field-test profile: ~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005)`
+   และ banner ต้องแสดง `3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005 [field_test_not_production]`
    - Chrome ที่เปิดขึ้นต้องเป็นหน้าต่างใหม่ที่ไม่มี bookmark/บัญชีเดิม (โปรไฟล์ใหม่) — ถ้าเปิดในโปรไฟล์เดิม ให้หยุดและส่งผลกลับ
    - ถ้าไม่มี Chrome/Edge แอปจะ **ไม่เปิด browser เอง** (ตั้งใจ) ให้ติดตั้ง Chrome ก่อน อย่าใช้ `THREEPM_USE_DEFAULT_PROFILE=1` ในรอบนี้
-5. **ตรวจ native bridge exposure (M-04)** ขณะแอปเปิดอยู่ ใน Terminal ใหม่:
+5. **ตรวจ native helper และ bridge exposure (M-04)** ขณะแอปเปิดอยู่ ใน Terminal ใหม่:
    ```bash
-   lsof -nP -iTCP:48735 -sTCP:LISTEN          # จดผล: ถ้าขึ้น *:48735 หรือ IP ที่ไม่ใช่ 127.0.0.1 = ฟังทุก interface
-   curl -s -m 3 http://127.0.0.1:48735/health  # ต้องตอบ ok (ยืนยันว่า bridge ทำงาน)
-   curl -s -m 3 -H 'Origin: https://example.com' -i http://127.0.0.1:48735/health | head -5   # จดว่ามี Access-Control-Allow-Origin: * หรือไม่
+   tail -n 30 "$HOME/Library/Logs/3PM Form Analyzer Native Capture.log"   # จด: compile สำเร็จหรือ build_failed + บรรทัด compiler
+   cat "<โฟลเดอร์ที่แตก ZIP>/app/static/3pm_native_capture_state.json"      # ต้องเป็น "ready"; ถ้า build_failed/compiler_unavailable = ใช้ browser fallback
+   lsof -nP -iTCP:48735 -sTCP:LISTEN          # ที่ต้องการ: 127.0.0.1:48735 เท่านั้น (ถ้าเห็น *:48735 = หยุดและส่งผลกลับ)
+   curl -s -m 3 http://127.0.0.1:48735/health  # ต้องตอบ ok
+   curl -s -m 3 -i -H 'Origin: https://example.com' http://127.0.0.1:48735/health | head -1   # ที่ต้องการ: HTTP/1.1 403
+   curl -s -m 3 -i -H 'Origin: http://127.0.0.1:8000' http://127.0.0.1:48735/health | head -1  # ที่ต้องการ: HTTP/1.1 200
    ```
-   และจาก **เครื่องอื่นในเครือข่ายเดียวกัน**: `curl -s -m 3 http://<IP ของ Mac>:48735/health` — ผลที่ต้องการคือ **ต่อไม่ได้**
-   - ถ้าเครื่องอื่นต่อได้: ใช้ได้เฉพาะเมื่อ Mac อยู่ในเครือข่ายแยก (ไม่มีเครื่องอื่น/ปิด Wi-Fi สาธารณะ/เปิด macOS Firewall แบบ block incoming) และจดไว้ — ห้ามใช้ในเครือข่ายสนามทั่วไป
-   - ระหว่างทดสอบอย่าเปิดเว็บไซต์อื่นใน browser profile นี้
-6. **ทดสอบ Export/Restore บนข้อมูลทิ้งได้ก่อน:** สร้าง athlete/session ทดสอบ → ยิงทดสอบ 1–2 ช็อต → Settings → *Export Backup* และ Data Export → *Download JSON* → ปิดแอป → ลบโฟลเดอร์โปรไฟล์ทดสอบ `~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_P1_08_FIELD_TEST` → เปิดใหม่ → *Import Backup* → ตรวจว่า session/ช็อต/ข้อมูลที่ export กลับมาตรง (จดสิ่งที่กลับมาและสิ่งที่ไม่กลับมา เช่นภาพ evidence ใน browser) — ถ้าคืนค่าไม่ได้ ห้ามใช้ข้อมูลจริง
+   และจาก **เครื่องอื่นในเครือข่ายเดียวกัน**: `curl -s -m 3 http://<IP ของ Mac>:48735/health` — ที่ต้องการคือ **ต่อไม่ได้**
+   - bridge ยังไม่มีการยืนยันตัวตน (M-04 OPEN): โปรแกรมอื่นบนเครื่องเดียวกันยังสั่งได้ — ระหว่างทดสอบอย่าเปิดเว็บไซต์อื่นใน browser profile นี้
+6. **ทดสอบ Export/Restore บนข้อมูลทิ้งได้ก่อน:** สร้าง athlete/session ทดสอบ → ยิงทดสอบ 1–2 ช็อต → Settings → *Export Backup* และ Data Export → *Download JSON* → ปิดแอป → ลบโฟลเดอร์โปรไฟล์ทดสอบ `~/Library/Application Support/3PM_FieldTest_Profiles/3PM_Analyzer_R8_POST_P108_R2_MAC_BENCH_UNPROMOTED_20261005` → เปิดใหม่ → *Import Backup* → ตรวจว่า session/ช็อต/ข้อมูลที่ export กลับมาตรง (จดสิ่งที่กลับมาและสิ่งที่ไม่กลับมา เช่นภาพ evidence ใน browser) — ถ้าคืนค่าไม่ได้ ห้ามใช้ข้อมูลจริง
 7. ตั้งกล้อง Side ที่ **30 FPS** และจดรุ่น/ความละเอียด
 
 ## 1. Launcher และกล้อง Side (native)
@@ -41,7 +43,7 @@
 - หลังแต่ละช็อต เปิด Review ของช็อตนั้นแล้วตรวจและจด:
   - [ ] **25 slots** (ช่องที่ไม่มีภาพต้องขึ้น Missing — ห้ามมีภาพซ้ำเติม)
   - [ ] **ลำดับเวลา: Release → Follow-through → Recovery** (H-01) — Recovery ต้องไม่อยู่ก่อน Release ทั้งตอนเปิดครั้งแรก และหลัง **รีเฟรชหน้า (Cmd+R)** แล้วเปิดช็อตเดิมอีกครั้ง
-  - [ ] **ไม่มีภาพซ้ำ** และจำนวนภาพจริงไม่ลดลงหลังรีเฟรช (H-02)
+  - [ ] **ไม่มีภาพซ้ำ** และจำนวนภาพจริงไม่เพิ่ม/ไม่ลดหลังรีเฟรช และหลังรอ Recovery บันทึกเสร็จ (H-02, R2-03/R2-04)
   - [ ] Prev / Next / Play เลื่อนตามเวลา ไม่กระโดดย้อน
   - [ ] ปุ่ม **Anchor** ไปภาพช่วง Anchor หรือแจ้ง Missing; กดซ้ำได้ผลเดิม (M-02)
   - [ ] สลับไปช็อตอื่นแล้วกลับมา ภาพไม่ปนช็อตเดิม
@@ -57,9 +59,10 @@ URL="<URL จาก §1.1>"
 node app/tests/phase01/run_fullpage_smoke_chromium_r8c.cjs "$URL" "$CHROMIUM_PATH"   # LOADED (liveness เท่านั้น)
 node app/tests/phase01/run_anchor_ownership_chromium.cjs "$URL" "$CHROMIUM_PATH"     # SINGLE_OWNER
 node app/tests/p108_browser/run_fullapp_gate_chromium.cjs "$CHROMIUM_PATH"            # PASS (ใช้ backend test double ไม่ใช่ backend จริง)
+node app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs "$CHROMIUM_PATH"   # PASS (ไม่มีภาพซ้ำเมื่อบันทึกซ้ำ / record เก่า)
 node app/tests/phase01/run_f01_chromium_r8c.cjs "$CHROMIUM_PATH"                      # PASS
 node app/tests/phase01/run_shadow_bundle_chromium.cjs "$CHROMIUM_PATH"                # PASS
-python3 app/tests/run_regressions.py                                                  # ต้อง all PASS ใน field build
+python3 app/tests/run_regressions.py                                                  # R2: 112/117 — 5 ไฟล์ที่แดงต้องเป็นรายการ D-R2-01 เท่านั้น
 ```
 เก็บ output ทั้งหมด (ถ้าไม่มี Node ให้เขียน NOT RUN)
 
@@ -78,6 +81,6 @@ python3 app/tests/run_regressions.py                                            
 | ปัญหาที่พบ (shot id + ภาพหน้าจอ + phase trace) | |
 
 ## 5. หยุดทันทีเมื่อ
-ข้อมูล session เดิมหาย, หน้าค้างซ้ำ, Recovery มาก่อน Release, ภาพซ้ำ/หายหลังรีเฟรช, กล้องแสดง active แต่ไม่มีภาพ, หรือผลตัดสินต่างจาก R7 อย่างชัดเจน → ปิดแอป กลับไปใช้ R7 (ROLLBACK ใน `docs/phase01/claude_code_r8_p1_08_20261003/ROLLBACK.md`) แล้วส่งบันทึกกลับ
+ข้อมูล session เดิมหาย, หน้าค้างซ้ำ, Recovery มาก่อน Release, ภาพซ้ำ/หายหลังรีเฟรช, กล้องแสดง active แต่ไม่มีภาพ, หรือผลตัดสินต่างจาก R7 อย่างชัดเจน → ปิดแอป กลับไปใช้เวอร์ชันเดิม (`docs/post_p108_r2/ROLLBACK.md`) แล้วส่งบันทึกกลับ
 
-สิ่งที่รอบนี้ **ยังไม่ได้** พิสูจน์: ความแม่นยำ release/let-down, high-FPS (M-01 ยังเปิด), ความปลอดภัย bridge ในเครือข่ายทั่วไป (M-04 ยังเปิด), Windows, หลายกล้อง, dataset ที่มี label
+สิ่งที่รอบนี้ **ยังไม่ได้** พิสูจน์: Swift compile/runtime บน Mac, ความแม่นยำ release/let-down, high-FPS (M-01 ยังเปิด), การยืนยันตัวตนของ bridge (M-04 ยังเปิด), Windows, หลายกล้อง, dataset ที่มี label

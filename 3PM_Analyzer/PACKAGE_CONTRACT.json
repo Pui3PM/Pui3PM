@@ -203,7 +203,9 @@
     "app/tests/test_ui_stability_integration_ble4371.js",
     "app/tests/test_user_handdown_falsecap_r4.js",
     "app/tests/test_visual_match_ble432.js",
-    "app/static/evidence_identity_persistence_layer.js"
+    "app/static/evidence_identity_persistence_layer.js",
+    "app/tests/test_post_p108_r2_identity.js",
+    "app/tests/p108_browser/run_post_p108_r2_identity_chromium.cjs"
   ],
   "artifact_class": "development_not_release",
   "pose_policy": {

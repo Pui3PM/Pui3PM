@@ -1,4 +1,8 @@
-CURRENT 2026-10-05 POST-P108: UNPROMOTED ENGINEERING PACKAGE. Mandatory legacy regression gate is FAIL; Mac/Swift/camera NOT RUN. Do not use for live shooting. Read docs/post_p108/DELIVERY_REPORT.md. Older readiness text below is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. Post-P108 duplicate-frame/chronology defects repaired; mandatory regression gate blocked ONLY by owner policy decision D-R2-01 (docs/post_p108_r2/OWNER_DECISION_REQUIRED.md); Mac/Swift compile/camera NOT RUN. Do not use for live shooting. Read docs/post_p108_r2/DELIVERY_REPORT.md. Older readiness text below (incl. Post-P108 docs/post_p108/) is HISTORICAL.
+วิธีเริ่ม (R2): แตก ZIP ที่ชื่อมี MAC_BENCH_UNPROMOTED เป็นโฟลเดอร์ใหม่ แล้วดับเบิลคลิก START_3PM.command ไฟล์เดียว
+ทำตาม docs/FIELD_TEST_INSTRUCTIONS.md §0–§1 ด้วยข้อมูลทดสอบที่ทิ้งได้เท่านั้น · ห้ามยิงจริง · เรื่องที่รอ owner ตัดสิน: docs/post_p108_r2/OWNER_DECISION_REQUIRED.md
+ข้อความด้านล่างเส้นนี้เป็นประวัติ (HISTORICAL) ของ P1-08
+----------------------------------------------------------------
 
 3PM Analyzer R8 — R8 P1-08 Narrow Integration Repair (Claude Code, 2026-10-03)
 สถานะ: Software Candidate Ready for Restricted Field Validation — NOT PRODUCTION

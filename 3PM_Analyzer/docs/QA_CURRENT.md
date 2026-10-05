@@ -1,6 +1,14 @@
-CURRENT 2026-10-05 POST-P108: UNPROMOTED ENGINEERING PACKAGE. Mandatory legacy regression gate is FAIL; Mac/Swift/camera NOT RUN. Do not use for live shooting. Read docs/post_p108/DELIVERY_REPORT.md. Older readiness text below is HISTORICAL.
+CURRENT 2026-10-05 POST-P108 R2 (Claude Code): UNPROMOTED ENGINEERING PACKAGE. Post-P108 duplicate-frame/chronology defects repaired; mandatory regression gate blocked ONLY by owner policy decision D-R2-01 (docs/post_p108_r2/OWNER_DECISION_REQUIRED.md); Mac/Swift compile/camera NOT RUN. Do not use for live shooting. Read docs/post_p108_r2/DELIVERY_REPORT.md. Older readiness text below (incl. Post-P108 docs/post_p108/) is HISTORICAL.
 
-**CURRENT 2026-10-03: R8 P1-08 Narrow Integration Repair — Software Candidate Ready for Restricted Field Validation (NOT Production Ready).**
+**CURRENT 2026-10-05: Post-P108 R2 — UNPROMOTED.**
+- Fresh unzip (Linux, Node 22, Chromium 141): field class 112/117, DEV 109/117 (+3 pose-policy sentinels); red files = D-R2-01 only. Phase01 15/15. Distribution contract, static integrity, executable Mac preflight, ZIP modes PASS.
+- Chromium: full-app 25/25, Post-P108 7/7, R2 identity 12/12, identity parity, F01, shadow bundle, Anchor SINGLE_OWNER, full-page LOADED.
+- R2 identity gate on the delivered Post-P108 bytes: FAIL (re-persist 19 -> 25 rows with 19 distinct images; historical record 19 rows / 7 distinct images). On R2: 19 -> 19; 7 / 7.
+- NOT RUN: Swift compile, macOS runtime, camera, BLE, Windows, archer, labeled data. Details: `post_p108_r2/TEST_RESULTS.json`.
+
+---
+
+**HISTORICAL 2026-10-03: R8 P1-08 Narrow Integration Repair — Software Candidate Ready for Restricted Field Validation (NOT Production Ready).**
 
 - P1-08 regressions (`app/tests/test_p108_*.js`): H-01, H-02, H-03, M-02, M-05 GREEN (RED on the audited P1-07 bytes); M-01, M-04 characterized OPEN; Astra probes gate PASS (7/8 core invariants + 1 documented R7-contract conflict D-108-06).
 - Legacy JS suite: development class all green except the 3 policy pose sentinels; field class must be all green (packaging gate, strict).
